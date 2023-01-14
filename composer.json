@@ -1,0 +1,69 @@
+{
+  "name": "baichuan/library",
+  "type": "library",
+  "description": "a common library for [php]hyperf",
+  "keywords": ["php", "hyperf", "common", "library"],
+  "archive": {
+    "exclude": [
+      "/bin",
+      "*.md",
+      "/.*"
+    ]
+  },
+  "require": {
+    "php": ">=7.4",
+    "graze/telnet-client": "^2.3",
+    "hyperf/amqp": "^2.2",
+    "hyperf/async-queue": "^2.2",
+    "hyperf/cache": "~2.2.0",
+    "hyperf/constants": "~2.2.0",
+    "hyperf/resource": "~2.2.0",
+    "hyperf/circuit-breaker": "^2.2",
+    "hyperf/command": "~2.2.0",
+    "hyperf/config": "~2.2.0",
+    "hyperf/crontab": "^2.2",
+    "hyperf/database": "~2.2.0",
+    "hyperf/db-connection": "~2.2.0",
+    "hyperf/framework": "~2.2.0",
+    "hyperf/guzzle": "^2.2",
+    "hyperf/http-server": "~2.2.0",
+    "hyperf/logger": "~2.2.0",
+    "hyperf/memory": "~2.2.0",
+    "hyperf/paginator": "^2.2",
+    "hyperf/process": "~2.2.0",
+    "hyperf/rate-limit": "^2.2",
+    "hyperf/redis": "~2.2.0",
+    "hyperf/snowflake": "^2.2",
+    "hyperf/validation": "^2.2",
+    "vlucas/phpdotenv": ">4.2.0",
+    "ext-iconv": "*",
+    "ext-json": "*",
+    "ext-redis": "*",
+    "ext-openssl": "*",
+    "ext-igbinary": "*",
+    "hyperf/config-apollo": "^2.2",
+    "symfony/http-foundation": "^5.4",
+    "hyperf/socketio-server": "^2.2",
+    "hyperf/kafka": "^2.2"
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "^3.0",
+    "hyperf/devtool": "~2.2.0",
+    "hyperf/testing": "^2.2",
+    "hyperf/watcher": "v2.2.6.1",
+    "mockery/mockery": "^1.0",
+    "phpstan/phpstan": "^0.12",
+    "phpunit/phpunit": "^9.5",
+    "swoole/ide-helper": "^4.5"
+  },
+  "autoload": {
+    "files": [
+      "src/Common/Function.php"
+    ],
+    "psr-4": {
+      "Component\\Hyperf\\": "src/"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
