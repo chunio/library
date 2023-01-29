@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Baichuan\Library\Http\Trait;
+namespace Baichuan\Library\Http\Traits;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Utils\Arr;
