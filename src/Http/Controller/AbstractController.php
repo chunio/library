@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Baichuan\Library\Http\Controller;
 
-use Baichuan\Library\Http\Traits\ResponseTrait;
-use Baichuan\Library\Http\Traits\ValidateTrait;
+use Baichuan\Library\Http\Trait\ResponseTrait;
+use Baichuan\Library\Http\Trait\ValidateTrait;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 use Psr\Container\ContainerInterface;

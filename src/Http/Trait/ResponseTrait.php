@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Baichuan\Library\Http\Traits;
+namespace Baichuan\Library\Http\Trait;
 
 use Baichuan\Library\Http\Resource\JsonResource;
 use Baichuan\Library\Http\Resource\ResourceCollection;
