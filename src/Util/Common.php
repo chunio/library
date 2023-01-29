@@ -59,3 +59,21 @@ if (!function_exists('xdebug')) {
         //});
     }
 }
+
+if (!function_exists('di')) {
+    /**
+     * @param null $id
+     * @return mixed
+     * author : zengweitao@msn.com
+     * datetime : 2021-10-11 12:39
+     * memo : null
+     */
+    function di($id = null)
+    {
+        $container = Hyperf\Utils\ApplicationContext::getContainer();
+        if ($id) {
+            return $container->get($id);
+        }
+        return $container;
+    }
+}

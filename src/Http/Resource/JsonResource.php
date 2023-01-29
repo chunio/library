@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Baichuan\Library\Http\Resource;
 
 use Baichuan\Library\Util\Log;
-use Hyperf\Resource\Json\JsonResource as HyperfJsonResource;
 use Hyperf\Context\Context;
 use Psr\Http\Message\ResponseInterface;
 use Swoole\Http\Status;
@@ -15,7 +14,7 @@ use Swoole\Http\Status;
  *
  * Class JsonResource
  */
-class JsonResource extends HyperfJsonResource
+class JsonResource extends \Hyperf\Resource\Json\JsonResource
 {
     protected int $statusCode = Status::OK;
 
@@ -68,7 +67,7 @@ class JsonResource extends HyperfJsonResource
             'message' => $this->getMsg(),
             'timestamp' => time(),
             'elapsedTime' => $start_at ? round($end_at - $start_at, 6) : null,//DEBUG_LABEL
-            'requestId' => Log::getRequestId(),
+            'requestId' => Log::pullRequestId(),
         ];
     }
 

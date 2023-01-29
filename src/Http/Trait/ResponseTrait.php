@@ -34,8 +34,6 @@ trait ResponseTrait
     }
 
     /**
-     *  失败返回.
-     *
      * @param int $code
      * @param string $msg
      */
@@ -46,13 +44,10 @@ trait ResponseTrait
 
     /**
      * 纯 json，无包装.
-     *
      * @param null $data
      * @param array $headers
      * @param int $status
      * @param string $reasonPhrase
-     *
-     * @author Mai Zhong Wen <yshxinjian@gmail.com>
      */
     protected function jsonRaw($data = null, $headers = [], $status = 200, $reasonPhrase = ''): PsrResponseInterface
     {
