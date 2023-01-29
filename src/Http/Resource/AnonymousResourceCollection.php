@@ -25,6 +25,6 @@ class AnonymousResourceCollection extends ResourceCollection
     {
         $this->collects = $collects;
 
-        parent::__construct($resource);
+        parent::__construct($resource);//
     }
 }
