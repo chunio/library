@@ -7,8 +7,7 @@
     "exclude": [
       "/bin",
       "*.md",
-      "/.*",
-      "/hyperf"
+      "/.*"
     ]
   },
   "require": {
