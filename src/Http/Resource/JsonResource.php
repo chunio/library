@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Baichuan\Library\Http\Resource;
 
-use Baichuan\Library\Util\Log;
+use Baichuan\Library\Utility\Log;
 use Hyperf\Context\Context;
 use Psr\Http\Message\ResponseInterface;
 use Swoole\Http\Status;

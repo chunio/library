@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Baichuan\Library\Util;
+namespace Baichuan\Library\Utility;
 
 use Hyperf\Context\Context;
 use Hyperf\Utils\Str;

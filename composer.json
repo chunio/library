@@ -44,7 +44,7 @@
   },
   "autoload": {
     "files": [
-      "src/Util/Common.php"
+      "src/Utility/Common.php"
     ],
     "psr-4": {
       "Baichuan\\Library\\": "src/"
