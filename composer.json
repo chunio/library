@@ -45,14 +45,9 @@
       "src/Util/Common.php"
     ],
     "psr-4": {
-      "Component\\Hyperf\\": "src/"
+      "Baichuan\\Library\\": "src/"
     }
   },
   "minimum-stability": "dev",
-  "prefer-stable": true,
-  "extra": {
-    "hyperf": {
-      "config": "Baichuan\\Library\\ConfigProvider"
-    }
-  }
+  "prefer-stable": true
 }
