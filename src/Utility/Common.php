@@ -116,6 +116,6 @@ if (!function_exists('matchEnvi')) {
      */
     function matchEnvi(string $envi): bool
     {
-        return config('app_env') == $envi;
+        return env('APP_ENV') == $envi;
     }
 }
