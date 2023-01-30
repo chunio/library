@@ -97,11 +97,11 @@ class CustomLineFormatter extends LineFormatter
 
         if ($this->ignoreEmptyContextAndExtra) {
             if (empty($vars['context'])) {
-                $output = str_replace("=== context ===\n\n", "context:EMPTY\n", $output);
+                $output = str_replace("=== context ===\n\n", "", $output);
             }
 
             if (empty($vars['extra'])) {
-                $output = str_replace("=== extra ===\n\n", "extra:EMPTY\n", $output);
+                $output = str_replace("=== extra ===\n\n", "", $output);
             }
         }
 
