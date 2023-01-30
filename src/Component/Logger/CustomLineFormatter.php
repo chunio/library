@@ -38,9 +38,9 @@ class CustomLineFormatter extends LineFormatter
 
     public function format(array $record): string
     {
-        if(($record['context']['req']['uri'] ?? '') == '/favicon.ico'){//忽略
-            return '';
-        }
+        //if(($record['context']['req']['uri'] ?? '') == '/favicon.ico'){//忽略
+        //    return '';
+        //}
         $vars = $this->normalize($record);
         // 重置模板
         $this->format = $this->originFormat;
@@ -64,14 +64,17 @@ class CustomLineFormatter extends LineFormatter
         if ($record['context']['req'] ?? []) {
             $string = "[request] ：\n" . $formatLogic($record['context']['req']);
             $output = str_replace("context[START]", "context[START]\n{$string}", $output);
+            unset($record['context']['req']);
         }
         if ($record['context']['resp'] ?? []) {
             $string = "[response] ：\n" . $formatLogic($record['context']['resp']);
             $output = str_replace("context[START]", "context[START]\n{$string}", $output);
+            unset($record['context']['resp']);
         }
         if ($record['context']['details'] ?? []) {
             $string = "[detail] ：\n" . $formatLogic($record['context']['details']);
             $output = str_replace("context[START]", "context[START]\n{$string}", $output);
+            unset($record['context']['details']);
         }
         // 添加文件行數信息
         if (isset($vars['log']['file'], $vars['log']['line'])) {
