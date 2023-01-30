@@ -57,7 +57,7 @@ class CustomLineFormatter extends LineFormatter
                     continue;
                 }
                 $value = (is_numeric($value) || is_string($value)) ? $value : prettyJsonEncode($value);
-                $string .= "{$key}:{$value}\n";
+                $string .= $key . " : " . $value . "\n";//"{$key}:{$value}\n";
             }
             return $string;
         };
