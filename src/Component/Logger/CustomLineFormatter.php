@@ -10,7 +10,8 @@ use Monolog\Logger;
 
 class CustomLineFormatter extends LineFormatter
 {
-    public const SIMPLE_FORMAT = "[%datetime%]【%channel%】%level_name%: %message%\n=== context ===\n%context%\n=== extra ===\n%extra%\n";
+    //public const SIMPLE_FORMAT = "[%datetime%]【%channel%】%level_name%: %message%\n=== context ===\n%context%\n=== extra ===\n%extra%\n";
+    public const SIMPLE_FORMAT = "%datetime%||%channel||%level_name%||%message%||%context%||%extra%\n";
 
     protected ?string $originFormat;
 
