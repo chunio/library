@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Component\Hyperf\Constant;
+namespace Baichuan\Library\Constant;
 
 use Hyperf\Constants\AbstractConstants;
 

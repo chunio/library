@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Component\Hyperf\Constant\AnsiColorEnum;
+use Baichuan\Library\Constant\AnsiColorEnum;
 
 if (!function_exists('xdebug')) {
     function xdebug($variable, string $title = 'defaultTitle', string $path = '', bool $append = true, bool $output = true): void
@@ -139,15 +139,6 @@ if (!function_exists('prettyJsonEncode')) {
 }
 
 if (!function_exists('colorString')) {
-    /**
-     * 格式化为 Ansi 颜色字符串.
-     *
-     * @param string $string 字符串
-     * @param int $fg 字体颜色
-     * @param null|int $bg 背景颜色
-     *
-     * @author Mai Zhong Wen <yshxinjian@gmail.com>
-     */
     function colorString(string $string, int $fg = AnsiColorEnum::FG_BLACK, int $bg = null): string
     {
         if ($bg) {
