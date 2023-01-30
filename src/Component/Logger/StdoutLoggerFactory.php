@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Baichuan\Library\Component\Log;
+namespace Baichuan\Library\Component\Logger;
 
 use Hyperf\Contract\ContainerInterface;
 
