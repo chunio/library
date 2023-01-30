@@ -56,7 +56,7 @@ class BaseExceptionHandler extends ExceptionHandler
         //if ($statusCode == 500 && match('official')) {
         //    $message = "【{$appCode}】system exception \n index ：" . Log::pullRequestId();
         //}
-        $jsonResource = (new \Hyperf\Resource\Json\JsonResource(null))
+        $jsonResource = (new \Baichuan\Library\Http\Resource\JsonResource(null))
             ->setAppCode($appCode)
             ->setMsg($message)
             ->setStatusCode($statusCode);
