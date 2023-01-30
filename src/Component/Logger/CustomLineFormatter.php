@@ -38,6 +38,7 @@ class CustomLineFormatter extends LineFormatter
 
     public function format(array $record): string
     {
+        xdebug($record,'$record');
         $vars = $this->normalize($record);
 
         // 重置模板

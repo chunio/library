@@ -5,8 +5,21 @@ declare(strict_types=1);
 use Baichuan\Library\Constant\AnsiColorEnum;
 
 if (!function_exists('xdebug')) {
+    /**
+     * @param $variable
+     * @param string $title
+     * @param string $path
+     * @param bool $append
+     * @param bool $output
+     * author : zengweitao@gmail.com
+     * datetime: 2023/01/30 16:54
+     * memo : null
+     */
     function xdebug($variable, string $title = 'defaultTitle', string $path = '', bool $append = true, bool $output = true): void
     {
+        if (!in_array(env('APP_ENV'), ['local', 'dev', 'test'])) {
+            //return;
+        }
         $traceInfo = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
         //co(function() use($variable, $title, $traceInfo){
         try {
