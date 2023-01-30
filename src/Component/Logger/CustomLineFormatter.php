@@ -10,7 +10,7 @@ use Monolog\Logger;
 
 class CustomLineFormatter extends LineFormatter
 {
-    public const SIMPLE_FORMAT = "[%datetime%]【%channel%】%level_name%: %message%\n=== context ===\n%context%\n=== extra ===\n%extra%\n";
+    public const SIMPLE_FORMAT = "[%datetime%]【%channel%】%level_name%: %message%\ncontext[START]\n%context%\nextra[START]\n%extra%\n";
     //public const SIMPLE_FORMAT = "%datetime%||%channel||%level_name%||%message%||%context%||%extra%\n";
 
     protected ?string $originFormat;
@@ -56,7 +56,7 @@ class CustomLineFormatter extends LineFormatter
             unset($record['context']['resp']);
         }
         if (isset($record['context']['details'])) {
-            $details = $record['context']['details'];
+            $detail = $record['context']['details'];
             unset($record['context']['details']);
         }
 
@@ -76,39 +76,39 @@ class CustomLineFormatter extends LineFormatter
 
         if (isset($request)) {
             $str = "[request] ：\n" . $formatKV($request);//DEBUG_LABEL
-            $output = str_replace("=== context ===", "=== context ===\n{$str}", $output);
+            $output = str_replace("context[START]", "context[START]\n{$str}", $output);
         }
 
         if (isset($response)) {
             $str = "[response] ：\n" . $formatKV($response);//DEBUG_LABEL
-            $output = str_replace("=== context ===", "=== context ===\n{$str}", $output);
+            $output = str_replace("context[START]", "context[START]\n{$str}", $output);
         }
 
-        if (isset($details)) {
-            $str = "[describe] ：\n" . $formatKV($details);//DEBUG_LABEL
-            $output = str_replace("=== context ===", "=== context ===\n{$str}", $output);
+        if (isset($detail)) {
+            $str = "[detail] ：\n" . $formatKV($detail);//DEBUG_LABEL
+            $output = str_replace("context[START]", "context[START]\n{$str}", $output);
         }
 
         // 添加打印位置
         if (isset($vars['log']['file'], $vars['log']['line'])) {
             $fileline = "#" . $vars['log']['file'] . "(" . $vars['log']['line'] . ")";
-            $output = str_replace("=== extra ===", $fileline . "\n=== extra ===", $output);
+            $output = str_replace("extra[START]", $fileline . "\nextra[START]", $output);
         }
 
         if ($this->ignoreEmptyContextAndExtra) {
             if (empty($vars['context'])) {
-                $output = str_replace("=== context ===\n\n", "", $output);
+                $output = str_replace("context[START]\n\n", "", $output);
             }
 
             if (empty($vars['extra'])) {
-                $output = str_replace("=== extra ===\n\n", "", $output);
+                $output = str_replace("extra[START]\n\n", "", $output);
             }
         }
 
         if ($this->hideExtra) {
-            $i = strpos($output, "=== extra ===");
+            $i = strpos($output, "extra[START]");
             if ($i > 0) {
-                $output = substr($output, 0, strpos($output, "=== extra ===")) . PHP_EOL;
+                $output = substr($output, 0, strpos($output, "extra[START]")) . PHP_EOL;
             }
         }
 
