@@ -36,7 +36,7 @@ class ConfigProvider
                         //WsMiddlewareAnnotationCollector::class,
                     ],
                     'paths' => [
-                        //__DIR__,
+                        __DIR__,
                     ],
                     'class_map' => [
                         // 需映射的類名 => 類所在的文件路徑
