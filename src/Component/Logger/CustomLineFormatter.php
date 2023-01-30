@@ -76,7 +76,11 @@ class CustomLineFormatter extends LineFormatter
 
         if (isset($request)) {
             $str = "[request] ：\n" . $formatKV($request);//DEBUG_LABEL
-            $output = str_replace("=== context ===", "=== context ===\n{$str}", $output);
+            if($str){
+                $output = str_replace("=== context ===", "=== context ===\n{$str}", $output);
+            }else{
+                $output = str_replace("=== context ===", "\n", $output);
+            }
         }
 
         if (isset($response)) {
