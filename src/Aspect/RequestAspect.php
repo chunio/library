@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Baichuan\Library\Aspect;
 
-use Baichuan\Library\Utility\Log;
+use Baichuan\Library\Component\Logger\Log;
 use Hyperf\Di\Annotation\Aspect;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -16,7 +16,7 @@ use Swoole\Http\Request;
 /**
  * @Aspect
  */
-class LogRequest extends AbstractAspect
+class RequestAspect extends AbstractAspect
 {
     public $classes = [
         'Hyperf\HttpServer\Server::onRequest',
@@ -73,7 +73,7 @@ class LogRequest extends AbstractAspect
             return;
         }
 
-        $body = json_encode_pretty($request->getParsedBody());
+        $body = prettyJsonEncode($request->getParsedBody());
         $body = $this->trimByMaxLength('request', $body);
 
         $requestInfo = [
@@ -81,7 +81,7 @@ class LogRequest extends AbstractAspect
             'url' => $request->getUri()->__toString(),
             'uri' => $request->getUri()->getPath(),
             'headers' => $this->simplifyHeaders($request->getHeaders()),
-            'query' => json_encode_pretty($request->getQueryParams()),
+            'query' => prettyJsonEncode($request->getQueryParams()),
             'body' => $body,
         ];
 
@@ -97,12 +97,12 @@ class LogRequest extends AbstractAspect
         }
 
         $hasError = $response->getStatusCode() >= 500;
-        if ($hasError || isDebug()) {
+        if ($hasError || 1) {
             $body = $response->getBody()->getContents();
             $isJson = false !== strpos($response->getHeaderLine('Content-Type'), 'application/json');
             $json = $isJson ? json_decode($body, true) : [];
 
-            $body = $isJson ? json_encode_pretty($json) : '内容格式是: ' . $response->getHeaderLine('Content-Type');
+            $body = $isJson ? prettyJsonEncode($json) : '内容格式是: ' . $response->getHeaderLine('Content-Type');
             $body = $this->trimByMaxLength('response', $body);
 
             $responseInfo = [

@@ -119,3 +119,19 @@ if (!function_exists('matchEnvi')) {
         return env('APP_ENV') == $envi;
     }
 }
+
+if (!function_exists('prettyJsonEncode')) {
+    /**
+     * author : zengweitao@gmail.com
+     * datetime: 2023/01/30 15:10
+     * memo : null
+     */
+    function prettyJsonEncode($object, ?int $flag = JSON_PRETTY_PRINT)
+    {
+        $flagCounter = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
+        if (!is_null($flag)) {
+            $flagCounter |= $flag;
+        }
+        return json_encode($object, $flagCounter);
+    }
+}
