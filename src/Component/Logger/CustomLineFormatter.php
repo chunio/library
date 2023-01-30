@@ -38,8 +38,10 @@ class CustomLineFormatter extends LineFormatter
 
     public function format(array $record): string
     {
+        if($record['context']['req']['uri'] == '/favicon.ico'){//忽略
+            return '';
+        }
         $vars = $this->normalize($record);
-        xdebug($vars,'$vars');
         // 重置模板
         $this->format = $this->originFormat;
         // 添加顏色[START]
@@ -71,12 +73,11 @@ class CustomLineFormatter extends LineFormatter
             $string = "[detail] ：\n" . $formatLogic($record['context']['details']);
             $output = str_replace("context[START]", "context[START]\n{$string}", $output);
         }
-        // 添加打印位置
+        // 添加文件行數信息
         if (isset($vars['log']['file'], $vars['log']['line'])) {
-            $fileline = "#" . $vars['log']['file'] . "(" . $vars['log']['line'] . ")";
-            $output = str_replace("extra[START]", $fileline . "\nextra[START]", $output);
+            $fileLine = "#" . $vars['log']['file'] . "(" . $vars['log']['line'] . ")";
+            $output = str_replace("extra[START]", $fileLine . "\nextra[START]", $output);
         }
-
         if ($this->ignoreEmptyContextAndExtra) {
             if (empty($vars['context'])) {
                 $output = str_replace("context[START]\n\n", "", $output);
@@ -86,14 +87,12 @@ class CustomLineFormatter extends LineFormatter
                 $output = str_replace("extra[START]\n\n", "", $output);
             }
         }
-
         if ($this->hideExtra) {
             $i = strpos($output, "extra[START]");
             if ($i > 0) {
                 $output = substr($output, 0, strpos($output, "extra[START]")) . PHP_EOL;
             }
         }
-
         return $output;
     }
 
