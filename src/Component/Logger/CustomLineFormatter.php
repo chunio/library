@@ -38,58 +38,39 @@ class CustomLineFormatter extends LineFormatter
 
     public function format(array $record): string
     {
-        xdebug($record,'$record');
         $vars = $this->normalize($record);
-
+        xdebug($vars,'$vars');
         // 重置模板
         $this->format = $this->originFormat;
-        // 添加颜色
+        // 添加顏色[START]
         $this->changeFormatForLevelName($vars['level']);
         $this->changeFormatForChannel($vars['channel']);
         $this->changeFormatForMysql($vars['channel']);
-
-        if (isset($record['context']['req'])) {
-            $request = $record['context']['req'];
-            unset($record['context']['req']);
-        }
-        if (isset($record['context']['resp'])) {
-            $response = $record['context']['resp'];
-            unset($record['context']['resp']);
-        }
-        if (isset($record['context']['details'])) {
-            $detail = $record['context']['details'];
-            unset($record['context']['details']);
-        }
-
+        // 添加顏色[END]
         $output = parent::format($record);
-
-        $formatKV = function ($target) {
-            $str = '';
-            foreach ($target as $k => $v) {
-                if ("trace" == $k) {
+        $formatLogic = function ($target) {
+            $string = '';
+            foreach ($target as $key => $value) {
+                if ($key == "trace") {
                     continue;
                 }
-                $v = (is_numeric($v) || is_string($v)) ? $v : prettyJsonEncode($v);
-                $str .= $k . ": " . $v . "\n";
+                $value = (is_numeric($value) || is_string($value)) ? $value : prettyJsonEncode($value);
+                $string .= "{$key}:{$value}\n";
             }
-            return $str;
+            return $string;
         };
-
-        if (isset($request)) {
-            $str = "[request] ：\n" . $formatKV($request);//DEBUG_LABEL
-            $output = str_replace("context[START]", "context[START]\n{$str}", $output);
+        if ($record['context']['req'] ?? []) {
+            $string = "[request] ：\n" . $formatLogic($record['context']['req']);
+            $output = str_replace("context[START]", "context[START]\n{$string}", $output);
         }
-
-        if (isset($response)) {
-            $str = "[response] ：\n" . $formatKV($response);//DEBUG_LABEL
-            $output = str_replace("context[START]", "context[START]\n{$str}", $output);
+        if ($record['context']['resp'] ?? []) {
+            $string = "[response] ：\n" . $formatLogic($record['context']['resp']);
+            $output = str_replace("context[START]", "context[START]\n{$string}", $output);
         }
-
-        if (isset($detail)) {
-            $str = "[detail] ：\n" . $formatKV($detail);//DEBUG_LABEL
-            $output = str_replace("context[START]", "context[START]\n{$str}", $output);
+        if ($record['context']['details'] ?? []) {
+            $string = "[detail] ：\n" . $formatLogic($record['context']['details']);
+            $output = str_replace("context[START]", "context[START]\n{$string}", $output);
         }
-
         // 添加打印位置
         if (isset($vars['log']['file'], $vars['log']['line'])) {
             $fileline = "#" . $vars['log']['file'] . "(" . $vars['log']['line'] . ")";
