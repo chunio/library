@@ -50,6 +50,18 @@ class CustomLineFormatter extends LineFormatter
         $this->changeFormatForChannel($vars['channel']);
         $this->changeFormatForMysql($vars['channel']);
         // 添加顏色[END]
+        if (isset($record['context']['req'])) {
+            $request = $record['context']['req'];
+            unset($record['context']['req']);
+        }
+        if (isset($record['context']['resp'])) {
+            $response = $record['context']['resp'];
+            unset($record['context']['resp']);
+        }
+        if (isset($record['context']['details'])) {
+            $detail = $record['context']['details'];
+            unset($record['context']['details']);
+        }
         $output = parent::format($record);
         $formatLogic = function ($target) {
             $string = '';
@@ -62,20 +74,17 @@ class CustomLineFormatter extends LineFormatter
             }
             return $string;
         };
-        if (isset($record['context']['req'])) {
-            $string = "[request] ：\n" . $formatLogic($record['context']['req']);
+        if (isset($request)) {
+            $string = "[request] ：\n" . $formatLogic($request);
             $output = str_replace("context[START]", "context[START]\n{$string}", $output);
-            unset($record['context']['req']);
         }
-        if (isset($record['context']['resp'])) {
-            $string = "[response] ：\n" . $formatLogic($record['context']['resp']);
+        if (isset($response)) {
+            $string = "[response] ：\n" . $formatLogic($response);
             $output = str_replace("context[START]", "context[START]\n{$string}", $output);
-            unset($record['context']['resp']);
         }
-        if (isset($record['context']['details'])) {
-            $string = "[detail] ：\n" . $formatLogic($record['context']['details']);
+        if (isset($detail)) {
+            $string = "[detail] ：\n" . $formatLogic($detail);
             $output = str_replace("context[START]", "context[START]\n{$string}", $output);
-            unset($record['context']['details']);
         }
         // 添加文件行數信息
         if (isset($vars['log']['file'], $vars['log']['line'])) {
