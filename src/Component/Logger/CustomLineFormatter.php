@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Baichuan\Library\Component\Logger;
 
-use Component\Hyperf\Constant\AnsiColorEnum;
+use Baichuan\Library\Constant\AnsiColorEnum;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Logger;
 
