@@ -41,6 +41,7 @@ class CustomLineFormatter extends LineFormatter
         //if(($record['context']['req']['uri'] ?? '') == '/favicon.ico'){//忽略
         //    return '';
         //}
+        xdebug($record,'$record');
         $vars = $this->normalize($record);
         // 重置模板
         $this->format = $this->originFormat;
