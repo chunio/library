@@ -54,7 +54,7 @@
   "prefer-stable": true,
   "extra": {
     "hyperf": {
-      "config": "Baichuan\\Library\\Component\\Config\\ConfigProvider"
+      "config": "Baichuan\\Library\\ConfigProvider"
     }
   }
 }

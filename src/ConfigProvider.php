@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
-namespace Baichuan\Library\Component\Config;
+namespace Baichuan\Library;
 
 class ConfigProvider
 {
@@ -50,13 +50,13 @@ class ConfigProvider
                 [
                     'id' => 'config',
                     'description' => '備註信息1',
-                    'source' => __DIR__ . '/Template/example1.php',
+                    'source' => __DIR__ . '/../publish/example1.php',
                     'destination' => BASE_PATH . '/config/autoload/example1.php',
                 ],
                 [
                     'id' => 'config',
                     'description' => '備註信息2',
-                    'source' => __DIR__ . '/Template/example2.php',
+                    'source' => __DIR__ . '/../publish/example2.php',
                     'destination' => BASE_PATH . '/config/autoload/example2.php',
                 ],
             ],
