@@ -61,17 +61,17 @@ class CustomLineFormatter extends LineFormatter
             }
             return $string;
         };
-        if ($record['context']['req'] ?? []) {
+        if (isset($record['context']['req'])) {
             $string = "[request] ：\n" . $formatLogic($record['context']['req']);
             $output = str_replace("context[START]", "context[START]\n{$string}", $output);
             unset($record['context']['req']);
         }
-        if ($record['context']['resp'] ?? []) {
+        if (isset($record['context']['resp'])) {
             $string = "[response] ：\n" . $formatLogic($record['context']['resp']);
             $output = str_replace("context[START]", "context[START]\n{$string}", $output);
             unset($record['context']['resp']);
         }
-        if ($record['context']['details'] ?? []) {
+        if (isset($record['context']['details'])) {
             $string = "[detail] ：\n" . $formatLogic($record['context']['details']);
             $output = str_replace("context[START]", "context[START]\n{$string}", $output);
             unset($record['context']['details']);
