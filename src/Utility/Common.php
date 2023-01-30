@@ -63,9 +63,11 @@ if (!function_exists('xdebug')) {
 if (!function_exists('di')) {
     /**
      * @param null $id
-     * @return mixed
-     * author : zengweitao@msn.com
-     * datetime : 2021-10-11 12:39
+     * @return mixed|\Psr\Container\ContainerInterface
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * author : zengweitao@gmail.com
+     * datetime: 2023/01/29 17:51
      * memo : null
      */
     function di($id = null)
@@ -75,5 +77,45 @@ if (!function_exists('di')) {
             return $container->get($id);
         }
         return $container;
+    }
+}
+
+if (!function_exists('matchNonNullValue')) {
+    /**
+     * @param mixed $key 如key等於null，則取$parameter裡第一個非null值；如key不等於null，則取第一個$parameter($key)或$parameter[$key]的非null值
+     * @param mixed ...$parameter closure || 數組
+     * @return null|array|mixed
+     * author : zengweitao@gmail.com
+     * datetime: 2023/01/29 17:45
+     * memo : 順序檢索第一个非null值
+     */
+    function matchNonNullValue(string $key, ...$parameter)
+    {
+        foreach ($parameter as $member) {
+            if (is_null($member)) {
+                continue;
+            }
+            if ($member instanceof \Closure) {
+                $value = $member($key);
+            } else {
+                $value = null == $key ? value($member) : data_get($member, $key);
+            }
+            if (!is_null($value)) {
+                return $value;
+            }
+        }
+        return null;
+    }
+}
+
+if (!function_exists('matchEnvi')) {
+    /**
+     * author : zengweitao@gmail.com
+     * datetime: 2023/01/30 11:08
+     * memo : 環境匹配
+     */
+    function matchEnvi(string $envi): bool
+    {
+        return config('app_env') == $envi;
     }
 }

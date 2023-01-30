@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Baichuan\Library\Utility;
+namespace Baichuan\Library\Component\Logger;
 
 use Hyperf\Context\Context;
 use Hyperf\Database\Exception\QueryException;
@@ -25,9 +25,9 @@ class Log
             }
             /*****
             elseif ($context instanceof AbstractException) {
-                $details = $context->getExtra();
+            $details = $context->getExtra();
             }
-            *****/
+             *****/
             $context = [
                 'error' => get_class($context),
                 'error_code' => $context->getCode(),
