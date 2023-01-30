@@ -11,6 +11,21 @@ use Hyperf\Utils\ApplicationContext;
 use Hyperf\Utils\Str;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Class Log
+ * @package Baichuan\Library\Component\Logger
+ * author : zengweitao@gmail.com
+ * datetime: 2023/01/30 12:05
+ * memo : null
+ * @method static emergency(string $message, $context = [], $name = '', $group = 'default');
+ * @method static alert(string $message, $context = [], $name = '', $group = 'default');
+ * @method static critical(string $message, $context = [], $name = '', $group = 'default');
+ * @method static error(string $message, $context = [], $name = '', $group = 'default');
+ * @method static warning(string $message, $context = [], $name = '', $group = 'default');
+ * @method static notice(string $message, $context = [], $name = '', $group = 'default');
+ * @method static info(string $message, $context = [], $name = '', $group = 'default');
+ * @method static debug(string $message, $context = [], $name = '', $group = 'default');
+ */
 class Log
 {
 
