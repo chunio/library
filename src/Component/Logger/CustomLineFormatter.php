@@ -38,7 +38,7 @@ class CustomLineFormatter extends LineFormatter
 
     public function format(array $record): string
     {
-        if($record['context']['req']['uri'] == '/favicon.ico'){//忽略
+        if(($record['context']['req']['uri'] ?? '') == '/favicon.ico'){//忽略
             return '';
         }
         $vars = $this->normalize($record);
