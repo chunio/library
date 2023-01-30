@@ -25,7 +25,7 @@ class CustomLineFormatter extends LineFormatter
         ?string $format = null,
         ?string $dateFormat = null,
         bool $allowInlineLineBreaks = false,
-        bool $ignoreEmptyContextAndExtra = false,
+        bool $ignoreEmptyContextAndExtra = true,
         bool $AnsiColorEnum = false,
         bool $hideExtra = true
     ) {
