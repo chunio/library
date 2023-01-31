@@ -18,21 +18,21 @@ use Throwable;
  * author : zengweitao@gmail.com
  * datetime: 2023/01/30 12:05
  * memo : null
- * @method static emergency(string $message, $context = [], $name = '', $group = 'default');
- * @method static alert(string $message, $context = [], $name = '', $group = 'default');
- * @method static critical(string $message, $context = [], $name = '', $group = 'default');
- * @method static error(string $message, $context = [], $name = '', $group = 'default');
- * @method static warning(string $message, $context = [], $name = '', $group = 'default');
- * @method static notice(string $message, $context = [], $name = '', $group = 'default');
- * @method static info(string $message, $context = [], $name = '', $group = 'default');
- * @method static debug(string $message, $context = [], $name = '', $group = 'default');
+ * @method static info(string|Stringable $message, array $context = [], $name = '', $group = 'default');
+ * @method static debug(string|Stringable $message, array $context = [], $name = '', $group = 'default');
+ * @method static notice(string|Stringable $message, array $context = [], $name = '', $group = 'default');
+ * @method static alert(string|Stringable $message, array $context = [], $name = '', $group = 'default');
+ * @method static warning(string|Stringable $message, array $context = [], $name = '', $group = 'default');
+ * @method static error(string|Stringable $message, array $context = [], $name = '', $group = 'default');
+ * @method static emergency(string|Stringable $message, array $context = [], $name = '', $group = 'default');
+ * @method static critical(string|Stringable $message, array $context = [], $name = '', $group = 'default');
  */
 class Log
 {
 
-    public static function __callStatic($name, $argument)
+    public static function __callStatic($function, $argument)
     {
-        [$message, $context, $logName, $logGroup] = $argument + ['', [], '', 'default'];
+        [$message, $context, $name, $group] = $argument + ['', [], '', 'default'];
         if ($context instanceof \Throwable) {
             if ($context instanceof QueryException) {
                 $details = [
@@ -56,8 +56,8 @@ class Log
                 $context['details'] = $details;
             }
         }
-        $logger = static::get($logName, $logGroup);
-        $logger->{$name}($message, $context);
+        $logger = static::get($name, $group);
+        $logger->{$function}($message, [self::customNormalize($context)]);
     }
 
     public static function currentTraceId(): string
@@ -75,6 +75,49 @@ class Log
             $name = config('app_name');
         }
         return ApplicationContext::getContainer()->get(LoggerFactory::class)->get($name, $group);
+    }
+
+    public static function customNormalize($variable, string $title = 'defaultTitle'): string
+    {
+        $traceInfo = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
+        try {
+            $scriptName = $line = '';
+            if ($traceInfo[0]) {//last track
+                $file = $traceInfo[0]['file'];
+                $line = $traceInfo[0]['line'];
+                $startIndex = strrpos($file, DIRECTORY_SEPARATOR);
+                $scriptName = substr($file, $startIndex + 1);
+            }
+            //end-----
+            //special type conversion，start-----
+            if (true === $variable) {
+                $variable = 'TRUE(BOOL)';
+            } elseif (false === $variable) {
+                $variable = 'FALSE(BOOL)';
+            } elseif (null === $variable) {
+                $variable = 'NULL';
+            } elseif ('' === $variable) {
+                $variable = "(empty string)";
+            } elseif ($variable instanceof Throwable) {
+                $variable = [
+                    'message' => $variable->getMessage(),
+                    'file' => $variable->getFile() . "(line:{$variable->getLine()})",
+                ];
+                $title .= "Throwable";
+            }
+            //special type conversion，end-----
+            $content = @print_r($variable, true);
+            //##################################################
+            //input layout，start-----
+            $template = "{\n\n}//" . date('Y-m-d H:i:s') . ",start-----\n";
+            $template .= "//{$title}(" . $_SERVER['DOCUMENT_ROOT'] . ">>{$scriptName}/line:{$line})\n";
+            $template .= "{$content}\n";
+            $template .= "//end-----";
+            //input layout，end-----
+            return $template;
+        } catch (\Throwable $e) {
+            //TODO:none...
+        }
     }
 
 }
