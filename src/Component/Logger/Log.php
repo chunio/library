@@ -63,7 +63,7 @@ class Log
     public static function currentTraceId(): string
     {
         if (!($traceId = Context::get('traceId'))) {
-            $traceId = Str::random(64);
+            $traceId = Str::random(32);
             Context::set('traceId', $traceId);
         }
         return $traceId;
@@ -107,16 +107,17 @@ class Log
             }
             //special type conversion，end-----
             $content = @print_r($variable, true);
+            //TODO:變量大小限制
             //##################################################
             //input layout，start-----
             //$template = "\n//" . date('Y-m-d H:i:s') . " " . self::currentTraceId() . "[START]\n";
-            $template = "\n/*****\n";
-            $template .= " * traceId : " . self::currentTraceId() . "\n";
-            $template .= " * path : {$scriptName}(line:{$line})\n";
+            $template = "\n/**********\n";
             $template .= " * date : " . date('Y-m-d H:i:s') . "\n";
-            $template .= "/*****\n";
+            $template .= " * path : {$scriptName}(line:{$line})\n";
+            $template .= " * traceId : " . self::currentTraceId() . "\n";
+            $template .= "/**********\n";
             $template .= "{$content}\n";
-            $template .= "//[END]";
+            $template .= "//[END]\n";
             //input layout，end-----
             return $template;
         } catch (\Throwable $e) {
