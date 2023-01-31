@@ -43,8 +43,8 @@ class RequestAspect extends AbstractAspect
         if ($proceedingJoinPoint->className == 'Hyperf\HttpServer\CoreMiddleware' && $proceedingJoinPoint->methodName == 'dispatch') {
             $res = $proceedingJoinPoint->process();
             $request = Context::get(ServerRequestInterface::class);
-            xdebug($request,'$request0');
-            $this->logRequest($request);
+            //xdebug($request,'$request0');
+            //$this->logRequest($request);
             return $res;
         }
         $res = $proceedingJoinPoint->process();
@@ -52,11 +52,10 @@ class RequestAspect extends AbstractAspect
         if ($proceedingJoinPoint->className == 'Hyperf\HttpServer\ResponseEmitter' && $proceedingJoinPoint->methodName == 'emit') {
             $request = Context::get(ServerRequestInterface::class);
             $response = $proceedingJoinPoint->getArguments()[0];
-            xdebug($response,'$response0');
-            $this->logResponse($request, $response);
+            //xdebug($response,'$response0');
+            //$this->logResponse($request, $response);
             return $res;
         }
-
         return $res;
     }
 
