@@ -121,7 +121,7 @@ class Log
             }
             //special type conversion，end-----
             $log = [
-                'label' => $label ?: 'default',
+                'label' => $label ?: 'default哈哈',
                 'date' => date('Y-m-d H:i:s'),
                 'path' => "./{$scriptName}(line:{$line})",
                 'traceId' => self::currentTraceId(),
