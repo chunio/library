@@ -32,6 +32,10 @@ class Log
 
     public static function __callStatic($name, $arguments)
     {
+        xdebug([
+            $name,
+            $arguments
+        ],'__callStatic');
         [$message, $context, $log_name, $log_group] = $arguments + ['', [], '', 'default'];
         if ($context instanceof \Throwable) {
             if ($context instanceof QueryException) {
