@@ -85,8 +85,7 @@ class Log
             if ($traceInfo[1]) {//last track
                 $file = $traceInfo[1]['file'];
                 $line = $traceInfo[1]['line'];
-                $startIndex = strrpos($file, env('APP_NAME'));
-                $scriptName = substr($file, $startIndex + 1);//$file;//
+                $scriptName = ($startIndex = strrpos($file, env('APP_NAME'))) ? substr($file, $startIndex + 1) : $file;
             }
             //end-----
             //special type conversion，start-----
@@ -97,13 +96,13 @@ class Log
             } elseif (null === $variable) {
                 $variable = 'NULL';
             } elseif ('' === $variable) {
-                $variable = "(empty string)";
+                $variable = "(EMPTY STRING)";
             } elseif ($variable instanceof Throwable) {
                 $variable = [
-                    'message' => $variable->getMessage(),
                     'file' => $variable->getFile() . "(line:{$variable->getLine()})",
+                    'message' => $variable->getMessage(),
+                    'trace' => $variable->getTrace()
                 ];
-                $title .= "Throwable";
             }
             //special type conversion，end-----
             $content = @print_r($variable, true);
@@ -111,15 +110,14 @@ class Log
             //##################################################
             //input layout，start-----
             //$template = "\n//" . date('Y-m-d H:i:s') . " " . self::currentTraceId() . "[START]\n";
-            $template = "\n:<<LOG[START]\n";
+            $template = "\n:<<UNIT[START]\n";
             $template .= "/**********\n";
-            $template .= __DIR__ . "\n";
             $template .= " * date : " . date('Y-m-d H:i:s') . "\n";
             $template .= " * path : {$scriptName}(line:{$line})\n";
             $template .= " * traceId : " . self::currentTraceId() . "\n";
             $template .= "/**********\n";
             $template .= "{$content}\n";
-            $template .= "LOG[END]\n";
+            $template .= "UNIT[END]\n";
             //input layout，end-----
             return $template;
         } catch (\Throwable $e) {
