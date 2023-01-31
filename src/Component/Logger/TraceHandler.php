@@ -125,9 +125,8 @@ class TraceHandler
                 $template = commonJsonEncode($log) . "\n";
             }
         } catch (\Throwable $e) {
-            //TODO:none...
+            xdebug($template ?? '', $label);
         }
-        xdebug($template ?? '', $label);
         return $template ?? '';
     }
 
