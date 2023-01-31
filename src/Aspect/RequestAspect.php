@@ -70,56 +70,56 @@ class RequestAspect extends AbstractAspect
             || in_array($request->getUri()->getPath(), $exceptUriPath);
     }
 
-    private function formatRequest(): array
-    {
-        $request = Context::get(ServerRequestInterface::class);
-        $body = prettyJsonEncode($request->getParsedBody());
-        $body = $this->trimByMaxLength('request', $body);
-        return [
-            'api' => "[" . $request->getMethod() . "]" . $request->getUri()->__toString() . $request->getUri()->getPath(),
-            'header' => $this->simplifyHeaders($request->getHeaders()),
-            'query' => prettyJsonEncode($request->getQueryParams()),
-            'body' => $body,
-        ];
-    }
+//    private function formatRequest(): array
+//    {
+//        $request = Context::get(ServerRequestInterface::class);
+//        $body = prettyJsonEncode($request->getParsedBody());
+//        $body = $this->trimByMaxLength('request', $body);
+//        return [
+//            'api' => "[" . $request->getMethod() . "]" . $request->getUri()->__toString() . $request->getUri()->getPath(),
+//            'header' => $this->simplifyHeaders($request->getHeaders()),
+//            'query' => prettyJsonEncode($request->getQueryParams()),
+//            'body' => $body,
+//        ];
+//    }
 
-    private function logResponse(ServerRequestInterface $request, ResponseInterface $response)
-    {
-        if ($this->isExceptUriPath($request)) {
-            return;
-        }
-
-        $hasError = $response->getStatusCode() >= 500;
-        if ($hasError || 1) {
-            $body = $response->getBody()->getContents();
-            $isJson = false !== strpos($response->getHeaderLine('Content-Type'), 'application/json');
-            $json = $isJson ? json_decode($body, true) : [];
-
-            $body = $isJson ? prettyJsonEncode($json) : 'Content-Type : ' . $response->getHeaderLine('Content-Type');
-            $body = $this->trimByMaxLength('response', $body);
-
-            $responseInfo = [
-                'body' => $body,
-                'app_code' => $json['code'] ?? null,
-                'status' => $response->getStatusCode(),
-                'elapsed' => $json['elapsed'] ?? round(microtime(true) - Context::get('request_start_at'), 6),
-            ];
-
-            Log::info("--", [//DEBUG_LABEL
-                'resp' => $responseInfo,
-            ]);
-        } else {
-            $responseInfo = [
-                'body' => "无错误，忽略显示内容",
-                'app_code' => 0,
-                'status' => $response->getStatusCode(),
-                'elapsed' => round(microtime(true) - Context::get('request_start_at'), 6),
-            ];
-            Log::info("发送响应", [
-                'resp' => $responseInfo,
-            ]);
-        }
-    }
+//    private function logResponse(ServerRequestInterface $request, ResponseInterface $response)
+//    {
+//        if ($this->isExceptUriPath($request)) {
+//            return;
+//        }
+//
+//        $hasError = $response->getStatusCode() >= 500;
+//        if ($hasError || 1) {
+//            $body = $response->getBody()->getContents();
+//            $isJson = false !== strpos($response->getHeaderLine('Content-Type'), 'application/json');
+//            $json = $isJson ? json_decode($body, true) : [];
+//
+//            $body = $isJson ? prettyJsonEncode($json) : 'Content-Type : ' . $response->getHeaderLine('Content-Type');
+//            $body = $this->trimByMaxLength('response', $body);
+//
+//            $responseInfo = [
+//                'body' => $body,
+//                'app_code' => $json['code'] ?? null,
+//                'status' => $response->getStatusCode(),
+//                'elapsed' => $json['elapsed'] ?? round(microtime(true) - Context::get('request_start_at'), 6),
+//            ];
+//
+//            Log::info("--", [//DEBUG_LABEL
+//                'resp' => $responseInfo,
+//            ]);
+//        } else {
+//            $responseInfo = [
+//                'body' => "无错误，忽略显示内容",
+//                'app_code' => 0,
+//                'status' => $response->getStatusCode(),
+//                'elapsed' => round(microtime(true) - Context::get('request_start_at'), 6),
+//            ];
+//            Log::info("发送响应", [
+//                'resp' => $responseInfo,
+//            ]);
+//        }
+//    }
 
     private function trimByMaxLength(string $type, ?string $content): string
     {
