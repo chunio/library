@@ -146,7 +146,7 @@ class Log
                 if(is_object($variable)){
                     $log['message'] = (array)$variable;
                 }
-                $template = json_encode($log, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "\n";
+                $template = commonJsonEncode($log) . "\n";
             }
         } catch (\Throwable $e) {
             //TODO:none...

@@ -151,6 +151,22 @@ if (!function_exists('prettyJsonEncode')) {
     }
 }
 
+if (!function_exists('commonJsonEncode')) {
+    /**
+     * author : zengweitao@gmail.com
+     * datetime: 2023/01/30 15:10
+     * memo : null
+     */
+    function commonJsonEncode($object, int $flag = 0): string
+    {
+        $flagCounter = JSON_UNESCAPED_SLASHES/*不轉義反斜杠*/ | JSON_UNESCAPED_UNICODE/*unicode轉至中文*/;
+        if (!$flag) {
+            $flagCounter |= $flag;
+        }
+        return json_encode($object, $flagCounter);
+    }
+}
+
 if (!function_exists('colorString')) {
     function colorString(string $string, int $fg = AnsiColorEnum::FG_BLACK, int $bg = null): string
     {
