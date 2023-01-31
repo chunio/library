@@ -143,13 +143,14 @@ class Log
                 $template .= "UNIT[END]\n";
                 //input layout，end-----
             }else{
-                $template = Utils::jsonEncode($log, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "\n";
+                if(is_object($variable)){
+                    $log['message'] = (array)$variable;
+                }
+                $template = json_encode($log, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "\n";
             }
         } catch (\Throwable $e) {
             //TODO:none...
         }
-        $temp = json_decode($template ?? '',true);
-        xdebug($temp,'$temp');
         return $template ?? '';
     }
 
