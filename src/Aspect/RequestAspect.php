@@ -44,7 +44,7 @@ class RequestAspect extends AbstractAspect
             $res = $proceedingJoinPoint->process();
             //xdebug($request,'$request0');
             //$this->logRequest($request);
-            Log::info($this->formatRequest($request));
+            Log::info('come in');
             return $res;
         }
         $res = $proceedingJoinPoint->process();
