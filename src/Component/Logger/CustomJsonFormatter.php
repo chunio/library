@@ -36,7 +36,7 @@ class CustomJsonFormatter extends JsonFormatter
      */
     public function format(array $record): string
     {
-        $record = $record['message'];
+        return $record['message'];
         $normalized = $this->normalize($record);
         if (isset($normalized['context']) && $normalized['context'] === []) {
             if ($this->ignoreEmptyContextAndExtra) {
