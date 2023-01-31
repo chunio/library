@@ -45,7 +45,7 @@ class RequestAspect extends AbstractAspect
             $request = Context::get(ServerRequestInterface::class);
             //xdebug($request,'$request0');
             //$this->logRequest($request);
-            //Log::info('request', $request);
+            Log::info('request', $request);
             return $res;
         }
         $res = $proceedingJoinPoint->process();
