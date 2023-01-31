@@ -18,14 +18,14 @@ use Throwable;
  * author : zengweitao@gmail.com
  * datetime: 2023/01/30 12:05
  * memo : null
- * @method static info(string|Stringable $message, array $context = [], $name = '', $group = 'default');
- * @method static debug(string|Stringable $message, array $context = [], $name = '', $group = 'default');
- * @method static notice(string|Stringable $message, array $context = [], $name = '', $group = 'default');
- * @method static alert(string|Stringable $message, array $context = [], $name = '', $group = 'default');
- * @method static warning(string|Stringable $message, array $context = [], $name = '', $group = 'default');
- * @method static error(string|Stringable $message, array $context = [], $name = '', $group = 'default');
- * @method static emergency(string|Stringable $message, array $context = [], $name = '', $group = 'default');
- * @method static critical(string|Stringable $message, array $context = [], $name = '', $group = 'default');
+ * @method static info(mixed $message, array $context = [], $name = '', $group = 'default');
+ * @method static debug(mixed $message, array $context = [], $name = '', $group = 'default');
+ * @method static notice(mixed $message, array $context = [], $name = '', $group = 'default');
+ * @method static alert(mixed $message, array $context = [], $name = '', $group = 'default');
+ * @method static warning(mixed $message, array $context = [], $name = '', $group = 'default');
+ * @method static error(mixed $message, array $context = [], $name = '', $group = 'default');
+ * @method static emergency(mixed $message, array $context = [], $name = '', $group = 'default');
+ * @method static critical(mixed $message, array $context = [], $name = '', $group = 'default');
  */
 class Log
 {
@@ -57,7 +57,7 @@ class Log
             }
         }
         $logger = static::get($name, $group);
-        $logger->{$function}(self::customNormalize($context), []);
+        $logger->{$function}(self::customNormalize($message), $context);
     }
 
     public static function currentTraceId(): string
