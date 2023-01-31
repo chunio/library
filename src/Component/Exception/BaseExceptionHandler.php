@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Baichuan\Library\Component\Exception;
 
+use Baichuan\Library\Component\Logger\TraceHandler;
 use Baichuan\Library\Constant\ErrorCodeEnum;
 use Baichuan\Library\Http\Resource\JsonResource;
-use Baichuan\Library\Component\Logger\Log;
 use Hyperf\ExceptionHandler\ExceptionHandler;
 use Hyperf\Utils\Arr;
 use Psr\Http\Message\ResponseInterface;
@@ -26,7 +26,7 @@ class BaseExceptionHandler extends ExceptionHandler
         // 格式化輸出
         $resource = $this->formatResource($throwable);
         if (!in_array(get_class($throwable), $this->ignoreExceptionList)) {
-            Log::error($throwable->getMessage(), $throwable);
+            TraceHandler::error($throwable);
         }
         // 轉移至下一個異常處理器
         return $resource;
