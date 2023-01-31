@@ -10,7 +10,7 @@ use Monolog\Logger;
 
 class CustomLineFormatter extends LineFormatter
 {
-    public const SIMPLE_FORMAT = "[%datetime%]【%channel%】%level_name%: %message%\ncontext[START]\n%context%\nextra[START]\n%extra%\n";
+    public const SIMPLE_FORMAT = "[%datetime%]%channel%/%level_name% : %message%\ncontext[START]\n%context%\nextra[START]\n%extra%\n";
     //public const SIMPLE_FORMAT = "%datetime%||%channel||%level_name%||%message%||%context%||%extra%\n";
 
     protected ?string $originFormat;
@@ -38,17 +38,13 @@ class CustomLineFormatter extends LineFormatter
 
     public function format(array $record): string
     {
-        //if(($record['context']['req']['uri'] ?? '') == '/favicon.ico'){//忽略
-        //    return '';
-        //}
-        //xdebug($record,'$record');
         $vars = $this->normalize($record);
         // 重置模板
         $this->format = $this->originFormat;
         // 添加顏色[START]
-        $this->changeFormatForLevelName($vars['level']);
-        $this->changeFormatForChannel($vars['channel']);
-        $this->changeFormatForMysql($vars['channel']);
+        //$this->changeFormatForLevelName($vars['level']);
+        //$this->changeFormatForChannel($vars['channel']);
+        //$this->changeFormatForMysql($vars['channel']);
         // 添加顏色[END]
         if (isset($record['context']['req'])) {
             $request = $record['context']['req'];
