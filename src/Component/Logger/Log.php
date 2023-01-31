@@ -119,25 +119,30 @@ class Log
                 ];
             }
             //special type conversion，end-----
-            $content = @print_r([
+            $log = [
                 'date' => date('Y-m-d H:i:s'),
-                'path' => "{$scriptName}(line:{$line})",
+                'path' => "./{$scriptName}(line:{$line})",
                 'traceId' => self::currentTraceId(),
                 'request' => $request ?? [],
                 'message' => $variable,
-            ], true);
-            //TODO:變量大小限制
-            //##################################################
-            //input layout，start-----
-            $template = "\n:<<UNIT[START]\n";
-//            $template .= "/**********\n";
-//            $template .= " * date : " . date('Y-m-d H:i:s') . "\n";
-//            $template .= " * path : {$scriptName}(line:{$line})\n";
-//            $template .= " * traceId : " . self::currentTraceId() . "\n";
-//            $template .= "/**********\n";
-            $template .= "{$content}\n";
-            $template .= "UNIT[END]\n";
-            //input layout，end-----
+            ];
+            if(matchEnvi('local')){
+                //input layout，start-----
+                $content = @print_r($log, true);
+                //TODO:變量大小限制
+                //##################################################
+                $template = "\n:<<UNIT[START]\n";
+                //$template .= "/**********\n";
+                //$template .= " * date : " . date('Y-m-d H:i:s') . "\n";
+                //$template .= " * path : {$scriptName}(line:{$line})\n";
+                //$template .= " * traceId : " . self::currentTraceId() . "\n";
+                //$template .= "/**********\n";
+                $template .= "{$content}\n";
+                $template .= "UNIT[END]\n";
+                //input layout，end-----
+            }else{
+                $template = json_encode($log);
+            }
             return $template;
         } catch (\Throwable $e) {
             //TODO:none...
