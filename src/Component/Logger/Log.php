@@ -111,13 +111,14 @@ class Log
             //##################################################
             //input layout，start-----
             //$template = "\n//" . date('Y-m-d H:i:s') . " " . self::currentTraceId() . "[START]\n";
-            $template = "\n/**********\n";
+            $template = "\n:<<LOG[START]\n";
+            $template .= "/**********\n";
             $template .= " * date : " . date('Y-m-d H:i:s') . "\n";
             $template .= " * path : {$scriptName}(line:{$line})\n";
             $template .= " * traceId : " . self::currentTraceId() . "\n";
             $template .= "/**********\n";
             $template .= "{$content}\n";
-            $template .= "//[END]\n";
+            $template .= "LOG[END]\n";
             //input layout，end-----
             return $template;
         } catch (\Throwable $e) {
