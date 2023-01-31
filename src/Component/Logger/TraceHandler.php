@@ -97,7 +97,7 @@ class TraceHandler
             }
             //special type conversion，end-----
             $log = [
-                'label' => $label ?: 'default哈哈',
+                'label' => $label ?: 'default',
                 'date' => date('Y-m-d H:i:s'),
                 'path' => "./{$scriptName}(line:{$line})",
                 'traceId' => self::currentTraceId(),
@@ -127,6 +127,7 @@ class TraceHandler
         } catch (\Throwable $e) {
             //TODO:none...
         }
+        xdebug($template ?? '', $label);
         return $template ?? '';
     }
 
