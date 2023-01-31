@@ -67,7 +67,7 @@ class JsonResource extends \Hyperf\Resource\Json\JsonResource
             'message' => $this->getMsg(),
             'timestamp' => time(),
             'elapsedTime' => $start_at ? round($end_at - $start_at, 6) : null,//DEBUG_LABEL
-            'requestId' => Log::pullRequestId(),
+            'traceId' => Log::currentTraceId(),
         ];
     }
 
