@@ -52,6 +52,7 @@ class CustomJsonFormatter extends JsonFormatter
                 $normalized['extra'] = new \stdClass;
             }
         }
+        xdebug($normalized,'$normalized');
         $return = $this->toJson($normalized, true) . ($this->appendNewline ? "\n" : '');
         xdebug($return,'$return');
         return $return;
