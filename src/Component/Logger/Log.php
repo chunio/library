@@ -148,6 +148,8 @@ class Log
         } catch (\Throwable $e) {
             //TODO:none...
         }
+        $temp = json_decode($template ?? '',true);
+        xdebug($temp,'$temp');
         return $template ?? '';
     }
 
