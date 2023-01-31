@@ -127,19 +127,23 @@ class Log
                 'request' => $request ?? [],
                 'message' => $variable,
             ];
-            //input layout，start-----
-            $content = @print_r($log, true);
-            //TODO:變量大小限制
-            //##################################################
-            $template = "\n:<<UNIT[START]\n";
-            //$template .= "/**********\n";
-            //$template .= " * date : " . date('Y-m-d H:i:s') . "\n";
-            //$template .= " * path : {$scriptName}(line:{$line})\n";
-            //$template .= " * traceId : " . self::currentTraceId() . "\n";
-            //$template .= "/**********\n";
-            $template .= "{$content}\n";
-            $template .= "UNIT[END]\n";
-            //input layout，end-----
+            if(matchEnvi('local')){
+                //input layout，start-----
+                $content = @print_r($log, true);
+                //TODO:變量大小限制
+                //##################################################
+                $template = "\n:<<UNIT[START]\n";
+                //$template .= "/**********\n";
+                //$template .= " * date : " . date('Y-m-d H:i:s') . "\n";
+                //$template .= " * path : {$scriptName}(line:{$line})\n";
+                //$template .= " * traceId : " . self::currentTraceId() . "\n";
+                //$template .= "/**********\n";
+                $template .= "{$content}\n";
+                $template .= "UNIT[END]\n";
+                //input layout，end-----
+            }else{
+                $template = prettyJsonEncode($log);
+            }
         } catch (\Throwable $e) {
             //TODO:none...
         }
