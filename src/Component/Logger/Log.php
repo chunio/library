@@ -9,6 +9,7 @@ use Hyperf\Database\Exception\QueryException;
 use Hyperf\Logger\LoggerFactory;
 use Hyperf\Utils\ApplicationContext;
 use Hyperf\Utils\Str;
+use Monolog\Utils;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Throwable;
@@ -142,7 +143,7 @@ class Log
                 $template .= "UNIT[END]\n";
                 //input layout，end-----
             }else{
-                $template = json_encode($log, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "\n";
+                $template = Utils::jsonEncode($log, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "\n";
             }
         } catch (\Throwable $e) {
             //TODO:none...
