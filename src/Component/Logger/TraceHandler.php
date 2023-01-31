@@ -61,10 +61,9 @@ class TraceHandler
             //請求信息[START]
             if($RequestClass = Context::get(ServerRequestInterface::class)){
                 $body = prettyJsonEncode($RequestClass->getParsedBody());
-                $body = self::trimByMaxLength('request', $body);
                 $request =  [
                     'api' => "[" . $RequestClass->getMethod() . "]" . $RequestClass->getUri()->__toString(),
-                    'header' => self::simplifyHeaders($RequestClass->getHeaders()),
+                    'header' => $RequestClass->getHeaders(),
                     'query' => prettyJsonEncode($RequestClass->getQueryParams()),
                     'body' => $body,
                 ];
