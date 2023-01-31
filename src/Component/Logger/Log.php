@@ -113,6 +113,7 @@ class Log
             //$template = "\n//" . date('Y-m-d H:i:s') . " " . self::currentTraceId() . "[START]\n";
             $template = "\n:<<LOG[START]\n";
             $template .= "/**********\n";
+            $template .= __DIR__ . "\n";
             $template .= " * date : " . date('Y-m-d H:i:s') . "\n";
             $template .= " * path : {$scriptName}(line:{$line})\n";
             $template .= " * traceId : " . self::currentTraceId() . "\n";
