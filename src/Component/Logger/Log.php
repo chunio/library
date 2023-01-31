@@ -86,7 +86,7 @@ class Log
                 $body = prettyJsonEncode($RequestClass->getParsedBody());
                 $body = self::trimByMaxLength('request', $body);
                 $request =  [
-                    'api' => "[" . $RequestClass->getMethod() . "]" . $RequestClass->getUri()->__toString() . $RequestClass->getUri()->getPath(),
+                    'api' => "[" . $RequestClass->getMethod() . "]" . $RequestClass->getUri()->__toString(),
                     'header' => self::simplifyHeaders($RequestClass->getHeaders()),
                     'query' => prettyJsonEncode($RequestClass->getQueryParams()),
                     'body' => $body,
@@ -142,7 +142,7 @@ class Log
                 $template .= "UNIT[END]\n";
                 //input layout，end-----
             }else{
-                $template = prettyJsonEncode($log);
+                $template = json_encode($log);
             }
         } catch (\Throwable $e) {
             //TODO:none...

@@ -141,7 +141,7 @@ if (!function_exists('prettyJsonEncode')) {
      * datetime: 2023/01/30 15:10
      * memo : null
      */
-    function prettyJsonEncode($object, ?int $flag = JSON_PRETTY_PRINT)
+    function prettyJsonEncode($object, ?int $flag = JSON_PRETTY_PRINT): string
     {
         $flagCounter = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
         if (!is_null($flag)) {
