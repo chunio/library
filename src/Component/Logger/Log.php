@@ -57,7 +57,7 @@ class Log
             }
         }
         $logger = static::get($name, $group);
-        $logger->{$function}($message, [self::customNormalize($context)]);
+        $logger->{$function}(self::customNormalize($context), []);
     }
 
     public static function currentTraceId(): string
