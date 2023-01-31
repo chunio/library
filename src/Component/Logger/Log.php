@@ -142,7 +142,7 @@ class Log
                 $template .= "UNIT[END]\n";
                 //input layout，end-----
             }else{
-                $template = json_encode($log);
+                $template = json_encode($log, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
             }
         } catch (\Throwable $e) {
             //TODO:none...
