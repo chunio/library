@@ -109,10 +109,12 @@ class Log
             $content = @print_r($variable, true);
             //##################################################
             //input layout，start-----
-            $template = "{\n\n}//" . date('Y-m-d H:i:s') . ",start-----\n";
-            $template .= "//{$title}(" . $_SERVER['DOCUMENT_ROOT'] . ">>{$scriptName}/line:{$line})\n";
+            $template = "//" . date('Y-m-d H:i:s') . " " . self::currentTraceId() . "[START]\n";
+            $template .= "/*****\n";
+            $template .= " * path : {$scriptName}(line:{$line})\n";
+            $template .= "/*****\n";
             $template .= "{$content}\n";
-            $template .= "//end-----";
+            $template .= "//[END]";
             //input layout，end-----
             return $template;
         } catch (\Throwable $e) {
