@@ -37,23 +37,6 @@ class CustomJsonFormatter extends JsonFormatter
     public function format(array $record): string
     {
         return $record['message'];
-        $normalized = $this->normalize($record);
-        if (isset($normalized['context']) && $normalized['context'] === []) {
-            if ($this->ignoreEmptyContextAndExtra) {
-                unset($normalized['context']);
-            } else {
-                $normalized['context'] = new \stdClass;
-            }
-        }
-        if (isset($normalized['extra']) && $normalized['extra'] === []) {
-            if ($this->ignoreEmptyContextAndExtra) {
-                unset($normalized['extra']);
-            } else {
-                $normalized['extra'] = new \stdClass;
-            }
-        }
-        $return = $this->toJson($normalized, true) . ($this->appendNewline ? "\n" : '');
-        return $return;
     }
 
 }

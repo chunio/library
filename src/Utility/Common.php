@@ -159,7 +159,8 @@ if (!function_exists('commonJsonEncode')) {
      */
     function commonJsonEncode($object, int $flag = 0): string
     {
-        $flagCounter = JSON_UNESCAPED_SLASHES/*不轉義反斜杠*/ | JSON_UNESCAPED_UNICODE/*unicode轉至中文*/ | JSON_PRETTY_PRINT;
+        //JSON_PRETTY_PRINT//易讀格式（即：自動換行）
+        $flagCounter = JSON_UNESCAPED_SLASHES/*不轉義反斜杠*/ | JSON_UNESCAPED_UNICODE/*unicode轉至中文*/;
         if (!$flag) {
             $flagCounter |= $flag;
         }
