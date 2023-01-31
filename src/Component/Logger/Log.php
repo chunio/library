@@ -85,8 +85,8 @@ class Log
             if ($traceInfo[1]) {//last track
                 $file = $traceInfo[1]['file'];
                 $line = $traceInfo[1]['line'];
-                $startIndex = strrpos($file, DIRECTORY_SEPARATOR);
-                $scriptName = $file;//substr($file, $startIndex + 1);
+                $startIndex = strrpos($file, env('APP_NAME'));
+                $scriptName = substr($file, $startIndex + 1);//$file;//
             }
             //end-----
             //special type conversion，start-----
