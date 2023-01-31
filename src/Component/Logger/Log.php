@@ -109,7 +109,6 @@ class Log
             //TODO:變量大小限制
             //##################################################
             //input layout，start-----
-            //$template = "\n//" . date('Y-m-d H:i:s') . " " . self::currentTraceId() . "[START]\n";
             $template = "\n:<<UNIT[START]\n";
             $template .= "/**********\n";
             $template .= " * date : " . date('Y-m-d H:i:s') . "\n";

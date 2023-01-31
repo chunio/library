@@ -45,7 +45,7 @@ class RequestAspect extends AbstractAspect
             $request = Context::get(ServerRequestInterface::class);
             //xdebug($request,'$request0');
             //$this->logRequest($request);
-            Log::info($request);
+            Log::info($this->formatRequest($request));
             return $res;
         }
         $res = $proceedingJoinPoint->process();
@@ -70,27 +70,17 @@ class RequestAspect extends AbstractAspect
             || in_array($request->getUri()->getPath(), $exceptUriPath);
     }
 
-    private function logRequest(ServerRequestInterface $request)
+    private function formatRequest(ServerRequestInterface $request): array
     {
-        if ($this->isExceptUriPath($request)) {
-            return;
-        }
-
         $body = prettyJsonEncode($request->getParsedBody());
         $body = $this->trimByMaxLength('request', $body);
-
-        $requestInfo = [
-            'method' => $request->getMethod(),
+        return [
+            'uri' => "[" . $request->getMethod() . "]" . $request->getUri()->getPath(),
             'url' => $request->getUri()->__toString(),
-            'uri' => $request->getUri()->getPath(),
-            'headers' => $this->simplifyHeaders($request->getHeaders()),
+            'header' => $this->simplifyHeaders($request->getHeaders()),
             'query' => prettyJsonEncode($request->getQueryParams()),
             'body' => $body,
         ];
-
-        Log::info("--", [//DEBUG_LABEL
-            'req' => $requestInfo,
-        ]);
     }
 
     private function logResponse(ServerRequestInterface $request, ResponseInterface $response)
