@@ -81,15 +81,16 @@ class Log
     public static function customNormalize($variable, string $title = 'defaultTitle'): string
     {
         //請求信息[START]
-        if($request = Context::get(ServerRequestInterface::class)){
-            $body = prettyJsonEncode($request->getParsedBody());
+        if($RequestClass = Context::get(ServerRequestInterface::class)){
+            $body = prettyJsonEncode($RequestClass->getParsedBody());
             $body = self::trimByMaxLength('request', $body);
-            $requestAbstract =  [
-                'api' => "[" . $request->getMethod() . "]" . $request->getUri()->__toString() . $request->getUri()->getPath(),
-                'header' => self::simplifyHeaders($request->getHeaders()),
-                'query' => prettyJsonEncode($request->getQueryParams()),
+            $request =  [
+                'api' => "[" . $RequestClass->getMethod() . "]" . $RequestClass->getUri()->__toString() . $RequestClass->getUri()->getPath(),
+                'header' => self::simplifyHeaders($RequestClass->getHeaders()),
+                'query' => prettyJsonEncode($RequestClass->getQueryParams()),
                 'body' => $body,
             ];
+            unset($RequestClass);
         }
         //請求信息[END]
         $traceInfo = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
@@ -119,18 +120,21 @@ class Log
             }
             //special type conversion，end-----
             $content = @print_r([
-                'requestAbstract' => $requestAbstract,
+                'date' => date('Y-m-d H:i:s'),
+                'path' => "{$scriptName}(line:{$line})",
+                'traceId' => self::currentTraceId(),
+                'request' => $request ?? [],
                 'message' => $variable,
             ], true);
             //TODO:變量大小限制
             //##################################################
             //input layout，start-----
             $template = "\n:<<UNIT[START]\n";
-            $template .= "/**********\n";
-            $template .= " * date : " . date('Y-m-d H:i:s') . "\n";
-            $template .= " * path : {$scriptName}(line:{$line})\n";
-            $template .= " * traceId : " . self::currentTraceId() . "\n";
-            $template .= "/**********\n";
+//            $template .= "/**********\n";
+//            $template .= " * date : " . date('Y-m-d H:i:s') . "\n";
+//            $template .= " * path : {$scriptName}(line:{$line})\n";
+//            $template .= " * traceId : " . self::currentTraceId() . "\n";
+//            $template .= "/**********\n";
             $template .= "{$content}\n";
             $template .= "UNIT[END]\n";
             //input layout，end-----
