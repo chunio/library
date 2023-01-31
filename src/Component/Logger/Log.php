@@ -141,7 +141,7 @@ class Log
                 $template .= "UNIT[END]\n";
                 //input layout，end-----
             }else{
-                $template = json_encode($log);
+                $template = prettyJsonEncode($log);
             }
             return $template;
         } catch (\Throwable $e) {
