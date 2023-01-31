@@ -82,9 +82,9 @@ class Log
         $traceInfo = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
         try {
             $scriptName = $line = '';
-            if ($traceInfo[0]) {//last track
-                $file = $traceInfo[0]['file'];
-                $line = $traceInfo[0]['line'];
+            if ($traceInfo[1]) {//last track
+                $file = $traceInfo[1]['file'];
+                $line = $traceInfo[1]['line'];
                 $startIndex = strrpos($file, DIRECTORY_SEPARATOR);
                 $scriptName = substr($file, $startIndex + 1);
             }
