@@ -33,6 +33,7 @@ class TraceHandler
     public static function __callStatic($function, $argument)
     {
         [$message, $label, $context, $name, $group] = $argument + ['', '', [], '', 'default'];
+        xdebug([$message, $label, $context, $name, $group],'222');
         $logger = static::get($name, $group);
         $logger->{$function}(self::customFormat($message, $label), $context);
     }
