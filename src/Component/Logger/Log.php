@@ -27,7 +27,7 @@ use Throwable;
  * @method static emergency(mixed $message, string $label = '', array $context = [], $name = '', $group = 'default');
  * @method static critical(mixed $message, string $label = '', array $context = [], $name = '', $group = 'default');
  */
-class Log
+class TraceHandler
 {
 
     public static function __callStatic($function, $argument)
