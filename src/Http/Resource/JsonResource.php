@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Baichuan\Library\Http\Resource;
 
-use Baichuan\Library\Component\Logger\Log;
+use Baichuan\Library\Component\Logger\TraceHandler;
 use Hyperf\Context\Context;
 use Psr\Http\Message\ResponseInterface;
 use Swoole\Http\Status;
@@ -67,7 +67,7 @@ class JsonResource extends \Hyperf\Resource\Json\JsonResource
             'message' => $this->getMsg(),
             'timestamp' => time(),
             'elapsedTime' => $start_at ? round($end_at - $start_at, 6) : null,//DEBUG_LABEL
-            'traceId' => Log::currentTraceId(),
+            'traceId' => TraceHandler::currentTraceId(),
         ];
     }
 
