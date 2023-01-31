@@ -109,9 +109,11 @@ class Log
             $content = @print_r($variable, true);
             //##################################################
             //input layout，start-----
-            $template = "//" . date('Y-m-d H:i:s') . " " . self::currentTraceId() . "[START]\n";
-            $template .= "/*****\n";
+            //$template = "\n//" . date('Y-m-d H:i:s') . " " . self::currentTraceId() . "[START]\n";
+            $template = "\n/*****\n";
+            $template .= " * traceId : " . self::currentTraceId() . "\n";
             $template .= " * path : {$scriptName}(line:{$line})\n";
+            $template .= " * date : " . date('Y-m-d H:i:s') . "\n";
             $template .= "/*****\n";
             $template .= "{$content}\n";
             $template .= "//[END]";
