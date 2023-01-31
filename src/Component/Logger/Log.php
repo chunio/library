@@ -78,23 +78,23 @@ class Log
         return ApplicationContext::getContainer()->get(LoggerFactory::class)->get($name, $group);
     }
 
-    public static function customNormalize($variable, string $title = 'defaultTitle'): string
+    public static function customNormalize($variable, string $label = ''): string
     {
-        //請求信息[START]
-        if($RequestClass = Context::get(ServerRequestInterface::class)){
-            $body = prettyJsonEncode($RequestClass->getParsedBody());
-            $body = self::trimByMaxLength('request', $body);
-            $request =  [
-                'api' => "[" . $RequestClass->getMethod() . "]" . $RequestClass->getUri()->__toString() . $RequestClass->getUri()->getPath(),
-                'header' => self::simplifyHeaders($RequestClass->getHeaders()),
-                'query' => prettyJsonEncode($RequestClass->getQueryParams()),
-                'body' => $body,
-            ];
-            unset($RequestClass);
-        }
-        //請求信息[END]
-        $traceInfo = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
         try {
+            //請求信息[START]
+            if($RequestClass = Context::get(ServerRequestInterface::class)){
+                $body = prettyJsonEncode($RequestClass->getParsedBody());
+                $body = self::trimByMaxLength('request', $body);
+                $request =  [
+                    'api' => "[" . $RequestClass->getMethod() . "]" . $RequestClass->getUri()->__toString() . $RequestClass->getUri()->getPath(),
+                    'header' => self::simplifyHeaders($RequestClass->getHeaders()),
+                    'query' => prettyJsonEncode($RequestClass->getQueryParams()),
+                    'body' => $body,
+                ];
+                unset($RequestClass);
+            }
+            //請求信息[END]
+            $traceInfo = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
             $scriptName = $line = '';
             if ($traceInfo[1]) {//last track
                 $file = $traceInfo[1]['file'];
@@ -120,33 +120,30 @@ class Log
             }
             //special type conversion，end-----
             $log = [
+                'label' => $label ?: 'default',
                 'date' => date('Y-m-d H:i:s'),
                 'path' => "./{$scriptName}(line:{$line})",
                 'traceId' => self::currentTraceId(),
                 'request' => $request ?? [],
                 'message' => $variable,
             ];
-            if(matchEnvi('local')){
-                //input layout，start-----
-                $content = @print_r($log, true);
-                //TODO:變量大小限制
-                //##################################################
-                $template = "\n:<<UNIT[START]\n";
-                //$template .= "/**********\n";
-                //$template .= " * date : " . date('Y-m-d H:i:s') . "\n";
-                //$template .= " * path : {$scriptName}(line:{$line})\n";
-                //$template .= " * traceId : " . self::currentTraceId() . "\n";
-                //$template .= "/**********\n";
-                $template .= "{$content}\n";
-                $template .= "UNIT[END]\n";
-                //input layout，end-----
-            }else{
-                $template = prettyJsonEncode($log);
-            }
-            return $template;
+            //input layout，start-----
+            $content = @print_r($log, true);
+            //TODO:變量大小限制
+            //##################################################
+            $template = "\n:<<UNIT[START]\n";
+            //$template .= "/**********\n";
+            //$template .= " * date : " . date('Y-m-d H:i:s') . "\n";
+            //$template .= " * path : {$scriptName}(line:{$line})\n";
+            //$template .= " * traceId : " . self::currentTraceId() . "\n";
+            //$template .= "/**********\n";
+            $template .= "{$content}\n";
+            $template .= "UNIT[END]\n";
+            //input layout，end-----
         } catch (\Throwable $e) {
             //TODO:none...
         }
+        return $template ?? '';
     }
 
     private static function trimByMaxLength(string $type, ?string $content): string
@@ -154,14 +151,13 @@ class Log
         if (!$content) {
             return '';
         }
-        // 长度截断
+        // 檢測長度
         if (config('log.request.max_len.' . $type, 0) > 0) {
             $len = config('log.request.max_len.' . $type);
             if (strlen($content) >= $len) {
                 $content = mb_substr($content, 0, $len, 'utf-8') . '...';
             }
         }
-
         return $content;
     }
 
