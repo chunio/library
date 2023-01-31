@@ -42,7 +42,6 @@ class RequestAspect extends AbstractAspect
         //  打印請求內容
         if ($proceedingJoinPoint->className == 'Hyperf\HttpServer\CoreMiddleware' && $proceedingJoinPoint->methodName == 'dispatch') {
             $res = $proceedingJoinPoint->process();
-            $request = Context::get(ServerRequestInterface::class);
             //xdebug($request,'$request0');
             //$this->logRequest($request);
             Log::info($this->formatRequest($request));
@@ -70,13 +69,13 @@ class RequestAspect extends AbstractAspect
             || in_array($request->getUri()->getPath(), $exceptUriPath);
     }
 
-    private function formatRequest(ServerRequestInterface $request): array
+    private function formatRequest(): array
     {
+        $request = Context::get(ServerRequestInterface::class);
         $body = prettyJsonEncode($request->getParsedBody());
         $body = $this->trimByMaxLength('request', $body);
         return [
-            'uri' => "[" . $request->getMethod() . "]" . $request->getUri()->getPath(),
-            'url' => $request->getUri()->__toString(),
+            'api' => "[" . $request->getMethod() . "]" . $request->getUri()->__toString() . $request->getUri()->getPath(),
             'header' => $this->simplifyHeaders($request->getHeaders()),
             'query' => prettyJsonEncode($request->getQueryParams()),
             'body' => $body,

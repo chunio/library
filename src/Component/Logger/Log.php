@@ -9,6 +9,7 @@ use Hyperf\Database\Exception\QueryException;
 use Hyperf\Logger\LoggerFactory;
 use Hyperf\Utils\ApplicationContext;
 use Hyperf\Utils\Str;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
@@ -79,6 +80,18 @@ class Log
 
     public static function customNormalize($variable, string $title = 'defaultTitle'): string
     {
+        //請求信息[START]
+        if($request = Context::get(ServerRequestInterface::class)){
+            $body = prettyJsonEncode($request->getParsedBody());
+            $body = self::trimByMaxLength('request', $body);
+            $requestAbstract =  [
+                'api' => "[" . $request->getMethod() . "]" . $request->getUri()->__toString() . $request->getUri()->getPath(),
+                'header' => self::simplifyHeaders($request->getHeaders()),
+                'query' => prettyJsonEncode($request->getQueryParams()),
+                'body' => $body,
+            ];
+        }
+        //請求信息[END]
         $traceInfo = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
         try {
             $scriptName = $line = '';
@@ -105,7 +118,10 @@ class Log
                 ];
             }
             //special type conversion，end-----
-            $content = @print_r($variable, true);
+            $content = @print_r([
+                'requestAbstract' => $requestAbstract,
+                'message' => $variable,
+            ], true);
             //TODO:變量大小限制
             //##################################################
             //input layout，start-----
@@ -122,6 +138,27 @@ class Log
         } catch (\Throwable $e) {
             //TODO:none...
         }
+    }
+
+    private static function trimByMaxLength(string $type, ?string $content): string
+    {
+        if (!$content) {
+            return '';
+        }
+        // 长度截断
+        if (config('log.request.max_len.' . $type, 0) > 0) {
+            $len = config('log.request.max_len.' . $type);
+            if (strlen($content) >= $len) {
+                $content = mb_substr($content, 0, $len, 'utf-8') . '...';
+            }
+        }
+
+        return $content;
+    }
+
+    private static function simplifyHeaders(array $headers)
+    {
+        return array_map(fn ($i) => 1 == count($i) ? $i[0] : $i, $headers);
     }
 
 }
