@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Baichuan\Library\Component\Logger;
+namespace Baichuan\Library\Component\Monolog;
 
 use Monolog\Formatter\JsonFormatter;
 
@@ -27,7 +27,6 @@ class CustomJsonFormatter extends JsonFormatter
         $this->appendNewline = $appendNewline;
         $this->ignoreEmptyContextAndExtra = $ignoreEmptyContextAndExtra;
         $this->includeStacktraces = $includeStacktraces;
-
         parent::__construct();
     }
 

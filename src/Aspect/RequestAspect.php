@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Baichuan\Library\Aspect;
 
-use Baichuan\Library\Component\Logger\TraceHandler;
+use Baichuan\Library\Component\Monolog\MonologHandler;
 use Hyperf\Di\Annotation\Aspect;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -44,7 +44,7 @@ class RequestAspect extends AbstractAspect
             //xdebug($request,'$request0');
             //$this->logRequest($request);
             $request = Context::get(ServerRequestInterface::class);
-            TraceHandler::info($request,'xxcx');
+            MonologHandler::info($request,'$request');
             return $res;
         }
         $res = $proceedingJoinPoint->process();

@@ -41,10 +41,10 @@ class ConfigProvider
                     /*****
                     'formatter' => [
                     //'class' => \Monolog\Formatter\JsonFormatter::class,
-                    'class' => Baichuan\Library\Component\Logger\CustomJsonFormatter::class,
+                    'class' => Baichuan\Library\Component\Monolog\CustomJsonFormatter::class,
                     'constructor' => [],
                     ],
-                     *****/
+                    *****/
                 ],
             ],
             'dependencies' => [
