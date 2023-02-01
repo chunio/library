@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Baichuan\Library\Component\Monolog;
 
+use Baichuan\Library\Utility\ContextHandler;
 use Hyperf\Context\Context;
 use Hyperf\Logger\LoggerFactory;
 use Hyperf\Utils\ApplicationContext;
@@ -45,30 +46,9 @@ class MonologHandler
         return ApplicationContext::getContainer()->get(LoggerFactory::class)->get($name, $group);
     }
 
-    public static function currentTraceId(): string
-    {
-        if (!($traceId = Context::get('traceId'))) {
-            $traceId = Str::random(32);
-            Context::set('traceId', $traceId);
-        }
-        return $traceId;
-    }
-
     public static function formatMessage($variable, string $label = ''): string
     {
         try {
-            //請求信息[START]
-            if($RequestClass = Context::get(ServerRequestInterface::class)){
-                $body = prettyJsonEncode($RequestClass->getParsedBody());
-                $request =  [
-                    'api' => "[" . $RequestClass->getMethod() . "]" . $RequestClass->getUri()->__toString(),
-                    'header' => $RequestClass->getHeaders(),
-                    'query' => prettyJsonEncode($RequestClass->getQueryParams()),
-                    'body' => $body,
-                ];
-                unset($RequestClass);
-            }
-            //請求信息[END]
             $traceInfo = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
             $scriptName = $line = '';
             if ($traceInfo[1]) {//last track
@@ -98,8 +78,8 @@ class MonologHandler
                 'label' => $label ?: 'default',
                 'date' => date('Y-m-d H:i:s'),
                 'path' => "./{$scriptName}(line:{$line})",
-                'traceId' => self::currentTraceId(),
-                'request' => $request ?? [],
+                'traceId' => ContextHandler::pullTraceId(),
+                'request' => ContextHandler::pullRequestAbstract(),
                 'message' => $variable,
             ];
             if(matchEnvi('local')){

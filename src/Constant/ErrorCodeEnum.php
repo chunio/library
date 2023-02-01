@@ -8,6 +8,7 @@ use Hyperf\Constants\AbstractConstants;
 
 class ErrorCodeEnum extends AbstractConstants
 {
+
     /**
      * @Message("SUCCESS")
      */
