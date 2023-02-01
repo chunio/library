@@ -7,10 +7,10 @@ namespace Baichuan\Library\Utility;
 use Baichuan\Library\Constant\RedisKeyEnum;
 
 /**
- * class RedisHandler
- * @package Component
- * author : zengweitao@msn.com
- * datetime : 2022-04-17 16:42
+ * Class RedisHandler
+ * @package Baichuan\Library\Utility
+ * author : zengweitao@gmail.com
+ * datetime: 2023/02/01 18:58
  * memo : 待添加：//igbinary_serialize() 時間快，壓縮高
  */
 class RedisHandler{
@@ -107,47 +107,47 @@ class RedisHandler{
 
     }
 
-    /**
-     * @param string $mutexName
-     * @param callable|null $mainFunc
-     * @param int $lockedTime
-     * @return array|mixed|null
-     * @throws \Throwable
-     * author : zengweitao@msn.com
-     * datetime : 2022-04-17 16:38
-     * memo : 條件變量
-     */
-    static public function pthreadCondInt(string $mutexName, callable $mainFunc = null, int $lockedTime = 3/*, int &$retry = 0*/)
-    {
-        try {
-            //TODO：註冊進程結束函數
-            $owner = uniqid('', true);
-            $Redis = redisInstance();
-            $lockedRedisKey = RedisKeyEnum::STRING['STRING:PthreadCondInt:'] . $mutexName;
-            $resultRedisKey = RedisKeyEnum::STRING['STRING:PthreadCondInt:'] . $mutexName;
-            if ($Redis->set($lockedRedisKey, $owner, ['EX' => $lockedTime, 'NX']) === true) {
-                $result = $mainFunc();
-                $Redis->lPush($resultRedisKey, json_encode($result)); //共享#並發邏輯#返回值
-            } else {
-                if ($result/*返回:「含:1鍵名，2鍵值」的索引數組*/ = $Redis->brPop([$resultRedisKey], $lockedTime)) {//阻塞，提取#並發邏輯#返回值
-                    $result = json_decode($result[1], true);
-                    $Redis->lPush($resultRedisKey, json_encode($result));
-                } else {
-                    //TODO:log
-                    //if($retry) //TODO:限流/重試
-                }
-            }
-        } catch (\Throwable $e) {
-            TraceHandler::sendAlarm2DingTalk($e);
-            throw $e;
-        } finally {
-            if (isset($Redis, $owner, $lockedRedisKey, $resultRedisKey) && ($Redis->get($lockedRedisKey) == $owner)) {
-                $Redis->expire($resultRedisKey, $lockedTime);
-                $Redis->del($lockedRedisKey);
-            }
-        }
-        return $result ?? null;
-    }
+//    /**
+//     * @param string $mutexName
+//     * @param callable|null $mainFunc
+//     * @param int $lockedTime
+//     * @return array|mixed|null
+//     * @throws \Throwable
+//     * author : zengweitao@msn.com
+//     * datetime : 2022-04-17 16:38
+//     * memo : 條件變量
+//     */
+//    static public function pthreadCondInt(string $mutexName, callable $mainFunc = null, int $lockedTime = 3/*, int &$retry = 0*/)
+//    {
+//        try {
+//            //TODO：註冊進程結束函數
+//            $owner = uniqid('', true);
+//            $Redis = redisInstance();
+//            $lockedRedisKey = RedisKeyEnum::STRING['STRING:PthreadCondInt:'] . $mutexName;
+//            $resultRedisKey = RedisKeyEnum::STRING['STRING:PthreadCondInt:'] . $mutexName;
+//            if ($Redis->set($lockedRedisKey, $owner, ['EX' => $lockedTime, 'NX']) === true) {
+//                $result = $mainFunc();
+//                $Redis->lPush($resultRedisKey, json_encode($result)); //共享#並發邏輯#返回值
+//            } else {
+//                if ($result/*返回:「含:1鍵名，2鍵值」的索引數組*/ = $Redis->brPop([$resultRedisKey], $lockedTime)) {//阻塞，提取#並發邏輯#返回值
+//                    $result = json_decode($result[1], true);
+//                    $Redis->lPush($resultRedisKey, json_encode($result));
+//                } else {
+//                    //TODO:log
+//                    //if($retry) //TODO:限流/重試
+//                }
+//            }
+//        } catch (\Throwable $e) {
+//            TraceHandler::sendAlarm2DingTalk($e);
+//            throw $e;
+//        } finally {
+//            if (isset($Redis, $owner, $lockedRedisKey, $resultRedisKey) && ($Redis->get($lockedRedisKey) == $owner)) {
+//                $Redis->expire($resultRedisKey, $lockedTime);
+//                $Redis->del($lockedRedisKey);
+//            }
+//        }
+//        return $result ?? null;
+//    }
 
 //    /**
 //     * author : zengweitao@msn.com

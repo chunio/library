@@ -34,19 +34,17 @@ class RequestAspect extends AbstractAspect
             /** @var Request $swooleRequest */
             //$swooleRequest = $proceedingJoinPoint->getArguments()[0];
             //$requestId = matchNonNullValue('x-request-id', $swooleRequest->header, $swooleRequest->get);
-            MonologHandler::info('Hyperf\HttpServer\Server::onRequest');
         }
         //  打印請求內容
         if ($proceedingJoinPoint->className == 'Hyperf\HttpServer\CoreMiddleware' && $proceedingJoinPoint->methodName == 'dispatch') {
-            $result = $proceedingJoinPoint->process();
-            return $result;
+            MonologHandler::info('Hyperf\HttpServer\CoreMiddleware::dispatch');
+            return $proceedingJoinPoint->process();
         }
         $result = $proceedingJoinPoint->process();
         // 打印響應內容
         if ($proceedingJoinPoint->className == 'Hyperf\HttpServer\ResponseEmitter' && $proceedingJoinPoint->methodName == 'emit') {
             //$request = Context::get(ServerRequestInterface::class);
             //$response = $proceedingJoinPoint->getArguments()[0];
-            return $result;
         }
         return $result;
     }
