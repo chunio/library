@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Baichuan\Library\Component\Exception;
 
-use Baichuan\Library\Component\Logger\TraceHandler;
+use Baichuan\Library\Component\Monolog\MonologHandler;
 use Baichuan\Library\Constant\ErrorCodeEnum;
 use Baichuan\Library\Http\Resource\JsonResource;
 use Hyperf\ExceptionHandler\ExceptionHandler;
@@ -26,7 +26,7 @@ class BaseExceptionHandler extends ExceptionHandler
         // 格式化輸出
         $resource = $this->formatResource($throwable);
         if (!in_array(get_class($throwable), $this->ignoreExceptionList)) {
-            TraceHandler::error($throwable);
+            MonologHandler::error($throwable);
         }
         // 轉移至下一個異常處理器
         return $resource;
