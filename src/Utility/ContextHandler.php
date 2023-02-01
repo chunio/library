@@ -38,13 +38,18 @@ class ContextHandler
             $body = prettyJsonEncode($Request->getParsedBody());
             $requestAbstract =  [
                 'api' => "[" . $Request->getMethod() . "]" . $Request->getUri()->__toString(),
-                'header' => $Request->getHeaders(),
+                'header' => self::simpleHeader($Request->getHeaders()),
                 'query' => prettyJsonEncode($Request->getQueryParams()),
                 'body' => $body,
             ];
             unset($RequestClass);
         }
         return $requestAbstract ?? [];
+    }
+
+    public static function simpleHeader(array $header)
+    {
+        return array_map(fn ($i) => 1 == count($i) ? $i[0] : $i, $header);
     }
 
 }
