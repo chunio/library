@@ -68,7 +68,7 @@ class JsonResource extends \Hyperf\Resource\Json\JsonResource
             'code' => $this->getAppCode(),
             'message' => $this->getMsg(),
             'timestamp' => time(),
-            'elapsedTime' => $requestStartMicroTime ? round($requestEndMicroTime - Context::get(ContextEnum::RequestStartMicroTime), 4) : null,//DEBUG_LABEL
+            'elapsedTime' => $requestStartMicroTime ? number_format($requestEndMicroTime - Context::get(ContextEnum::RequestStartMicroTime), 4) : null,//DEBUG_LABEL
             'traceId' => ContextHandler::pullTraceId(),
         ];
     }
