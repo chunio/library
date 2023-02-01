@@ -18,9 +18,7 @@ class ConfigProvider
     public function __invoke(): array
     {
         return [
-            'logger' => [
-
-            ],
+            //合併變量
             'dependencies' => [
                 //PingServiceInterface::class => PingService::class,
             ],
@@ -49,6 +47,7 @@ class ConfigProvider
                     ],
                 ],
             ],
+            //複製文件
             'publish' => [
                 [
                     'id' => 'config',
