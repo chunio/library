@@ -43,7 +43,7 @@ class MonologHandler
         return ApplicationContext::getContainer()->get(LoggerFactory::class)->get($name, $group);
     }
 
-    public static function formatMessage($variable, string $label = ''): string
+    public static function formatMessage($variable, string $label = '', bool $json = false, bool $stdout = true): string
     {
         try {
             $traceInfo = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
@@ -79,7 +79,12 @@ class MonologHandler
                 'request' => ContextHandler::pullRequestAbstract(),
                 'message' => $variable,
             ];
-            if(matchEnvi('local')){
+            if($json){
+                if(is_object($variable)){
+                    $log['message'] = (array)$variable;
+                }
+                $template = commonJsonEncode($log) . "\n";
+            }else{
                 //input layout，start-----
                 $content = @print_r($log, true);
                 //TODO:變量大小限制
@@ -93,19 +98,17 @@ class MonologHandler
                 $template .= "{$content}\n";
                 $template .= "UNIT[END]\n";
                 //input layout，end-----
-            }else{
-                if(is_object($variable)){
-                    $log['message'] = (array)$variable;
-                }
-                $template = commonJsonEncode($log) . "\n";
             }
+            if($stdout){
+                echo $template ?? '';
+            }
+            return $template ?? '';
         } catch (\Throwable $e) {
             echo commonJsonEncode([
                 'message' => $e->getMessage(),
                 'file' => $e->getFile() . "(line:{$e->getLine()})",
             ]);
         }
-        return $template ?? '';
     }
 
 }
