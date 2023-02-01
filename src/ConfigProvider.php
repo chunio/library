@@ -63,7 +63,7 @@ class ConfigProvider
                     'destination' => BASE_PATH . '/config/autoload/example2.php',
                 ],
                 [
-                    'id' => 'logger',
+                    'id' => 'config',
                     'description' => '日誌',
                     'source' => __DIR__ . '/../publish/logger.php',
                     'destination' => BASE_PATH . '/config/autoload/logger.php',
