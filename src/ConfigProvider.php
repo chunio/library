@@ -18,6 +18,9 @@ class ConfigProvider
     public function __invoke(): array
     {
         return [
+            'logger' => [
+
+            ],
             'dependencies' => [
                 //PingServiceInterface::class => PingService::class,
             ],
@@ -58,6 +61,12 @@ class ConfigProvider
                     'description' => '備註信息2',
                     'source' => __DIR__ . '/../publish/example2.php',
                     'destination' => BASE_PATH . '/config/autoload/example2.php',
+                ],
+                [
+                    'id' => 'logger',
+                    'description' => '日誌',
+                    'source' => __DIR__ . '/../publish/logger.php',
+                    'destination' => BASE_PATH . '/config/autoload/logger.php',
                 ],
             ],
             'macros' => [
