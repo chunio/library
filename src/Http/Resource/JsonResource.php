@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Baichuan\Library\Http\Resource;
 
 use Baichuan\Library\Component\Monolog\MonologHandler;
+use Baichuan\Library\Constant\ContextEnum;
 use Baichuan\Library\Utility\ContextHandler;
 use Hyperf\Context\Context;
 use Psr\Http\Message\ResponseInterface;
@@ -60,14 +61,14 @@ class JsonResource extends \Hyperf\Resource\Json\JsonResource
      */
     public function with(): array
     {
-        $start_at = Context::get("requestStartMicroTime");
-        $end_at = microtime(true);
+        $requestStartMicroTime = Context::get(ContextEnum::RequestStartMicroTime);
+        $requestEndMicroTime = microtime(true);
         return [
             'status' => $this->getStatusCode(),
             'code' => $this->getAppCode(),
             'message' => $this->getMsg(),
             'timestamp' => time(),
-            'elapsedTime' => $start_at ? round($end_at - $start_at, 6) : null,//DEBUG_LABEL
+            'elapsedTime' => $requestStartMicroTime ? round($requestEndMicroTime - Context::get(ContextEnum::RequestStartMicroTime), 4) : null,//DEBUG_LABEL
             'traceId' => ContextHandler::pullTraceId(),
         ];
     }
