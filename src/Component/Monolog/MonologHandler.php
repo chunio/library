@@ -5,11 +5,8 @@ declare(strict_types=1);
 namespace Baichuan\Library\Component\Monolog;
 
 use Baichuan\Library\Utility\ContextHandler;
-use Hyperf\Context\Context;
 use Hyperf\Logger\LoggerFactory;
 use Hyperf\Utils\ApplicationContext;
-use Hyperf\Utils\Str;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
@@ -103,7 +100,10 @@ class MonologHandler
                 $template = commonJsonEncode($log) . "\n";
             }
         } catch (\Throwable $e) {
-            xdebug($e);
+            echo commonJsonEncode([
+                'message' => $e->getMessage(),
+                'file' => $e->getFile() . "(line:{$e->getLine()})",
+            ]);
         }
         return $template ?? '';
     }
