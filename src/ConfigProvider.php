@@ -48,7 +48,7 @@ class ConfigProvider
                 ],
             ],
             'dependencies' => [
-                //PingServiceInterface::class => PingService::class,
+                \Hyperf\Contract\StdoutLoggerInterface::class => \Baichuan\Library\Component\Monolog\StdoutLoggerFactory::class,
             ],
             'processes' => [
             ],
