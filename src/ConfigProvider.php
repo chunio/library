@@ -18,34 +18,6 @@ class ConfigProvider
     public function __invoke(): array
     {
         return [
-            'logger' => [
-                'default' => [
-                    //支持「handlers」，參見：https://hyperf.wiki/2.2/#/zh-cn/logger
-                    'handler' => [
-                        'class' => \Monolog\Handler\RotatingFileHandler::class,
-                        'constructor' => [
-                            'filename' => BASE_PATH . '/runtime/logs/hyperf.log',//日誌文件
-                            'level' => \Monolog\Logger::DEBUG,
-                        ],
-                    ],
-                    'formatter' => [
-                        'class' => \Monolog\Formatter\LineFormatter::class,
-                        'constructor' => [
-                            'format' => null,
-                            'dateFormat' => 'Y-m-d H:i:s',
-                            'allowInlineLineBreaks' => true,
-                            'includeStacktraces' => true,
-                        ],
-                    ],
-                    /*****
-                    'formatter' => [
-                    //'class' => \Monolog\Formatter\JsonFormatter::class,
-                    'class' => Baichuan\Library\Component\Logger\CustomJsonFormatter::class,
-                    'constructor' => [],
-                    ],
-                     *****/
-                ],
-            ],
             //合併變量
             'dependencies' => [
                 //PingServiceInterface::class => PingService::class,
@@ -89,12 +61,12 @@ class ConfigProvider
                     'source' => __DIR__ . '/../publish/example2.php',
                     'destination' => BASE_PATH . '/config/autoload/example2.php',
                 ],
-//                [
-//                    'id' => 'config',
-//                    'description' => '日誌',
-//                    'source' => __DIR__ . '/../publish/logger.php',
-//                    'destination' => BASE_PATH . '/config/autoload/logger.php',
-//                ],
+                [
+                    'id' => 'config',
+                    'description' => '日誌',
+                    'source' => __DIR__ . '/../publish/logger.php',
+                    'destination' => BASE_PATH . '/config/autoload/logger.php',
+                ],
             ],
             'macros' => [
             ],
