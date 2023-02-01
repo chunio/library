@@ -33,11 +33,11 @@ class MonologHandler
     public static function __callStatic($function, $argument)
     {
         [$message, $label, $context, $name, $group] = $argument + ['', '', [], '', 'default'];
-        $logger = static::instance($name, $group);
+        $logger = static::get($name, $group);
         $logger->{$function}(self::formatMessage($message, $label), $context);
     }
 
-    public static function instance(string $name = '', string $group = 'default'): LoggerInterface
+    public static function get(string $name = '', string $group = 'default'): LoggerInterface
     {
         if (!$name) {
             $name = config('app_name');

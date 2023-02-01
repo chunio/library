@@ -17,6 +17,6 @@ class StdoutLoggerFactory
 {
     public function __invoke(ContainerInterface $container)
     {
-        return MonologHandler::instance('system');
+        return MonologHandler::get('system');
     }
 }
