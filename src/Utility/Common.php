@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Baichuan\Library\Constant\AnsiColorEnum;
+use Hyperf\Redis\RedisFactory;
 
 if (!function_exists('xdebug')) {
     /**
@@ -132,6 +133,13 @@ if (!function_exists('matchEnvi')) {
     function matchEnvi(string $envi): bool
     {
         return env('APP_ENV') == $envi;
+    }
+}
+
+if (!function_exists('redisInstance')) {
+    function redisInstance(string $poolName = 'default'): Hyperf\Redis\Redis
+    {
+        return di()->get(RedisFactory::class)->get($poolName);
     }
 }
 
