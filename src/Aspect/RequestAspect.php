@@ -19,6 +19,7 @@ use Swoole\Http\Request;
  */
 class RequestAspect extends AbstractAspect
 {
+
     public $classes = [
         'Hyperf\HttpServer\Server::onRequest',
         'Hyperf\HttpServer\CoreMiddleware::dispatch',
