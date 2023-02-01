@@ -35,12 +35,11 @@ class ContextHandler
             (!$requestAbstract = Context::get(ContextEnum::RequestAbstract)) &&
             ($Request = Context::get(ServerRequestInterface::class))
         ){
-            $body = prettyJsonEncode($Request->getParsedBody());
             $requestAbstract =  [
                 'api' => "[" . $Request->getMethod() . "]" . $Request->getUri()->__toString(),
                 'header' => self::simpleHeader($Request->getHeaders()),
-                'query' => prettyJsonEncode($Request->getQueryParams()),
-                'body' => $body,
+                'query' => commonJsonEncode($Request->getQueryParams()),
+                'body' => commonJsonEncode($Request->getParsedBody()),
             ];
             unset($RequestClass);
         }
