@@ -36,6 +36,7 @@ class ConfigProvider
                             'dateFormat' => 'Y-m-d H:i:s',
                             'allowInlineLineBreaks' => true,
                             'includeStacktraces' => true,
+                            'ignoreEmptyContextAndExtra' => true,
                         ],
                     ],
                     /*****
