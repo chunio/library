@@ -5,7 +5,7 @@
 .idea/
 runtime/
 vendor/
-hyperf/
+ignore/
 .phpintel/
 .env
 .env.*
