@@ -36,7 +36,7 @@ class ContextHandler
             ($Request = Context::get(ServerRequestInterface::class))
         ){
             $requestAbstract =  [
-                'api' => "[method:" . $Request->getMethod() . "]" . $Request->getUri()->__toString(),
+                'api' => "(method:" . $Request->getMethod() . ")" . $Request->getUri()->__toString(),
                 'header' => array_map(fn ($i) => count($i) == 1 ? $i[0] : $i, $Request->getHeaders()),
                 'query' => commonJsonEncode($Request->getQueryParams()),
                 'body' => commonJsonEncode($Request->getParsedBody()),
