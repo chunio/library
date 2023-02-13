@@ -273,6 +273,15 @@ if(!function_exists('formatTraceVariable')){
             $traceInfo = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);//TODO：此函數性能如何？
             $file1 = ($startIndex = strrpos(($file1 = $traceInfo[1]['file']), env('APP_NAME'))) ? substr($file1, $startIndex + 1) : $file1;
             $file2 = ($startIndex = strrpos(($file2 = $traceInfo[2]['file']), env('APP_NAME'))) ? substr($file2, $startIndex + 1) : $file2;
+            $format = function()use(&$variable, $jsonEncodeStatus){
+                if ($variable === true) return 'TRUE(BOOL)';
+                if ($variable === false) return 'FALSE(BOOL)';
+                if ($variable === null) return 'NULL';
+                if ($variable === '') return "(EMPTY STRING)";
+                if ($variable instanceof Throwable) return ['message' => $variable->getMessage(), 'trace' => $variable->getTrace()];
+                if($jsonEncodeStatus && is_object($variable)) return (array)$variable;
+                return $variable;
+            };
             $trace = [
                 'label' => $label ?: 'default',
                 'date' => date('Y-m-d H:i:s'),
@@ -281,15 +290,7 @@ if(!function_exists('formatTraceVariable')){
                 'traceId' => ContextHandler::pullTraceId(),
                 'request' => ContextHandler::pullRequestAbstract(),
                 //special type conversion[START]
-                'message' => function()use(&$variable, $jsonEncodeStatus){
-                    if ($variable === true) return 'TRUE(BOOL)';
-                    if ($variable === false) return 'FALSE(BOOL)';
-                    if ($variable === null) return 'NULL';
-                    if ($variable === '') return "(EMPTY STRING)";
-                    if ($variable instanceof Throwable) return ['message' => $variable->getMessage(), 'trace' => $variable->getTrace()];
-                    if($jsonEncodeStatus && is_object($variable)) return (array)$variable;
-                    return $variable;
-                },
+                'message' => $format()
                 //special type conversion[END]
             ];
             if($jsonEncodeStatus) {
