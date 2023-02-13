@@ -259,7 +259,7 @@ if (!function_exists('colorString')) {
 
 if(!function_exists('formatTraceVariable')){
     /**
-     * @param mixed $variable
+     * @param $variable
      * @param string $label
      * @param bool $jsonEncodeStatus
      * @return string
@@ -267,7 +267,7 @@ if(!function_exists('formatTraceVariable')){
      * datetime: 2023/02/10 16:58
      * memo : null
      */
-    function formatTraceVariable(mixed &$variable, string $label = '', bool $jsonEncodeStatus = false): string
+    function formatTraceVariable(&$variable, string $label = '', bool $jsonEncodeStatus = false): string
     {
         try {
             $traceInfo = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);//TODO：此函數性能如何？
