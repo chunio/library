@@ -277,6 +277,7 @@ if(function_exists('formatTraceVariable')){
                 $line = $traceInfo[2]['line'];
                 $scriptName = ($startIndex = strrpos($file, env('APP_NAME'))) ? substr($file, $startIndex + 1) : $file;
             }
+            xdebug('$trace0');
             $trace = [
                 'label' => $label ?: 'default',
                 'date' => date('Y-m-d H:i:s'),
@@ -295,6 +296,7 @@ if(function_exists('formatTraceVariable')){
                 },
                 //special type conversion[END]
             ];
+            xdebug($trace,'$trace1');
             if($jsonEncodeStatus) {
                 $trace = commonJsonEncode($trace) . "\n";
             }else{
