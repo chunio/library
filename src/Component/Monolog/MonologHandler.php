@@ -32,7 +32,7 @@ class MonologHandler
     {
         [$message, $label, $context, $name, $group] = $argument + ['', '', [], '', 'default'];
         $logger = static::instance($name, $group);
-        $logger->{$function}(self::formatMessage($message, $label), $context);
+        $logger->{$function}(formatTraceVariable($message, $label), $context);
     }
 
     public static function instance(string $name = '', string $group = 'default'): LoggerInterface
@@ -43,72 +43,9 @@ class MonologHandler
         return ApplicationContext::getContainer()->get(LoggerFactory::class)->get($name, $group);
     }
 
-    public static function formatMessage($variable, string $label = '', bool $json = false, bool $stdout = true): string
-    {
-        try {
-            $traceInfo = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
-            $scriptName = $line = '';
-            if ($traceInfo[1]) {//last track
-                $file = $traceInfo[1]['file'];
-                $line = $traceInfo[1]['line'];
-                $scriptName = ($startIndex = strrpos($file, env('APP_NAME'))) ? substr($file, $startIndex + 1) : $file;
-            }
-            //end-----
-            //special type conversion，start-----
-            if (true === $variable) {
-                $variable = 'TRUE(BOOL)';
-            } elseif (false === $variable) {
-                $variable = 'FALSE(BOOL)';
-            } elseif (null === $variable) {
-                $variable = 'NULL';
-            } elseif ('' === $variable) {
-                $variable = "(EMPTY STRING)";
-            } elseif ($variable instanceof Throwable) {
-                $variable = [
-                    'file' => $variable->getFile() . "(line:{$variable->getLine()})",
-                    'message' => $variable->getMessage(),
-                    'trace' => $variable->getTrace()
-                ];
-            }
-            //special type conversion，end-----
-            $log = [
-                'label' => $label ?: 'default',
-                'date' => date('Y-m-d H:i:s'),
-                'path' => "./{$scriptName}(line:{$line})",
-                'traceId' => ContextHandler::pullTraceId(),
-                'request' => ContextHandler::pullRequestAbstract(),
-                'message' => $variable,
-            ];
-            if($json){
-                if(is_object($variable)){
-                    $log['message'] = (array)$variable;
-                }
-                $template = commonJsonEncode($log) . "\n";
-            }else{
-                //input layout，start-----
-                $content = @print_r($log, true);
-                //TODO:變量大小限制
-                //##################################################
-                $template = "\n:<<UNIT[START]\n";
-                //$template .= "/**********\n";
-                //$template .= " * date : " . date('Y-m-d H:i:s') . "\n";
-                //$template .= " * path : {$scriptName}(line:{$line})\n";
-                //$template .= " * traceId : " . self::currentTraceId() . "\n";
-                //$template .= "/**********\n";
-                $template .= "{$content}\n";
-                $template .= "UNIT[END]\n";
-                //input layout，end-----
-            }
-            if($stdout){
-                echo $template ?? '';
-            }
-            return $template ?? '';
-        } catch (\Throwable $e) {
-            echo commonJsonEncode([
-                'message' => $e->getMessage(),
-                'file' => $e->getFile() . "(line:{$e->getLine()})",
-            ]);
-        }
-    }
+//    public static function formatMessage(&$variable, string $label = '', bool $jsonEncodeStatus = false, bool $stdout = true): string
+//    {
+//        return formatTraceVariable($variable, $label, $jsonEncodeStatus);
+//    }
 
 }
