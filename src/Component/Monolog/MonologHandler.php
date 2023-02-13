@@ -32,6 +32,7 @@ class MonologHandler
     {
         [$message, $label, $context, $name, $group] = $argument + ['', '', [], '', 'default'];
         $logger = static::instance($name, $group);
+        xdebug($message,'$message');
         $logger->{$function}(formatTraceVariable($message, $label), $context);
     }
 
