@@ -32,7 +32,7 @@ class MonologHandler
     {
         [$message, $label, $context, $name, $group] = $argument + ['', '', [], '', 'default'];
         $logger = static::instance($name, $group);
-        $logger->{$function}(formatTraceVariable($message, $label), $context);
+        $logger->{$function}(self::formatMessage($message, $label), $context);
     }
 
     public static function instance(string $name = '', string $group = 'default'): LoggerInterface
@@ -43,9 +43,9 @@ class MonologHandler
         return ApplicationContext::getContainer()->get(LoggerFactory::class)->get($name, $group);
     }
 
-//    public static function formatMessage(&$variable, string $label = '', bool $jsonEncodeStatus = false, bool $stdout = true): string
-//    {
-//        return formatTraceVariable($variable, $label, $jsonEncodeStatus);
-//    }
+    public static function formatMessage(&$variable, string $label = '', bool $jsonEncodeStatus = false, bool $stdout = true): string
+    {
+        return formatTraceVariable($variable, $label, $jsonEncodeStatus);
+    }
 
 }
