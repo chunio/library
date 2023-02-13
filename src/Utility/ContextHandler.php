@@ -42,7 +42,9 @@ class ContextHandler
                 'accept',
                 'referer',
                 'accept-encoding',
-                'accept-language'
+                'accept-language',
+                'cache-control',
+                'upgrade-insecure-requests'
             ];
             $header = $Request->getHeaders();
             foreach ($header as $key => $value){
