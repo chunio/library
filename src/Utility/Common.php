@@ -270,18 +270,14 @@ if(!function_exists('formatTraceVariable')){
     function formatTraceVariable(&$variable, string $label = '', bool $jsonEncodeStatus = false): string
     {
         try {
-            $traceInfo = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 4);//TODO：此函數性能如何？
-            xdebug($traceInfo,'$traceInfo');
-            $file = $line = $class = $function = '';
-            if ($traceInfo[2]) {//採集引用此方法的上兩層的方法
-                $line = $traceInfo[2]['line'];
-                $file = $traceInfo[2]['file'];
-                $file = ($startIndex = strrpos($file, env('APP_NAME'))) ? substr($file, $startIndex + 1) : $file;
-            }
+            $traceInfo = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);//TODO：此函數性能如何？
+            $file1 = ($startIndex = strrpos(($file1 = $traceInfo[1]['file']), env('APP_NAME'))) ? substr($file1, $startIndex + 1) : $file1;
+            $file2 = ($startIndex = strrpos(($file2 = $traceInfo[2]['file']), env('APP_NAME'))) ? substr($file2, $startIndex + 1) : $file2;
             $trace = [
                 'label' => $label ?: 'default',
                 'date' => date('Y-m-d H:i:s'),
-                'path' => "./{$file}(line:{$line})",
+                'file0' => "./{$file1}(line:{$traceInfo[1]['line']})",
+                'file1' => "./{$file2}(line:{$traceInfo[2]['line']}/func:{$traceInfo[2]['function']})",
                 'traceId' => ContextHandler::pullTraceId(),
                 'request' => ContextHandler::pullRequestAbstract(),
                 //special type conversion[START]
@@ -308,9 +304,10 @@ if(!function_exists('formatTraceVariable')){
             return $trace;
         } catch (Throwable $e) {
             return commonJsonEncode([
-                'label' => 'throwable',
+                'label' => "{$label} throwable",
                 'date' => date('Y-m-d H:i:s'),
-                'path' => $e->getFile() . "(line:{$e->getLine()})",
+                'file0' => $e->getFile() . "(line:{$e->getLine()})",
+                'file1' => "",
                 'traceId' => ContextHandler::pullTraceId(),
                 'request' => ContextHandler::pullRequestAbstract(),
                 'message' => $e->getMessage(),
