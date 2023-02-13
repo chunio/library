@@ -32,6 +32,7 @@ class MonologHandler
     {
         [$message, $label, $context, $name, $group] = $argument + ['', '', [], '', 'default'];
         $logger = static::instance($name, $group);
+        xdebug('__callStatic');
         $logger->{$function}(self::formatMessage($message, $label), $context);
     }
 
