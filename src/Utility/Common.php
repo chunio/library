@@ -271,6 +271,7 @@ if(!function_exists('formatTraceVariable')){
     {
         try {
             $traceInfo = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);//TODO：此函數性能如何？
+            xdebug($traceInfo,'$traceInfo');
             $scriptName = $line = '';
             if ($traceInfo[2]) {//採集引用此方法的上兩層的方法
                 $file = $traceInfo[2]['file'];
