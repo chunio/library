@@ -46,6 +46,7 @@ class MonologHandler
 
     public static function formatMessage(&$variable, string $label = '', bool $jsonEncodeStatus = false, bool $stdout = true): string
     {
+        xdebug('__callStatic1');
         return formatTraceVariable($variable, $label, $jsonEncodeStatus);
     }
 
