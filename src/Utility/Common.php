@@ -257,7 +257,7 @@ if (!function_exists('colorString')) {
 //    }
 //}
 
-if(function_exists('formatTraceVariable')){
+if(!function_exists('formatTraceVariable')){
     /**
      * @param mixed $variable
      * @param string $label
