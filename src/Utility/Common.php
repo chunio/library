@@ -285,11 +285,11 @@ if(!function_exists('formatTraceVariable')){
             $trace = [
                 'label' => $label ?: 'default',
                 'date' => date('Y-m-d H:i:s'),
-                'file' => [
+                'traceId' => ContextHandler::pullTraceId(),
+                'debugBacktrace' => [
                     "./{$file1}(line:{$traceInfo[1]['line']})",
                     "./{$file2}(line:{$traceInfo[2]['line']}/func:{$traceInfo[2]['function']})",
                 ],
-                'traceId' => ContextHandler::pullTraceId(),
                 'request' => ContextHandler::pullRequestAbstract(),
                 //special type conversion[START]
                 'message' => $format()
@@ -309,10 +309,10 @@ if(!function_exists('formatTraceVariable')){
             return commonJsonEncode([
                 'label' => "{$label} throwable",
                 'date' => date('Y-m-d H:i:s'),
-                'file' => [
+                'traceId' => ContextHandler::pullTraceId(),
+                'debugBacktrace' => [
                     $e->getFile() . "(line:{$e->getLine()})",
                 ],
-                'traceId' => ContextHandler::pullTraceId(),
                 'request' => ContextHandler::pullRequestAbstract(),
                 'message' => $e->getMessage(),
             ]);
