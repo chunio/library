@@ -67,7 +67,7 @@ if (!function_exists('xdebug')) {
                 @file_put_contents($path, $template, FILE_APPEND/* | LOCK_EX*/);
             }
             if($output) echo "$template\n";//DEBUG_LABEL
-        } catch (Throwable) {
+        } catch (Throwable $e) {
             //TODO:none...
         }
         //});
