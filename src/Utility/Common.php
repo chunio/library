@@ -273,7 +273,7 @@ if(!function_exists('formatTraceVariable')){
             $traceInfo = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);//TODO：此函數性能如何？
             $file1 = ($startIndex = strrpos(($file1 = $traceInfo[1]['file']), env('APP_NAME'))) ? substr($file1, $startIndex + 1) : $file1;
             $file2 = ($startIndex = strrpos(($file2 = $traceInfo[2]['file']), env('APP_NAME'))) ? substr($file2, $startIndex + 1) : $file2;
-            $format = function()use(&$variable, $jsonEncodeStatus){
+            $funcFormat = function(&$variable, $jsonEncodeStatus){
                 if ($variable === true) return 'TRUE(BOOL)';
                 if ($variable === false) return 'FALSE(BOOL)';
                 if ($variable === null) return 'NULL';
@@ -292,7 +292,7 @@ if(!function_exists('formatTraceVariable')){
                 ],
                 'request' => ContextHandler::pullRequestAbstract(),
                 //special type conversion[START]
-                'message' => $format()
+                'message' => $funcFormat($variable, $jsonEncodeStatus)
                 //special type conversion[END]
             ];
             if($jsonEncodeStatus) {

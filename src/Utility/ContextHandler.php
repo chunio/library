@@ -35,9 +35,22 @@ class ContextHandler
             (!$requestAbstract = Context::get(ContextEnum::RequestAbstract)) &&
             ($Request = Context::get(ServerRequestInterface::class))
         ){
+            $ignore = [
+                'host',
+                'connection',
+                'user-agent',
+                'accept',
+                'referer',
+                'accept-encoding',
+                'accept-language'
+            ];
+            $header = $Request->getHeaders();
+            foreach ($header as $key => $value){
+                if(in_array($key, $ignore)) unset($header[$key]);
+            }
             $requestAbstract =  [
                 'api' => "(method:" . $Request->getMethod() . ")" . $Request->getUri()->__toString(),
-                'header' => array_map(fn ($i) => count($i) == 1 ? $i[0] : $i, $Request->getHeaders()),
+                'header' => array_map(fn ($v) => count($v) === 1 ? $v[0] : $v, $header),
                 'query' => commonJsonEncode($Request->getQueryParams()),
                 'body' => commonJsonEncode($Request->getParsedBody()),
             ];
