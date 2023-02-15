@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Baichuan\Library\Component\Monolog;
 
-use Baichuan\Library\Utility\ContextHandler;
 use Hyperf\Logger\LoggerFactory;
 use Hyperf\Utils\ApplicationContext;
 use Psr\Log\LoggerInterface;
-use Throwable;
 
 /**
  * Class MonologHandler
@@ -32,7 +30,6 @@ class MonologHandler
     {
         [$message, $label, $context, $name, $group] = $argument + ['', '', [], '', 'default'];
         $logger = static::instance($name, $group);
-        xdebug($message,'$message');
         $logger->{$function}(formatTraceVariable($message, $label), $context);
     }
 
@@ -43,10 +40,5 @@ class MonologHandler
         }
         return ApplicationContext::getContainer()->get(LoggerFactory::class)->get($name, $group);
     }
-
-//    public static function formatMessage(&$variable, string $label = '', bool $jsonEncodeStatus = false, bool $stdout = true): string
-//    {
-//        return formatTraceVariable($variable, $label, $jsonEncodeStatus);
-//    }
 
 }

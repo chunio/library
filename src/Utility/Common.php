@@ -184,78 +184,47 @@ if (!function_exists('colorString')) {
     }
 }
 
-//if(!function_exists('sendAlarm2DingTalk')){
-//    function sendAlarm2DingTalk(mixed $variable)
-//    {
-//        co(function()use($variable){
-//            try{
-//                //trace[START]
-//                $traceInfo = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
-//                $scriptName = $line = '';
-//                if ($traceInfo[1]) {//last track
-//                    $file = $traceInfo[1]['file'];
-//                    $line = $traceInfo[1]['line'];
-//                    $scriptName = ($startIndex = strrpos($file, env('APP_NAME'))) ? substr($file, $startIndex + 1) : $file;
-//                }
-//                //trace[END]
-//                if(!config('system.alarm',0)) return false;
-//                $timestamp = time() * 1000;
-//                if ($variable instanceof Throwable) {
-//                    $variable = json_encode([
-//                        'code' => $variable->getCode(),
-//                        'title' => 'Throwable',
-//                        'message' => $variable->getMessage(),
-//                        'file' => $variable->getFile() . "(line:{$variable->getLine()})",
-//                        //'trace' => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 10)
-//                    ]);
-//                }elseif(is_array($alarm)){
-//                    $alarm = json_encode($alarm);
-//                }else{
-//                    $alarm = (string)$alarm;
-//                }
-//                //trace2[START]
-//                $alarm .= "file:{$file}/line:{$line}/scriptName:{$scriptName}";
-//                //trace2[END]
-//                $content = '{"msgtype":"text","text":{"content":"['. env('APP_NAME') . ' / ' . env('APP_ENV') . "]\n" . str_replace("\"","'",$alarm) .'"}}';
-//                //$accessToken = 'b76e1cf33a222a8ddee2fde1c930be03cdc1f04a31d1a1036be9803a6f712319';
-//                //$secret = 'SEC8e6642f7e93939b4e04edefc7e06248d8b8c8120c8ff439879fc1ad5970ff601';
-//                switch ($event){
-//                    case 'common':
-//                        $accessToken = config('system.dingtalk.common.access_token');
-//                        $secret = config('system.dingtalk.common.secret');
-//                        break;
-//                    case 'topup':
-//                        $accessToken = config('system.dingtalk.topup.access_token');
-//                        $secret = config('system.dingtalk.topup.secret');
-//                        break;
-//                    default :
-//                        $accessToken = config('system.dingtalk.common.access_token');
-//                        $secret = config('system.dingtalk.common.secret');
-//                }
-//                $parameter = [
-//                    'access_token' => $accessToken,
-//                    'timestamp' => $timestamp,
-//                    'sign' => urlencode(base64_encode(hash_hmac('sha256', $timestamp . "\n" . $secret, $secret, true)))
-//                ];
-//                $webhook = "https://oapi.dingtalk.com/robot/send?" . http_build_query($parameter);
-//                $option = [
-//                    'http' => [
-//                        'method' => "POST",
-//                        'header' => "Content-type:application/json;charset=utf-8",//
-//                        'content' => $content
-//                    ],
-//                    "ssl" => [ //不驗證ssl證書
-//                        "verify_peer" => false,
-//                        "verify_peer_name" => false
-//                    ]
-//                ];
-//                return file_get_contents($webhook, false, stream_context_create($option));
-//            }catch (Throwable $e){
-//                xdebug($e);//TODO:log
-//            }
-//        });
-//    }
-//}
+if(!function_exists('sendAlarm2DingTalk')){
+    function sendAlarm2DingTalk(&$variable)
+    {
+        co(function()use(&$variable){
+            try{
+                $timestamp = time();
+                $accessToken = 'b76e1cf33a222a8ddee2fde1c930be03cdc1f04a31d1a1036be9803a6f712319';
+                $secret = 'SEC8e6642f7e93939b4e04edefc7e06248d8b8c8120c8ff439879fc1ad5970ff601';
+                $content = '';
+                $content .= "[" . env('APP_NAME') . ' / ' . env('APP_ENV') . "]\n";
+                $content .=  str_replace("\"","'", formatTraceVariable($variable));
+                $content = commonJsonEncode([
+                    'msgtype' => 'text',
+                    'text' => [
+                        'content' => $content
+                    ]
+                ]);
+                $parameter = [
+                    'access_token' => $accessToken,
+                    'timestamp' => $timestamp,
+                    'sign' => urlencode(base64_encode(hash_hmac('sha256', $timestamp . "\n" . $secret, $secret, true)))
+                ];
+                $webhook = "https://oapi.dingtalk.com/robot/send?" . http_build_query($parameter);
+                $option = [
+                    'http' => [
+                        'method' => "POST",
+                        'header' => "Content-type:application/json;charset=utf-8",//
+                        'content' => $content
+                    ],
+                    "ssl" => [ //不驗證ssl證書
+                        "verify_peer" => false,
+                        "verify_peer_name" => false
+                    ]
+                ];
+                return file_get_contents($webhook, false, stream_context_create($option));
+            }catch (Throwable $e){
+                xdebug($e);//TODO:log
+            }
+        });
+    }
+}
 
 if(!function_exists('formatTraceVariable')){
     /**
