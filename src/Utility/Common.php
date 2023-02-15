@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Baichuan\Library\Component\Monolog\MonologHandler;
 use Baichuan\Library\Constant\AnsiColorEnum;
 use Baichuan\Library\Utility\ContextHandler;
 use Hyperf\Redis\RedisFactory;
@@ -220,7 +221,7 @@ if(!function_exists('sendAlarm2DingTalk')){
                 ];
                 return file_get_contents($webhook, false, stream_context_create($option));
             }catch (Throwable $e){
-                xdebug($e);//TODO:log
+                MonologHandler::error($e);
             }
         });
     }
