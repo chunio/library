@@ -188,7 +188,7 @@ if (!function_exists('colorString')) {
 if(!function_exists('sendAlarm2DingTalk')){
     function sendAlarm2DingTalk(&$variable)
     {
-        $timestamp = time();
+        $timestamp = time() * 1000;
         $accessToken = 'b76e1cf33a222a8ddee2fde1c930be03cdc1f04a31d1a1036be9803a6f712319';
         $secret = 'SEC8e6642f7e93939b4e04edefc7e06248d8b8c8120c8ff439879fc1ad5970ff601';
         $content = '';
