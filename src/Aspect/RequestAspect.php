@@ -37,7 +37,7 @@ class RequestAspect extends AbstractAspect
         }
         //  打印請求內容
         if ($proceedingJoinPoint->className == 'Hyperf\HttpServer\CoreMiddleware' && $proceedingJoinPoint->methodName == 'dispatch') {
-            MonologHandler::info('Hyperf\HttpServer\CoreMiddleware::dispatch');
+            //MonologHandler::info('Hyperf\HttpServer\CoreMiddleware::dispatch');
             return $proceedingJoinPoint->process();
         }
         $result = $proceedingJoinPoint->process();
