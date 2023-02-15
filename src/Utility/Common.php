@@ -188,41 +188,37 @@ if (!function_exists('colorString')) {
 if(!function_exists('sendAlarm2DingTalk')){
     function sendAlarm2DingTalk(&$variable)
     {
-        try{
-            $timestamp = time();
-            $accessToken = 'b76e1cf33a222a8ddee2fde1c930be03cdc1f04a31d1a1036be9803a6f712319';
-            $secret = 'SEC8e6642f7e93939b4e04edefc7e06248d8b8c8120c8ff439879fc1ad5970ff601';
-            $content = '';
-            $content .= "[" . env('APP_NAME') . ' / ' . env('APP_ENV') . "]\n";
-            $content .=  str_replace("\"","'", formatTraceVariable($variable));
-            $content = commonJsonEncode([
-                'msgtype' => 'text',
-                'text' => [
-                    'content' => $content
-                ]
-            ]);
-            $parameter = [
-                'access_token' => $accessToken,
-                'timestamp' => $timestamp,
-                'sign' => urlencode(base64_encode(hash_hmac('sha256', $timestamp . "\n" . $secret, $secret, true)))
-            ];
-            $webhook = "https://oapi.dingtalk.com/robot/send?" . http_build_query($parameter);
-            $option = [
-                'http' => [
-                    'method' => "POST",
-                    'header' => "Content-type:application/json;charset=utf-8",//
-                    'content' => $content
-                ],
-                "ssl" => [ //不驗證ssl證書
-                    "verify_peer" => false,
-                    "verify_peer_name" => false
-                ]
-            ];
-            return file_get_contents($webhook, false, stream_context_create($option));
-        }catch (Throwable $e){
-            xdebug($e);
-            MonologHandler::error($e);
-        }
+        $timestamp = time();
+        $accessToken = 'b76e1cf33a222a8ddee2fde1c930be03cdc1f04a31d1a1036be9803a6f712319';
+        $secret = 'SEC8e6642f7e93939b4e04edefc7e06248d8b8c8120c8ff439879fc1ad5970ff601';
+        $content = '';
+        $content .= "[" . env('APP_NAME') . ' / ' . env('APP_ENV') . "]\n";
+        $content .=  str_replace("\"","'", formatTraceVariable($variable));
+        $content = commonJsonEncode([
+            'msgtype' => 'text',
+            'text' => [
+                'content' => $content
+            ]
+        ]);
+        $parameter = [
+            'access_token' => $accessToken,
+            'timestamp' => $timestamp,
+            'sign' => urlencode(base64_encode(hash_hmac('sha256', $timestamp . "\n" . $secret, $secret, true)))
+        ];
+        $webhook = "https://oapi.dingtalk.com/robot/send?" . http_build_query($parameter);
+        $option = [
+            'http' => [
+                'method' => "POST",
+                'header' => "Content-type:application/json;charset=utf-8",//
+                'content' => $content
+            ],
+            "ssl" => [ //不驗證ssl證書
+                "verify_peer" => false,
+                "verify_peer_name" => false
+            ]
+        ];
+        MonologHandler::info('xxxx');
+        return file_get_contents($webhook, false, stream_context_create($option));
     }
 }
 
