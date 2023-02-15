@@ -248,17 +248,18 @@ if(!function_exists('formatTraceVariable')){
                 return $variable;
             };
             $trace = [
-                'label' => $label ?: 'default',
-                'date' => date('Y-m-d H:i:s'),
                 'traceId' => ContextHandler::pullTraceId(),
+                "debugBacktrace" =>  "./{$file1}(line:{$traceInfo[1]['line']})",
+                /*****
                 'debugBacktrace' => [
                     "./{$file1}(line:{$traceInfo[1]['line']})",
                     "./{$file2}(line:{$traceInfo[2]['line']}/func:{$traceInfo[2]['function']})",
                 ],
+                *****/
+                'date' => date('Y-m-d H:i:s'),
+                'label' => $label ?: 'default',
+                'message' => $funcFormat($variable, $jsonEncodeStatus),
                 'request' => ContextHandler::pullRequestAbstract(),
-                //special type conversion[START]
-                'message' => $funcFormat($variable, $jsonEncodeStatus)
-                //special type conversion[END]
             ];
             if($jsonEncodeStatus) {
                 $trace = commonJsonEncode($trace) . "\n";
