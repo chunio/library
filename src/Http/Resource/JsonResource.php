@@ -43,7 +43,7 @@ class JsonResource extends \Hyperf\Resource\Json\JsonResource
             return ['//////'];
         }
 
-        return is_array($this->resource)
+        return is_array($this->resource)//
             ? $this->resource
             : (method_exists($this->resource, 'toArray') ? $this->resource->toArray() : ['2222222222222']);
     }
