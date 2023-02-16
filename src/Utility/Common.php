@@ -237,7 +237,7 @@ if(!function_exists('formatTraceVariable')){
         try {
             $traceInfo = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);//TODO：此函數性能如何？
             $file1 = ($startIndex = strrpos(($file1 = $traceInfo[1]['file']), env('APP_NAME'))) ? substr($file1, $startIndex + 1) : $file1;
-            $file2 = ($startIndex = strrpos(($file2 = $traceInfo[2]['file']), env('APP_NAME'))) ? substr($file2, $startIndex + 1) : $file2;
+            //$file2 = ($startIndex = strrpos(($file2 = $traceInfo[2]['file']), env('APP_NAME'))) ? substr($file2, $startIndex + 1) : $file2;
             $funcFormat = function(&$variable, $jsonEncodeStatus){
                 if ($variable === true) return 'TRUE(BOOL)';
                 if ($variable === false) return 'FALSE(BOOL)';
@@ -248,6 +248,7 @@ if(!function_exists('formatTraceVariable')){
                 return $variable;
             };
             $trace = [
+                'date' => date('Y-m-d H:i:s'),
                 'traceId' => ContextHandler::pullTraceId(),
                 "debugBacktrace" =>  "./{$file1}(line:{$traceInfo[1]['line']})",
                 /*****
@@ -256,31 +257,32 @@ if(!function_exists('formatTraceVariable')){
                     "./{$file2}(line:{$traceInfo[2]['line']}/func:{$traceInfo[2]['function']})",
                 ],
                 *****/
-                'date' => date('Y-m-d H:i:s'),
                 'label' => $label ?: 'default',
                 'message' => $funcFormat($variable, $jsonEncodeStatus),
                 'request' => ContextHandler::pullRequestAbstract(),
             ];
+            //check memory[START]
+            $traceJson = commonJsonEncode($trace);
+            if(strlen($traceJson) > (($megabyteLimit = 1/*unit:MB*/) * 1024 * 1024)){//超出限額則截取
+                $traceJson = substr($traceJson, 0,$megabyteLimit * 1024 * 1024);
+                $jsonEncodeStatus = true;
+            }
+            //check memory[END]
             if($jsonEncodeStatus) {
-                $trace = commonJsonEncode($trace) . "\n";
+                $trace = "{$traceJson}\n";
             }else{
-                $trace = @print_r($trace, true);
-                if(strlen($trace) > (($megabyteLimit = 2/*unit:MB*/) * 1024 * 1024)){//超出限額則截取
-                    $trace = substr($trace, 0,$megabyteLimit * 1024 * 1024);
-                }
+                $trace = print_r($trace, true);//print_r()的換行會將大變量瞬間膨脹導致內存滿載
                 $trace = "\n:<<UNIT[START]\n{$trace}\nUNIT[END]\n";
             }
             return $trace;
         } catch (Throwable $e) {
             return commonJsonEncode([
-                'label' => "{$label} throwable",
                 'date' => date('Y-m-d H:i:s'),
                 'traceId' => ContextHandler::pullTraceId(),
-                'debugBacktrace' => [
-                    $e->getFile() . "(line:{$e->getLine()})",
-                ],
-                'request' => ContextHandler::pullRequestAbstract(),
+                'debugBacktrace' => $e->getFile() . "(line:{$e->getLine()})",
+                'label' => "{$label} throwable",
                 'message' => $e->getMessage(),
+                'request' => ContextHandler::pullRequestAbstract(),
             ]);
         }
     }
