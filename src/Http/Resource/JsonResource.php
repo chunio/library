@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Baichuan\Library\Http\Resource;
 
+use Baichuan\Library\Component\Monolog\MonologHandler;
 use Baichuan\Library\Constant\ContextEnum;
 use Baichuan\Library\Utility\ContextHandler;
 use Hyperf\Context\Context;
@@ -39,6 +40,7 @@ class JsonResource extends \Hyperf\Resource\Json\JsonResource
      */
     public function toArray(): array
     {
+        MonologHandler::info($this->resource,'$this->resource');
         if (is_null($this->resource) || is_string($this->resource) || /*is_numeric($this->resource) ||*/ is_bool($this->resource)) {
             return ['//////'];
         }
