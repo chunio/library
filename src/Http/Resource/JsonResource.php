@@ -41,19 +41,19 @@ class JsonResource extends \Hyperf\Resource\Json\JsonResource
         return parent::toResponse()->withStatus($this->getStatusCode(), $this->getReasonPhrase());
     }
 
-    /**
-     * Resolve the resource to an array.
-     */
-    public function resolve(): array
-    {
-        $data = $this->toArray();
-        // 如是集合資源型
-        if ($this instanceof ResourceCollection) {
-            $data = ['list' => $data];
-        }
-        return $this->filter($data);
-    }
-
+//    /**
+//     * Resolve the resource to an array.
+//     */
+//    public function resolve(): array
+//    {
+//        $data = $this->toArray();
+//        // 如是集合資源型
+//        if ($this instanceof ResourceCollection) {
+//            $data = ['list' => $data];
+//        }
+//        return $this->filter($data);
+//    }
+//
 //    /**
 //     * Transform the resource into an array.
 //     */
