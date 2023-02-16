@@ -64,9 +64,11 @@ trait ResponseTrait
     }
 
     /**
-     * 返回 Html
-     *
-     * @author Mai Zhong Wen <yshxinjian@gmail.com>
+     * @param string $content
+     * @return PsrResponseInterface
+     * author : zengweitao@gmail.com
+     * datetime: 2023/02/16 11:48
+     * memo : 返回HTML
      */
     protected function html(string $content): PsrResponseInterface
     {
@@ -74,11 +76,12 @@ trait ResponseTrait
     }
 
     /**
-     * 返回 Html
-     *
-     * @author Mai Zhong Wen <yshxinjian@gmail.com>
-     *
-     * @param mixed $content_type
+     * @param string $content
+     * @param $content_type
+     * @return PsrResponseInterface
+     * author : zengweitao@gmail.com
+     * datetime: 2023/02/16 11:48
+     * memo : 返回HTML
      */
     protected function raw(string $content, $content_type): PsrResponseInterface
     {
