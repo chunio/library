@@ -4,25 +4,19 @@ declare(strict_types=1);
 
 namespace Baichuan\Library\Http\Resource;
 
-use Baichuan\Library\Component\Monolog\MonologHandler;
 use Baichuan\Library\Constant\ContextEnum;
 use Baichuan\Library\Utility\ContextHandler;
 use Hyperf\Context\Context;
 use Psr\Http\Message\ResponseInterface;
 use Swoole\Http\Status;
 
-/**
- * 资源类.
- *
- * Class JsonResource
- */
 class JsonResource extends \Hyperf\Resource\Json\JsonResource
 {
     protected int $statusCode = Status::OK;
 
     protected string $reasonPhrase = '';
 
-    protected int $appCode = 200;
+    protected int $appCode = 0;
 
     protected string $msg = "success";//DEBUG_LABEL
 
@@ -55,20 +49,20 @@ class JsonResource extends \Hyperf\Resource\Json\JsonResource
     }
 
     /**
-     * 包装顶级元数据.
-     *
-     * @author: jiaying.yang@happy-seed.com
+     * @return array
+     * author : zengweitao@gmail.com
+     * datetime: 2023/02/16 11:44
+     * memo : null
      */
     public function with(): array
     {
         $requestStartMicroTime = Context::get(ContextEnum::RequestStartMicroTime);
-        $requestEndMicroTime = microtime(true);
         return [
             'status' => $this->getStatusCode(),
             'code' => $this->getAppCode(),
             'message' => $this->getMsg(),
             'timestamp' => time(),
-            'elapsedTime' => $requestStartMicroTime ? number_format($requestEndMicroTime - Context::get(ContextEnum::RequestStartMicroTime), 4) : null,//DEBUG_LABEL
+            'elapsedTime' => $requestStartMicroTime ? floatval(number_format(microtime(true) - $requestStartMicroTime, 3)) : null,//DEBUG_LABEL
             'traceId' => ContextHandler::pullTraceId(),
         ];
     }
