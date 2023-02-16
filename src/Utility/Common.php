@@ -263,7 +263,7 @@ if(!function_exists('formatTraceVariable')){
             ];
             //check memory[START]
             $traceJson = commonJsonEncode($trace);
-            if(strlen($traceJson) > (($megabyteLimit = 128/*unit:KB*/) * 1024)){//超出限額則截取
+            if(strlen($traceJson) > (($megabyteLimit = 64/*unit:KB*/) * 1024)){//超出限額則截取
                 $traceJson = substr($traceJson, 0,$megabyteLimit * 1024);
                 $jsonEncodeStatus = true;
             }
