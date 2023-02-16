@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Baichuan\Library\Http\MultiTrait;
 
+use Baichuan\Library\Component\Monolog\MonologHandler;
 use Baichuan\Library\Http\Resource\JsonResource;
 use Baichuan\Library\Http\Resource\ResourceCollection;
 use Hyperf\Contract\LengthAwarePaginatorInterface;
@@ -18,19 +19,21 @@ trait ResponseTrait
      * @param mixed $data
      * @return \Hyperf\Resource\Json\JsonResource|JsonResource|ResourceCollection
      */
-    protected function success($data = null, string $msg = 'success')
+    protected function success($data = null, string $message = 'success')
     {
-        if ($data instanceof \Baichuan\Library\Http\Resource\JsonResource) {
-            $data->setMsg($msg);
+        if ($data instanceof JsonResource) {
+            $data->setMsg($message);
             return $data;
         }
         if ($data instanceof \Hyperf\Resource\Json\JsonResource) {
             return $data;
         }
         if ($data instanceof LengthAwarePaginatorInterface) {
-            return JsonResource::collection($data)->setMsg($msg);
+            return JsonResource::collection($data)->setMsg($message);
         }
-        return (new JsonResource($data))->setMsg($msg)->setPreserveKeys(true);
+        $return = (new JsonResource($data))->setMsg($message)->setPreserveKeys(true);
+        MonologHandler::info($return);
+        return $return;
     }
 
     /**
