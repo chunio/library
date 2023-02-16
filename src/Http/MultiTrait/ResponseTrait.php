@@ -52,7 +52,7 @@ trait ResponseTrait
     protected function jsonRaw($data = null, $headers = [], $status = 200, $reasonPhrase = ''): PsrResponseInterface
     {
         if (!$reasonPhrase) {
-            throw_unless(Response::getReasonPhraseByCode($status), new \Exception("reason phrase should not be empty for custom status code"));
+            new \Exception("reason phrase should not be empty for custom status code / " . Response::getReasonPhraseByCode($status));
         }
         $rtn = make(ResponseInterface::class)->json($data)->withStatus($status, $reasonPhrase);
 
