@@ -10,9 +10,11 @@ use Hyperf\Utils\Collection;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * 资源集合.
- *
  * Class ResourceCollection
+ * @package Baichuan\Library\Http\Resource
+ * author : zengweitao@gmail.com
+ * datetime: 2023/02/16 15:28
+ * memo : 資源集合
  */
 class ResourceCollection extends JsonResource
 {

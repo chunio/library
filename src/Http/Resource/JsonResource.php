@@ -39,7 +39,7 @@ class JsonResource extends \Hyperf\Resource\Json\JsonResource
      */
     public function toArray(): array
     {
-        if (is_null($this->resource) || is_string($this->resource) || is_numeric($this->resource) || is_bool($this->resource)) {
+        if (is_null($this->resource) || is_string($this->resource) || /*is_numeric($this->resource) ||*/ is_bool($this->resource)) {
             return [];
         }
 
