@@ -11,28 +11,47 @@ use Hyperf\Context\Context;
 use Psr\Http\Message\ResponseInterface;
 use Swoole\Http\Status;
 
+/**
+ * Class JsonResource
+ * @package Baichuan\Library\Http\Resource
+ * author : zengweitao@gmail.com
+ * datetime: 2023/02/16 17:48
+ * memo : 執行順序：setMsg()>>toResponse()>>resolve()>>toArray()>>with()
+ */
 class JsonResource extends \Hyperf\Resource\Json\JsonResource
 {
+
     protected int $statusCode = Status::OK;
-
     protected string $reasonPhrase = '';
-
     protected int $appCode = 0;
-
     protected string $msg = "success";//DEBUG_LABEL
 
     /**
-     * Create new anonymous resource collection.
-     *
-     * @param mixed $resource
-     *
-     * @return AnonymousResourceCollection
+     * @return JsonResource
      */
-    public static function collection($resource): ?AnonymousResourceCollection
+    public function setMsg(string $msg): self
     {
-        return tap(new AnonymousResourceCollection($resource, static::class), function ($collection) {
-            $collection->preserveKeys = (new static([]))->preserveKeys;
-        });
+        $this->msg = $msg;
+
+        return $this;
+    }
+
+    public function toResponse(): ResponseInterface
+    {
+        return parent::toResponse()->withStatus($this->getStatusCode(), $this->getReasonPhrase());
+    }
+
+    /**
+     * Resolve the resource to an array.
+     */
+    public function resolve(): array
+    {
+        $data = $this->toArray();
+        // 如是集合資源型
+        if ($this instanceof ResourceCollection) {
+            $data = ['list' => $data];
+        }
+        return $this->filter((array)$data);
     }
 
     /**
@@ -40,14 +59,14 @@ class JsonResource extends \Hyperf\Resource\Json\JsonResource
      */
     public function toArray(): array
     {
-        MonologHandler::info($this->resource,'$this->resource');
-        if (is_null($this->resource) || is_string($this->resource) || /*is_numeric($this->resource) ||*/ is_bool($this->resource)) {
-            return ['//////'];
-        }
-
-        return is_array($this->resource)//
-            ? $this->resource
-            : (method_exists($this->resource, 'toArray') ? $this->resource->toArray() : ['2222222222222']);
+//        MonologHandler::info($this->resource,'$this->resource');
+//        if (is_null($this->resource) || is_string($this->resource) || /*is_numeric($this->resource) ||*/ is_bool($this->resource)) {
+//            return ['//////'];
+//        }
+//        return is_array($this->resource)//
+//            ? $this->resource
+//            : (method_exists($this->resource, 'toArray') ? $this->resource->toArray() : ['2222222222222']);
+        return method_exists($this->resource, 'toArray') ? $this->resource->toArray() : [$this->resource];
     }
 
     /**
@@ -70,23 +89,17 @@ class JsonResource extends \Hyperf\Resource\Json\JsonResource
     }
 
     /**
-     * Resolve the resource to an array.
+     * Create new anonymous resource collection.
+     *
+     * @param mixed $resource
+     *
+     * @return AnonymousResourceCollection
      */
-    public function resolve(): array
+    public static function collection($resource): ?AnonymousResourceCollection
     {
-        $data = $this->toArray();
-
-        // 如果是集合资源型，则用list
-        if ($this instanceof ResourceCollection) {
-            $data = ['list' => $data];
-        }
-
-        return $this->filter((array)$data);
-    }
-
-    public function toResponse(): ResponseInterface
-    {
-        return parent::toResponse()->withStatus($this->getStatusCode(), $this->getReasonPhrase());
+        return tap(new AnonymousResourceCollection($resource, static::class), function ($collection) {
+            $collection->preserveKeys = (new static([]))->preserveKeys;
+        });
     }
 
     public function getStatusCode(): int
@@ -132,16 +145,6 @@ class JsonResource extends \Hyperf\Resource\Json\JsonResource
     public function getMsg(): string
     {
         return $this->msg;
-    }
-
-    /**
-     * @return JsonResource
-     */
-    public function setMsg(string $msg): self
-    {
-        $this->msg = $msg;
-
-        return $this;
     }
 
     public function isPreserveKeys(): bool

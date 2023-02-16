@@ -16,11 +16,16 @@ trait ResponseTrait
 {
 
     /**
-     * @param mixed $data
-     * @return \Hyperf\Resource\Json\JsonResource|JsonResource|ResourceCollection
+     * @param null $data
+     * @param string $message
+     * @return JsonResource
+     * author : zengweitao@gmail.com
+     * datetime: 2023/02/16 17:47
+     * memo : null
      */
     protected function success($data = null, string $message = 'success')
     {
+        /*****
         if ($data instanceof JsonResource) {
             $data->setMsg($message);
             return $data;
@@ -31,6 +36,7 @@ trait ResponseTrait
         if ($data instanceof LengthAwarePaginatorInterface) {
             return JsonResource::collection($data)->setMsg($message);
         }
+        *****/
         $return = (new JsonResource($data))->setMsg($message)->setPreserveKeys(true);
         MonologHandler::info($return);
         return $return;
