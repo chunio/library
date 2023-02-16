@@ -17,6 +17,7 @@ use Hyperf\Di\Annotation\Inject;
  */
 abstract class AbstractController
 {
+
     use ResponseTrait;
     use ValidateTrait;
 
@@ -40,4 +41,5 @@ abstract class AbstractController
      * @var ResponseInterface
      */
     protected $response;
+
 }

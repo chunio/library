@@ -18,12 +18,8 @@ trait ValidateTrait
     protected ValidationFactory $validationFactory;
 
     /**
-     * 校验
-     *
-     * @param array $data 校验数据
-     * @param array $rules 校验规则
-     *
-     * @author adi
+     * @param array $data 校驗數據
+     * @param array $rules 校驗規則
      */
     protected function validate($data, array $rules, array $messages = [], array $customAttributes = []): array
     {
@@ -36,25 +32,19 @@ trait ValidateTrait
     }
 
     /**
-     * 校验（通过类名）
-     *
+     * 校驗（通過類名）
      * @param $formRequestClass
      * @param mixed $data
-     *
      * @throws \ReflectionException
-     *
-     * @author Mai Zhong Wen <yshxinjian@gmail.com>
      */
     protected function validateByFormRequest($data, $formRequestClass): array
     {
         /** @var FormRequest $formRequest */
         $formRequest = di($formRequestClass);
-
-        $refClass = new ReflectionClass($formRequestClass); // 传入对象或类名，得到ReflectionClass对象
-        $refMeth = $refClass->getMethod('getRules'); // 得到ReflectionMethod对象
-        $refMeth->setAccessible(true); // 设置为可见，也就是可访问
-        $rules = $refMeth->invoke($formRequest); // 传入对象来访问这个方法
-
+        $refClass = new ReflectionClass($formRequestClass); // 傳入對象或類名，得到ReflectionClass
+        $refMeth = $refClass->getMethod('getRules'); // 得到ReflectionMethod
+        $refMeth->setAccessible(true); // 設置爲可見，也就是可訪問
+        $rules = $refMeth->invoke($formRequest); // 傳入對象來訪問這個方法
         return $this->validationFactory->make(
             Arr::wrap($data),
             $rules,
@@ -62,5 +52,4 @@ trait ValidateTrait
             $formRequest->attributes(),
         )->validate();
     }
-
 }
