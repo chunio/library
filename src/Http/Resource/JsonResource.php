@@ -54,20 +54,20 @@ class JsonResource extends \Hyperf\Resource\Json\JsonResource
         return $this->filter((array)$data);
     }
 
-    /**
-     * Transform the resource into an array.
-     */
-    public function toArray(): array
-    {
-//        MonologHandler::info($this->resource,'$this->resource');
-//        if (is_null($this->resource) || is_string($this->resource) || /*is_numeric($this->resource) ||*/ is_bool($this->resource)) {
-//            return ['//////'];
-//        }
-//        return is_array($this->resource)//
-//            ? $this->resource
-//            : (method_exists($this->resource, 'toArray') ? $this->resource->toArray() : ['2222222222222']);
-        return method_exists($this->resource, 'toArray') ? $this->resource->toArray() : [$this->resource];
-    }
+//    /**
+//     * Transform the resource into an array.
+//     */
+//    public function toArray(): array
+//    {
+////        MonologHandler::info($this->resource,'$this->resource');
+////        if (is_null($this->resource) || is_string($this->resource) || /*is_numeric($this->resource) ||*/ is_bool($this->resource)) {
+////            return ['//////'];
+////        }
+////        return is_array($this->resource)//
+////            ? $this->resource
+////            : (method_exists($this->resource, 'toArray') ? $this->resource->toArray() : ['2222222222222']);
+//        return method_exists($this->resource, 'toArray') ? $this->resource->toArray() : [$this->resource];
+//    }
 
     /**
      * @return array
