@@ -269,6 +269,7 @@ if(!function_exists('formatTraceVariable')){
 //            }
             //check memory[END]
             if($jsonEncodeStatus || 1) {
+                echo strlen($traceJson);
                 $trace = "{$traceJson}\n";
             }else{
                 $trace = print_r($trace, true);//print_r()的換行會將大變量瞬間膨脹導致內存滿載
