@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Component\Hyperf\Http\Middleware;
+namespace Baichuan\Library\Http\Middleware;
 
 
 use Hyperf\Context\Context;
@@ -14,7 +14,6 @@ use Swoole\Http\Status;
 
 /**
  * Class CrossMiddleware
- * @package Component\Hyperf\Http\Middleware
  * author : zengweitao@gmail.com
  * datetime: 2023/02/16 14:11
  * memo : 開放跨越中間件
