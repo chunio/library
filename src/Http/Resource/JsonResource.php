@@ -41,33 +41,33 @@ class JsonResource extends \Hyperf\Resource\Json\JsonResource
         return parent::toResponse()->withStatus($this->getStatusCode(), $this->getReasonPhrase());
     }
 
-//    /**
-//     * Resolve the resource to an array.
-//     */
-//    public function resolve(): array
-//    {
-//        $data = $this->toArray();
-//        // 如是集合資源型
-//        if ($this instanceof ResourceCollection) {
-//            $data = ['list' => $data];
+    /**
+     * Resolve the resource to an array.
+     */
+    public function resolve(): array
+    {
+        $data = $this->toArray();
+        // 如是集合資源型
+        if ($this instanceof ResourceCollection) {
+            $data = ['list' => $data];
+        }
+        return $this->filter($data);
+    }
+
+    /**
+     * Transform the resource into an array.
+     */
+    public function toArray(): array
+    {
+//        MonologHandler::info($this->resource,'$this->resource');
+//        if (is_null($this->resource) || is_string($this->resource) || /*is_numeric($this->resource) ||*/ is_bool($this->resource)) {
+//            return ['//////'];
 //        }
-//        return $this->filter($data);
-//    }
-//
-//    /**
-//     * Transform the resource into an array.
-//     */
-//    public function toArray(): array
-//    {
-////        MonologHandler::info($this->resource,'$this->resource');
-////        if (is_null($this->resource) || is_string($this->resource) || /*is_numeric($this->resource) ||*/ is_bool($this->resource)) {
-////            return ['//////'];
-////        }
-////        return is_array($this->resource)//
-////            ? $this->resource
-////            : (method_exists($this->resource, 'toArray') ? $this->resource->toArray() : ['2222222222222']);
-//        return method_exists($this->resource, 'toArray') ? $this->resource->toArray() : [$this->resource];
-//    }
+//        return is_array($this->resource)//
+//            ? $this->resource
+//            : (method_exists($this->resource, 'toArray') ? $this->resource->toArray() : ['2222222222222']);
+        return method_exists($this->resource, 'toArray') ? $this->resource->toArray() : [$this->resource];
+    }
 
     /**
      * @return array
