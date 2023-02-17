@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Baichuan\Library\Component\Monolog\MonologHandler;
 use Baichuan\Library\Constant\AnsiColorEnum;
 use Baichuan\Library\Utility\ContextHandler;
+use GuzzleHttp\Cookie\CookieJar;
 use Hyperf\Redis\RedisFactory;
 
 if (!function_exists('xdebug')) {
@@ -287,5 +288,36 @@ if(!function_exists('formatTraceVariable')){
                 'request' => ContextHandler::pullRequestAbstract(),
             ]);
         }
+    }
+}
+
+if(!function_exists('commonGet')){
+    function commonGet(string $uri, array $query = [], array $cookieDetail = [], string $cookieDomain = '')
+    {
+        $config = [
+            'query' => $query,
+        ];
+        if($cookieDetail && $cookieDomain){
+            $config['cookies'] = CookieJar::fromArray($cookieDetail, $cookieDomain);
+        }
+        $client = new \GuzzleHttp\Client($config);
+        $result = json_decode((string)$client->request('get', $uri, $config)->getBody(), true);
+        return $result;
+    }
+}
+
+if(!function_exists('commonPost')){
+    function commonPost(string $uri, array $body = [], $header = ['Content-Type' => 'application/json'], array $cookieDetail = [], string $cookieDomain = '')
+    {
+        $config = [
+            'headers' => $header,
+            'json' => $body,
+        ];
+        if($cookieDetail && $cookieDomain){
+            $config['cookies'] = CookieJar::fromArray($cookieDetail, $cookieDomain);
+        }
+        $client = new \GuzzleHttp\Client($config);
+        $result = json_decode((string)$client->request('get', $uri, $config)->getBody(), true);
+        return $result;
     }
 }
