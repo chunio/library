@@ -272,7 +272,7 @@ if(!function_exists('formatTraceVariable')){
                 echo strlen($traceJson);
                 $trace = "{$traceJson}\n";
             }else{
-                $trace = var_export($trace, false);//print_r()的換行會將大變量瞬間膨脹導致內存滿載
+                $trace = print_r($trace, false);//print_r()的換行會將大變量瞬間膨脹導致內存滿載
                 $trace = "\n:<<UNIT[START]\n{$trace}\nUNIT[END]\n";
             }
             echo $trace;
