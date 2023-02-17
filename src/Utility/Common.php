@@ -263,16 +263,16 @@ if(!function_exists('formatTraceVariable')){
             ];
             //check memory[START]
             $traceJson = commonJsonEncode($trace);
-//            if(strlen($traceJson) > (($megabyteLimit = 32/*unit:KB*/) * 1024)){//超出限額則截取
-//                $traceJson = substr($traceJson, 0,$megabyteLimit * 1024);
-//                $jsonEncodeStatus = true;
-//            }
+            if(strlen($traceJson) > (($megabyteLimit = 32/*unit:KB*/) * 1024)){//超出限額則截取
+                $traceJson = substr($traceJson, 0,$megabyteLimit * 1024);
+                $jsonEncodeStatus = true;
+            }
             //check memory[END]
-            if($jsonEncodeStatus || 1) {
+            if($jsonEncodeStatus) {
                 echo strlen($traceJson);
                 $trace = "{$traceJson}\n";
             }else{
-                $trace = print_r($trace, true);//print_r()的換行會將大變量瞬間膨脹導致內存滿載
+                $trace = var_export($trace, false);//print_r()的換行會將大變量瞬間膨脹導致內存滿載
                 $trace = "\n:<<UNIT[START]\n{$trace}\nUNIT[END]\n";
             }
             echo $trace;
