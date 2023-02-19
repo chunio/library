@@ -16,7 +16,7 @@ use Baichuan\Library\Constant\RedisKeyEnum;
 class RedisHandler{
 
     static public $init = [
-        'ttl' => 86400,//單位：秒
+        'ttl' => -1,//單位：秒
     ];
 
     /**
