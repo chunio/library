@@ -34,7 +34,7 @@ class RedisHandler{
         $value = $Redis->get($redisKey);
         if ($value === false) {
             $value = $callable();
-            $Redis->set($redisKey, json_encode($value), ($ttl === null ? self::$init['ttl'] : $ttl));
+            $Redis->set($redisKey, commonJsonEncode($value), ($ttl === null ? self::$init['ttl'] : $ttl));
             return $value;
         }
         return json_decode($value, true);
@@ -56,7 +56,7 @@ class RedisHandler{
             $value = $Redis->hGet($redisKey, $hashField);
             if ($value === false) {
                 $result = $callable();
-                $value = json_encode($result);
+                $value = commonJsonEncode($result);
                 $Redis->hSet($redisKey, $hashField, $value);
             }
             if($ttl !== -1) $Redis->expire($redisKey,$ttl ?: self::$init['ttl']);
@@ -85,11 +85,11 @@ class RedisHandler{
             $resultRedisKey = RedisKeyEnum::STRING['STRING:MutexResult:'] . $mutexName;
             if ($Redis->set($lockedRedisKey, $owner, ['EX' => $lockedTime, 'NX']) === true) {
                 $result = $mainFunc();
-                if($returnCacheResult) $Redis->lPush($resultRedisKey, json_encode($result)); // 共享#並發邏輯#返回值
+                if($returnCacheResult) $Redis->lPush($resultRedisKey, commonJsonEncode($result)); // 共享#並發邏輯#返回值
             } elseif($returnCacheResult) {
                 if ($result/* 返回:「含:1鍵名，2鍵值」的索引數組 */ = $Redis->brPop([$resultRedisKey], $lockedTime)) {// 阻塞，提取#並發邏輯#返回值
                     $result = json_decode($result[1], true);
-                    $Redis->lPush($resultRedisKey, json_encode($result));
+                    $Redis->lPush($resultRedisKey, commonJsonEncode($result));
                 }
             }
         } finally {
