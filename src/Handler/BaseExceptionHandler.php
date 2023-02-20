@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace Baichuan\Library\Component\Exception;
+namespace Baichuan\Library\Handler;
 
-use Baichuan\Library\Component\Monolog\MonologHandler;
 use Baichuan\Library\Constant\ErrorCodeEnum;
 use Baichuan\Library\Http\Resource\JsonResource;
 use Hyperf\ExceptionHandler\ExceptionHandler;

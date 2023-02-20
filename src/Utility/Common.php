@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Baichuan\Library\Component\Monolog\MonologHandler;
+use Baichuan\Library\Handler\MonologHandler;
 use Baichuan\Library\Constant\AnsiColorEnum;
 use Baichuan\Library\Handler\ContextHandler;
 use GuzzleHttp\Cookie\CookieJar;

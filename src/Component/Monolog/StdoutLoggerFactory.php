@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Baichuan\Library\Component\Monolog;
+namespace Baichuan\Library\Handler;
 
 use Hyperf\Contract\ContainerInterface;
 

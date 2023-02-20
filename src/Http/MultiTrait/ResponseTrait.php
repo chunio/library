@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Baichuan\Library\Http\MultiTrait;
 
-use Baichuan\Library\Component\Monolog\MonologHandler;
 use Baichuan\Library\Http\Resource\JsonResource;
-use Baichuan\Library\Http\Resource\ResourceCollection;
-use Hyperf\Contract\LengthAwarePaginatorInterface;
 use Hyperf\HttpMessage\Base\Response;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
