@@ -6,7 +6,6 @@ use Baichuan\Library\Handler\MonologHandler;
 use Baichuan\Library\Constant\AnsiColorEnum;
 use Baichuan\Library\Handler\ContextHandler;
 use GuzzleHttp\Cookie\CookieJar;
-use Hyperf\Context\Context;
 use Hyperf\Kafka\ProducerManager;
 use Hyperf\Redis\RedisFactory;
 
@@ -260,24 +259,24 @@ if(!function_exists('commonHttpPost')){
     }
 }
 
-if (!function_exists('idemExecute')) {
-    function idemExecute(callable $callable, int $ttl = 3)
-    {
-        //example : App\Controller\IndexController_index_203b44837a4e70669009dd664e81769a
-        $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
-        $adminInfo = Context::get('adminInfo') ?? [];
-        $parameter = (new ReflectionFunction($callable))->getStaticVariables();
-        $unique = md5(json_encode($adminInfo) . json_encode($parameter));
-        $redisKey = (isset($trace[1]['class'], $trace[1]['function']) ? ("{$trace[1]['class']}_{$trace[1]['function']}_") : ((string)time() . "_")) . $unique;
-        $Redis = redisInstance();
-        $result = $Redis->get($redisKey);
-        if (false === $result) {
-            $result = json_encode($callable());
-            $Redis->set($redisKey, $result, $ttl);
-        }
-        return json_decode($result, true);
-    }
-}
+//if (!function_exists('idemExecute')) {
+//    function idemExecute(callable $callable, int $ttl = 3)
+//    {
+//        //example : App\Controller\IndexController_index_203b44837a4e70669009dd664e81769a
+//        $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
+//        $adminInfo = Context::get('adminInfo') ?? [];
+//        $parameter = (new ReflectionFunction($callable))->getStaticVariables();
+//        $unique = md5(json_encode($adminInfo) . json_encode($parameter));
+//        $redisKey = (isset($trace[1]['class'], $trace[1]['function']) ? ("{$trace[1]['class']}_{$trace[1]['function']}_") : ((string)time() . "_")) . $unique;
+//        $Redis = redisInstance();
+//        $result = $Redis->get($redisKey);
+//        if (false === $result) {
+//            $result = json_encode($callable());
+//            $Redis->set($redisKey, $result, $ttl);
+//        }
+//        return json_decode($result, true);
+//    }
+//}
 
 if (!function_exists('commonPagination')) {
     function commonPagination(array $list, int $pageIndex, int $pageSize): array
