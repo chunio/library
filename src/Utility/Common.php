@@ -6,6 +6,7 @@ use Baichuan\Library\Handler\MonologHandler;
 use Baichuan\Library\Constant\AnsiColorEnum;
 use Baichuan\Library\Handler\ContextHandler;
 use GuzzleHttp\Cookie\CookieJar;
+use Hyperf\Kafka\ProducerManager;
 use Hyperf\Redis\RedisFactory;
 
 if(!function_exists('commonFormatVariable')){
@@ -193,6 +194,13 @@ if (!function_exists('redisInstance')) {
     }
 }
 
+if (!function_exists('kafkaInstance')) {
+    function kafkaInstance(string $poolName = 'default'): Hyperf\Kafka\Producer
+    {
+        return di()->get(ProducerManager::class)->getProducer($poolName);
+    }
+}
+
 if (!function_exists('prettyJsonEncode')) {
     /**
      * author : zengweitao@gmail.com
@@ -248,5 +256,66 @@ if(!function_exists('commonHttpPost')){
         $client = new GuzzleHttp\Client($config);
         $result = json_decode((string)$client->request('get', $uri, $config)->getBody(), true);
         return $result;
+    }
+}
+
+if (!function_exists('idemExecute')) {
+    function idemExecute(callable $callable, int $ttl = 3)
+    {
+        //example : App\Controller\IndexController_index_203b44837a4e70669009dd664e81769a
+        $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
+        $adminInfo = \Hyperf\Utils\Context::get('adminInfo') ?? [];
+        $parameter = (new \ReflectionFunction($callable))->getStaticVariables();
+        $unique = md5(json_encode($adminInfo) . json_encode($parameter));
+        $redisKey = (isset($trace[1]['class'], $trace[1]['function']) ? ("{$trace[1]['class']}_{$trace[1]['function']}_") : ((string)time() . "_")) . $unique;
+        $Redis = redisInstance();
+        $result = $Redis->get($redisKey);
+        if (false === $result) {
+            $result = json_encode($callable());
+            $Redis->set($redisKey, $result, $ttl);
+        }
+        return json_decode($result, true);
+    }
+}
+
+if (!function_exists('commonPagination')) {
+    function commonPagination(array $list, int $page, int $pageSize): array
+    {
+        $recordNum = count($list);
+        $maxPage = ceil($recordNum / $pageSize);
+        if ($page < 1) {
+            $page = 1;
+        } elseif ($page > $maxPage && 0 != $maxPage) {
+            $page = $maxPage;
+        }
+        $start = intval(($page - 1) * $pageSize);
+        $currentList = $list ? array_slice($list, $start, $pageSize) : [];
+        return [
+            'list' => $currentList,
+            'page' => $page,
+            'page_size' => $pageSize,
+            'max_page' => $maxPage,
+            'total' => $recordNum,
+        ];
+    }
+}
+
+if (!function_exists('commonSort')) {
+    function commonSort(array $array, string $slaveKey, string $sort = 'DESC'): array
+    {
+        $newArray = $valueArray = [];
+        foreach ($array as $key => $value) {
+            $valueArray[$key] = $value[$slaveKey];
+        }
+        if (strtoupper($sort) === 'ASC') {
+            asort($valueArray);
+        } else {
+            arsort($valueArray);
+        }
+        reset($valueArray);
+        foreach ($valueArray as $key => $value) {
+            $newArray[$key] = $array[$key];
+        }
+        return $newArray;
     }
 }

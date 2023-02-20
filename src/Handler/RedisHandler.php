@@ -96,7 +96,7 @@ class RedisHandler{
                 }
             }
         } finally {
-            if (isset($Redis, $owner, $lockedRedisKey, $resultRedisKey) && ($Redis->get($lockedRedisKey) == $owner)) {
+            if (isset($Redis, $owner, $lockedRedisKey, $resultRedisKey) && ($Redis->get($lockedRedisKey) === $owner)) {
                 $Redis->expire($resultRedisKey, $lockedTime);
                 $Redis->del($lockedRedisKey);
             }
