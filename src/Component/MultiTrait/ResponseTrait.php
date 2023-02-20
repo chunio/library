@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Baichuan\Library\Component\MultiTrait;
 
-use Baichuan\Library\Http\Resource\JsonResource;
+use Baichuan\Library\Component\Resource\JsonResource;
 use Hyperf\HttpMessage\Base\Response;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;

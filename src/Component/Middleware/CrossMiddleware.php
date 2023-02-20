@@ -2,8 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Baichuan\Library\Http\Middleware;
-
+namespace Baichuan\Library\Component\Middleware;
 
 use Hyperf\Context\Context;
 use Psr\Http\Message\ResponseInterface;
