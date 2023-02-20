@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Baichuan\Library\Utility;
+namespace Baichuan\Library\Handler;
 
 use Baichuan\Library\Constant\RedisKeyEnum;
 
 /**
  * Class RedisHandler
- * @package Baichuan\Library\Utility
+ * @package Baichuan\Library\Handler
  * author : zengweitao@gmail.com
  * datetime: 2023/02/01 18:58
  * memo : 待添加：//igbinary_serialize() 時間快，壓縮高

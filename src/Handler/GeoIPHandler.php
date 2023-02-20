@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Component;
+namespace Baichuan\Library\Handler;
 
 use GeoIp2\Database\Reader;
 
 /**
- * class CommonHandler
- * @package Component
- * author : zengweitao@msn.com
- * datetime : 2022-04-17 16:47
+ * Class GeoIPHandler
+ * @package Baichuan\Library\Handler
+ * author : zengweitao@gmail.com
+ * datetime: 2023/02/20 16:08
  * memo : null
  */
 class GeoIPHandler
