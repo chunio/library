@@ -30,7 +30,7 @@ class MonologHandler
     {
         [$message, $label, $context, $name, $group] = $argument + ['', '', [], '', 'default'];
         $logger = static::instance($name, $group);
-        $logger->{$function}(commonFormatVariable(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2), $message, $label), $context);
+        $logger->{$function}(commonFormatVariable($message, $label, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)), $context);
     }
 
     public static function instance(string $name = '', string $group = 'default'): LoggerInterface

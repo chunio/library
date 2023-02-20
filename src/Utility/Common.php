@@ -17,7 +17,7 @@ if (!function_exists('monolog')) {
             //非協程I/O[START]
             $path = BASE_PATH . "/runtime/logs/" . __FUNCTION__ . "-0000-00-" . date("d") . ".log";//keep it for one month
             if (!file_exists($path)) touch($path);//compatible file_put_contents() cannot be created automatically
-            $trace = commonFormatVariable(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2), $variable, $label);
+            $trace = commonFormatVariable($variable, $label, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2));
             if (abs(filesize($path)) > 1024 * 1024 * 1024) {//flush beyond the limit/1024m
                 file_put_contents($path, $trace/*, LOCK_EX*/); //TODO:阻塞風險
             } else {
@@ -132,7 +132,7 @@ if(!function_exists('sendAlarm2DingTalk')){
         $secret = 'SEC8e6642f7e93939b4e04edefc7e06248d8b8c8120c8ff439879fc1ad5970ff601';
         $content = '';
         $content .= "[" . env('APP_NAME') . ' / ' . env('APP_ENV') . "]";
-        $content .=  str_replace("\"","'", commonFormatVariable(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2), $variable));
+        $content .=  str_replace("\"","'", commonFormatVariable($variable, '', debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)));
         $content = prettyJsonEncode([
             'msgtype' => 'text',
             'text' => [
@@ -171,10 +171,10 @@ if(!function_exists('commonFormatVariable')){
      * datetime: 2023/02/10 16:58
      * memo : null
      */
-    function commonFormatVariable(array $traceInfo, $variable, string $label = '', bool $jsonEncodeStatus = false): string
+    function commonFormatVariable($variable, string $label = '', array $traceInfo = [], bool $jsonEncodeStatus = false): string
     {
         try {
-            //$traceInfo = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);//TODO：此函數性能如何？
+            $traceInfo = $traceInfo ?: debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);//TODO：此函數性能如何？
             $file1 = ($startIndex = strrpos(($file1 = $traceInfo[1]['file']), env('APP_NAME'))) ? substr($file1, $startIndex + 1) : $file1;
             $funcFormat = function($variable, $jsonEncodeStatus){
                 if ($variable === true) return 'TRUE(BOOL)';
