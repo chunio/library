@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Baichuan\Library\Http\Resource;
+namespace Baichuan\Library\Component\Resource;
 
 use Baichuan\Library\Constant\ContextEnum;
 use Baichuan\Library\Handler\ContextHandler;

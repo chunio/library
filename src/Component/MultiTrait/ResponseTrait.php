@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Baichuan\Library\Http\MultiTrait;
+namespace Baichuan\Library\Component\MultiTrait;
 
 use Baichuan\Library\Http\Resource\JsonResource;
 use Hyperf\HttpMessage\Base\Response;

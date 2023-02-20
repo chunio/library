@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Baichuan\Library\Http\Resource;
+namespace Baichuan\Library\Component\Resource;
 
 use Hyperf\Resource\Concerns\CollectsResources;
 use Hyperf\Resource\Response\Response;
