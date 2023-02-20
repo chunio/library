@@ -6,6 +6,7 @@ use Baichuan\Library\Handler\MonologHandler;
 use Baichuan\Library\Constant\AnsiColorEnum;
 use Baichuan\Library\Handler\ContextHandler;
 use GuzzleHttp\Cookie\CookieJar;
+use Hyperf\Context\Context;
 use Hyperf\Kafka\ProducerManager;
 use Hyperf\Redis\RedisFactory;
 
@@ -264,8 +265,8 @@ if (!function_exists('idemExecute')) {
     {
         //example : App\Controller\IndexController_index_203b44837a4e70669009dd664e81769a
         $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
-        $adminInfo = \Hyperf\Utils\Context::get('adminInfo') ?? [];
-        $parameter = (new \ReflectionFunction($callable))->getStaticVariables();
+        $adminInfo = Context::get('adminInfo') ?? [];
+        $parameter = (new ReflectionFunction($callable))->getStaticVariables();
         $unique = md5(json_encode($adminInfo) . json_encode($parameter));
         $redisKey = (isset($trace[1]['class'], $trace[1]['function']) ? ("{$trace[1]['class']}_{$trace[1]['function']}_") : ((string)time() . "_")) . $unique;
         $Redis = redisInstance();
@@ -282,10 +283,10 @@ if (!function_exists('commonPagination')) {
     function commonPagination(array $list, int $pageIndex, int $pageSize): array
     {
         $recordNum = count($list);
-        $pageLimit = ceil($recordNum / $pageSize);
+        $pageLimit = intval(ceil($recordNum / $pageSize));
         if ($pageIndex < 1) {
             $pageIndex = 1;
-        } elseif ($pageIndex > $pageLimit && 0 != $pageLimit) {
+        } elseif ($pageIndex > $pageLimit && $pageLimit != 0 ) {
             $pageIndex = $pageLimit;
         }
         $start = intval(($pageIndex - 1) * $pageSize);
