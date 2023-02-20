@@ -16,7 +16,6 @@ use Baichuan\Library\Constant\RedisKeyEnum;
 class RedisHandler{
 
     const INIT = [
-        //null表示永不過期，詳情參見set();
         'ttl' => 7200,//單位：秒
     ];
 
@@ -35,7 +34,7 @@ class RedisHandler{
         $value = $Redis->get($redisKey);
         if ($value === false) {
             $value = $func();
-            $Redis->set($redisKey, commonJsonEncode($value), ($ttl === -1 ? null: $ttl));
+            $Redis->set($redisKey, commonJsonEncode($value), ($ttl === -1 ? null: $ttl));//null表示永不過期，詳情參見set();
             return $value;
         }
         return json_decode($value, true);
@@ -59,7 +58,7 @@ class RedisHandler{
             $result = $func();
             $value = commonJsonEncode($result);
             $Redis->hSet($redisKey, $hashField, $value);
-            $Redis->expire($redisKey,$ttl === -1 ? null : $ttl);
+            $Redis->expire($redisKey, $ttl);//-1表示永不過期，詳情參見expire();
         }
         return json_decode($value, true);
     }
