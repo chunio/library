@@ -203,7 +203,7 @@ if(!function_exists('commonFormatVariable')){
             if($jsonEncodeStatus) {
                 $trace = "{$traceJson}\n";
             }else{
-                $trace = "\n:<<UNIT[START]\n" . print_r($traceArray, false) . "\nUNIT[END]\n";//print_r()的換行會將大變量瞬間膨脹導致內存滿載
+                $trace = "\n:<<UNIT[START]\n" . print_r($traceArray, true) . "\nUNIT[END]\n";//print_r()的換行會將大變量瞬間膨脹導致內存滿載
             }
             if(matchEnvi('local')) echo $trace;
             return $trace;
