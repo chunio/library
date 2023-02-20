@@ -77,7 +77,7 @@ if (!function_exists('xdebugOld')) {
 }
 
 if (!function_exists('xdebug')) {
-    function xdebug(mixed $variable, string $label = '', string $level = 'info')
+    function xdebug($variable, string $label = '', string $level = 'info')
     {
         return MonologHandler::$level($variable, $label);
     }
