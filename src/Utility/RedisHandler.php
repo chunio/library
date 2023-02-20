@@ -15,8 +15,9 @@ use Baichuan\Library\Constant\RedisKeyEnum;
  */
 class RedisHandler{
 
-    static public $init = [
-        'ttl' => 86400 * 31,//單位：秒
+    const INIT = [
+        //null表示永不過期，詳情參見set();
+        'ttl' => 7200,//單位：秒
     ];
 
     /**
@@ -28,13 +29,13 @@ class RedisHandler{
      * datetime : 2022-04-17 15:50
      * memo : null
      */
-    static function attemptGet(callable $callable, string $redisKey, $ttl = null)
+    static function autoGet(callable $callable, string $redisKey, int $ttl = self::INIT['ttl'])
     {
         $Redis = redisInstance();
         $value = $Redis->get($redisKey);
         if ($value === false) {
             $value = $callable();
-            $Redis->set($redisKey, commonJsonEncode($value), ($ttl === null ? self::$init['ttl'] : $ttl));
+            $Redis->set($redisKey, commonJsonEncode($value), ($ttl === -1 ? null: $ttl));
             return $value;
         }
         return json_decode($value, true);
@@ -47,9 +48,9 @@ class RedisHandler{
      * @throws \ReflectionException
      * author : zengweitao@msn.com
      * datetime : 2022-04-17 15:50
-     * memo : null
+     * memo : 每次使用將延長過期時間
      */
-    static function attemptHashGet(string $redisKey, string $hashField, callable $callable, int $ttl = 0)
+    static function autoHashGet(string $redisKey, string $hashField, callable $callable, int $ttl = self::INIT['ttl'])
     {
         $Redis = redisInstance();
         $value = $Redis->hGet($redisKey, $hashField);
@@ -57,8 +58,8 @@ class RedisHandler{
             $result = $callable();
             $value = commonJsonEncode($result);
             $Redis->hSet($redisKey, $hashField, $value);
+            $Redis->expire($redisKey,$ttl === -1 ? null : $ttl);
         }
-        if($ttl !== -1) $Redis->expire($redisKey,$ttl ?: self::$init['ttl']);
         return json_decode($value, true);
     }
 
