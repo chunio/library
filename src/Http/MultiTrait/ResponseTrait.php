@@ -37,9 +37,7 @@ trait ResponseTrait
             return JsonResource::collection($data)->setMsg($message);
         }
         *****/
-        $return = (new JsonResource($data))->setMsg($message)->setPreserveKeys(true);
-        MonologHandler::info($return);
-        return $return;
+        return (new JsonResource($data))->setMsg($message)->setPreserveKeys(true);
     }
 
     /**
