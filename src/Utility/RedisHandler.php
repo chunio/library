@@ -21,20 +21,20 @@ class RedisHandler{
     ];
 
     /**
-     * @param callable $callable
+     * @param callable $func
+     * @param string $redisKey
      * @param int $ttl
      * @return mixed
-     * @throws \ReflectionException
-     * author : zengweitao@msn.com
-     * datetime : 2022-04-17 15:50
+     * author : zengweitao@gmail.com
+     * datetime: 2023/02/20 11:53
      * memo : null
      */
-    static function autoGet(callable $callable, string $redisKey, int $ttl = self::INIT['ttl'])
+    public static function autoGet(callable $func, string $redisKey, int $ttl = self::INIT['ttl'])
     {
         $Redis = redisInstance();
         $value = $Redis->get($redisKey);
         if ($value === false) {
-            $value = $callable();
+            $value = $func();
             $Redis->set($redisKey, commonJsonEncode($value), ($ttl === -1 ? null: $ttl));
             return $value;
         }
@@ -42,20 +42,21 @@ class RedisHandler{
     }
 
     /**
-     * @param callable $callable
+     * @param callable $func
+     * @param string $redisKey
+     * @param string $hashField
      * @param int $ttl
      * @return mixed
-     * @throws \ReflectionException
-     * author : zengweitao@msn.com
-     * datetime : 2022-04-17 15:50
-     * memo : 每次使用將延長過期時間
+     * author : zengweitao@gmail.com
+     * datetime: 2023/02/20 11:53
+     * memo : null
      */
-    static function autoHashGet(string $redisKey, string $hashField, callable $callable, int $ttl = self::INIT['ttl'])
+    public static function autoHashGet(callable $func, string $redisKey, string $hashField, int $ttl = self::INIT['ttl'])
     {
         $Redis = redisInstance();
         $value = $Redis->hGet($redisKey, $hashField);
         if ($value === false) {
-            $result = $callable();
+            $result = $func();
             $value = commonJsonEncode($result);
             $Redis->hSet($redisKey, $hashField, $value);
             $Redis->expire($redisKey,$ttl === -1 ? null : $ttl);
@@ -64,16 +65,16 @@ class RedisHandler{
     }
 
     /**
+     * @param callable $func
      * @param string $mutexName
-     * @param callable|null $mainFunc
      * @param int $lockedTime
+     * @param bool $returnCacheResult
      * @return array|mixed|null
-     * @throws \Throwable
-     * author : zengweitao@msn.com
-     * datetime : 2022-04-17 16:38
+     * author : zengweitao@gmail.com
+     * datetime: 2023/02/20 11:50
      * memo : 互斥鎖
      */
-    public static function mutex(string $mutexName, callable $mainFunc = null, int $lockedTime = 3/* , int &$retry = 0 */, bool $returnCacheResult = true)
+    public static function mutex(callable $func, string $mutexName, int $lockedTime = 3/* , int &$retry = 0 */, bool $returnCacheResult = true)
     {
         try {
             $owner = uniqid('', true);
@@ -81,7 +82,7 @@ class RedisHandler{
             $lockedRedisKey = RedisKeyEnum::STRING['STRING:MutexName:'] . $mutexName;
             $resultRedisKey = RedisKeyEnum::STRING['STRING:MutexResult:'] . $mutexName;
             if ($Redis->set($lockedRedisKey, $owner, ['EX' => $lockedTime, 'NX']) === true) {
-                $result = $mainFunc();
+                $result = $func();
                 if($returnCacheResult) $Redis->lPush($resultRedisKey, commonJsonEncode($result)); // 共享#並發邏輯#返回值
             } elseif($returnCacheResult) {
                 if ($result/* 返回:「含:1鍵名，2鍵值」的索引數組 */ = $Redis->brPop([$resultRedisKey], $lockedTime)) {// 阻塞，提取#並發邏輯#返回值
@@ -170,14 +171,14 @@ class RedisHandler{
 //    }
 
     //隊列管理，支持：1插隊（手動干預優先級）
-    public function queueManager(){}
+//    public function queueManager(){}
 
-    static public function matchDelete(string $keyword): array
+    public static function matchDelete(string $keyword): array
     {
         $Redis = redisInstance();
         if($cacheList = $Redis->keys("*{$keyword}*")){
             if($cachePrefix = config('redis.default.options.2')){
-                array_walk($cacheList,function(&$value, $key) use($cachePrefix){
+                array_walk($cacheList,function(&$value/*, $key*/) use($cachePrefix){
                     $value = str_replace($cachePrefix,'',$value);
                 });
             }
@@ -186,12 +187,12 @@ class RedisHandler{
         return $cacheList;
     }
 
-    static public function matchList(string $keyword): array
+    public static function matchList(string $keyword): array
     {
         $Redis = redisInstance();
         if($cacheList = $Redis->keys("*{$keyword}*")){
             if($cachePrefix = config('redis.default.options.2')){
-                array_walk($cacheList,function(&$value, $key) use($cachePrefix){
+                array_walk($cacheList,function(&$value/*, $key*/) use($cachePrefix){
                     $value = str_replace($cachePrefix,'',$value);
                 });
             }
