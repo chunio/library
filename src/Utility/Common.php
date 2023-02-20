@@ -175,7 +175,7 @@ if(!function_exists('commonFormatVariable')){
     {
         try {
             $traceInfo = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);//TODO：此函數性能如何？
-            $file1 = ($startIndex = strrpos(($file1 = $traceInfo[1]['file']), env('APP_NAME'))) ? substr($file1, $startIndex + 1) : $file1;
+            $file1 = ($startIndex = strrpos(($file1 = $traceInfo[2]['file']), env('APP_NAME'))) ? substr($file1, $startIndex + 1) : $file1;
             $funcFormat = function($variable, $jsonEncodeStatus){
                 if ($variable === true) return 'TRUE(BOOL)';
                 if ($variable === false) return 'FALSE(BOOL)';
