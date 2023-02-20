@@ -8,6 +8,65 @@ use Baichuan\Library\Handler\ContextHandler;
 use GuzzleHttp\Cookie\CookieJar;
 use Hyperf\Redis\RedisFactory;
 
+if(!function_exists('commonFormatVariable')){
+    /**
+     * @param $variable
+     * @param string $label
+     * @param bool $jsonEncodeStatus
+     * @return string
+     * author : zengweitao@gmail.com
+     * datetime: 2023/02/10 16:58
+     * memo : null
+     */
+    function commonFormatVariable($variable, string $label = '', array $traceInfo = [], bool $jsonEncodeStatus = false): string
+    {
+        try {
+            $traceInfo = $traceInfo ?: debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);//TODO：此函數性能如何？
+            $file1 = ($startIndex = strrpos(($file1 = $traceInfo[1]['file']), env('APP_NAME'))) ? substr($file1, $startIndex + 1) : $file1;
+            $funcFormat = function($variable, $jsonEncodeStatus){
+                if ($variable === true) return 'TRUE(BOOL)';
+                if ($variable === false) return 'FALSE(BOOL)';
+                if ($variable === null) return 'NULL';
+                if ($variable === '') return "(EMPTY STRING)";
+                if ($variable instanceof Throwable) return ['message' => $variable->getMessage(), 'trace' => $variable->getTrace()];
+                if(is_object($variable) && $jsonEncodeStatus) return (array)$variable;
+                return $variable;
+            };
+            $traceArray = [
+                'date' => date('Y-m-d H:i:s'),
+                'traceId' => ContextHandler::pullTraceId(),
+                "debugBacktrace" =>  "./{$file1}(line:{$traceInfo[1]['line']})",
+                'label' => $label ?: 'default',
+                'message' => $funcFormat($variable, $jsonEncodeStatus),
+                'request' => ContextHandler::pullRequestAbstract(),
+            ];
+            //check memory[START]
+            $traceJson = prettyJsonEncode($traceArray);
+            if(strlen($traceJson) > (($megabyteLimit = 1024/*unit:KB*/) * 1024)){//超出限額則截取
+                $jsonEncodeStatus = true;
+                $traceJson = substr($traceJson, 0,$megabyteLimit * 1024);
+            }
+            //check memory[END]
+            if($jsonEncodeStatus) {
+                $trace = "{$traceJson}\n";
+            }else{
+                $trace = "\n:<<UNIT[START]\n" . print_r($traceArray, true) . "\nUNIT[END]\n";//print_r()的換行會將大變量瞬間膨脹導致內存滿載
+            }
+            if(matchEnvi('local')) echo $trace;
+            return $trace;
+        } catch (Throwable $e) {
+            return prettyJsonEncode([
+                'date' => date('Y-m-d H:i:s'),
+                'traceId' => ContextHandler::pullTraceId(),
+                'debugBacktrace' => $e->getFile() . "(line:{$e->getLine()})",
+                'label' => "{$label} throwable",
+                'message' => $e->getMessage(),
+                'request' => ContextHandler::pullRequestAbstract(),
+            ]);
+        }
+    }
+}
+
 if (!function_exists('monolog')) {
     function monolog($variable, string $label = '', string $level = 'info'): bool
     {
@@ -29,6 +88,44 @@ if (!function_exists('monolog')) {
         return true;
     }
 }
+
+if(!function_exists('sendAlarm2DingTalk')){
+    function sendAlarm2DingTalk($variable)
+    {
+        $timestamp = time() * 1000;
+        $accessToken = 'b76e1cf33a222a8ddee2fde1c930be03cdc1f04a31d1a1036be9803a6f712319';
+        $secret = 'SEC8e6642f7e93939b4e04edefc7e06248d8b8c8120c8ff439879fc1ad5970ff601';
+        $content = '';
+        $content .= "[" . env('APP_NAME') . ' / ' . env('APP_ENV') . "]";
+        $content .=  str_replace("\"","'", commonFormatVariable($variable, '', debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)));
+        $content = prettyJsonEncode([
+            'msgtype' => 'text',
+            'text' => [
+                'content' => $content
+            ]
+        ]);
+        $parameter = [
+            'access_token' => $accessToken,
+            'timestamp' => $timestamp,
+            'sign' => urlencode(base64_encode(hash_hmac('sha256', $timestamp . "\n" . $secret, $secret, true)))
+        ];
+        $webhook = "https://oapi.dingtalk.com/robot/send?" . http_build_query($parameter);
+        $option = [
+            'http' => [
+                'method' => "POST",
+                'header' => "Content-type:application/json;charset=utf-8",//
+                'content' => $content
+            ],
+            "ssl" => [ //不驗證ssl證書
+                "verify_peer" => false,
+                "verify_peer_name" => false
+            ]
+        ];
+        MonologHandler::info('xxxx');
+        return file_get_contents($webhook, false, stream_context_create($option));
+    }
+}
+
 
 if (!function_exists('di')) {
     /**
@@ -124,104 +221,8 @@ if (!function_exists('colorString')) {
     }
 }
 
-if(!function_exists('sendAlarm2DingTalk')){
-    function sendAlarm2DingTalk($variable)
-    {
-        $timestamp = time() * 1000;
-        $accessToken = 'b76e1cf33a222a8ddee2fde1c930be03cdc1f04a31d1a1036be9803a6f712319';
-        $secret = 'SEC8e6642f7e93939b4e04edefc7e06248d8b8c8120c8ff439879fc1ad5970ff601';
-        $content = '';
-        $content .= "[" . env('APP_NAME') . ' / ' . env('APP_ENV') . "]";
-        $content .=  str_replace("\"","'", commonFormatVariable($variable, '', debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)));
-        $content = prettyJsonEncode([
-            'msgtype' => 'text',
-            'text' => [
-                'content' => $content
-            ]
-        ]);
-        $parameter = [
-            'access_token' => $accessToken,
-            'timestamp' => $timestamp,
-            'sign' => urlencode(base64_encode(hash_hmac('sha256', $timestamp . "\n" . $secret, $secret, true)))
-        ];
-        $webhook = "https://oapi.dingtalk.com/robot/send?" . http_build_query($parameter);
-        $option = [
-            'http' => [
-                'method' => "POST",
-                'header' => "Content-type:application/json;charset=utf-8",//
-                'content' => $content
-            ],
-            "ssl" => [ //不驗證ssl證書
-                "verify_peer" => false,
-                "verify_peer_name" => false
-            ]
-        ];
-        MonologHandler::info('xxxx');
-        return file_get_contents($webhook, false, stream_context_create($option));
-    }
-}
-
-if(!function_exists('commonFormatVariable')){
-    /**
-     * @param $variable
-     * @param string $label
-     * @param bool $jsonEncodeStatus
-     * @return string
-     * author : zengweitao@gmail.com
-     * datetime: 2023/02/10 16:58
-     * memo : null
-     */
-    function commonFormatVariable($variable, string $label = '', array $traceInfo = [], bool $jsonEncodeStatus = false): string
-    {
-        try {
-            $traceInfo = $traceInfo ?: debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);//TODO：此函數性能如何？
-            $file1 = ($startIndex = strrpos(($file1 = $traceInfo[1]['file']), env('APP_NAME'))) ? substr($file1, $startIndex + 1) : $file1;
-            $funcFormat = function($variable, $jsonEncodeStatus){
-                if ($variable === true) return 'TRUE(BOOL)';
-                if ($variable === false) return 'FALSE(BOOL)';
-                if ($variable === null) return 'NULL';
-                if ($variable === '') return "(EMPTY STRING)";
-                if ($variable instanceof Throwable) return ['message' => $variable->getMessage(), 'trace' => $variable->getTrace()];
-                if(is_object($variable) && $jsonEncodeStatus) return (array)$variable;
-                return $variable;
-            };
-            $traceArray = [
-                'date' => date('Y-m-d H:i:s'),
-                'traceId' => ContextHandler::pullTraceId(),
-                "debugBacktrace" =>  "./{$file1}(line:{$traceInfo[1]['line']})",
-                'label' => $label ?: 'default',
-                'message' => $funcFormat($variable, $jsonEncodeStatus),
-                'request' => ContextHandler::pullRequestAbstract(),
-            ];
-            //check memory[START]
-            $traceJson = prettyJsonEncode($traceArray);
-            if(strlen($traceJson) > (($megabyteLimit = 1024/*unit:KB*/) * 1024)){//超出限額則截取
-                $jsonEncodeStatus = true;
-                $traceJson = substr($traceJson, 0,$megabyteLimit * 1024);
-            }
-            //check memory[END]
-            if($jsonEncodeStatus) {
-                $trace = "{$traceJson}\n";
-            }else{
-                $trace = "\n:<<UNIT[START]\n" . print_r($traceArray, true) . "\nUNIT[END]\n";//print_r()的換行會將大變量瞬間膨脹導致內存滿載
-            }
-            if(matchEnvi('local')) echo $trace;
-            return $trace;
-        } catch (Throwable $e) {
-            return prettyJsonEncode([
-                'date' => date('Y-m-d H:i:s'),
-                'traceId' => ContextHandler::pullTraceId(),
-                'debugBacktrace' => $e->getFile() . "(line:{$e->getLine()})",
-                'label' => "{$label} throwable",
-                'message' => $e->getMessage(),
-                'request' => ContextHandler::pullRequestAbstract(),
-            ]);
-        }
-    }
-}
-
-if(!function_exists('commonGet')){
-    function commonGet(string $uri, array $query = [], array $cookieDetail = [], string $cookieDomain = '')
+if(!function_exists('commonHttpGet')){
+    function commonHttpGet(string $uri, array $query = [], array $cookieDetail = [], string $cookieDomain = '')
     {
         $config = [
             'query' => $query,
@@ -235,8 +236,8 @@ if(!function_exists('commonGet')){
     }
 }
 
-if(!function_exists('commonPost')){
-    function commonPost(string $uri, array $body = [], $header = ['Content-Type' => 'application/json'], array $cookieDetail = [], string $cookieDomain = '')
+if(!function_exists('commonHttpPost')){
+    function commonHttpPost(string $uri, array $body = [], $header = ['Content-Type' => 'application/json'], array $cookieDetail = [], string $cookieDomain = '')
     {
         $config = [
             'headers' => $header,

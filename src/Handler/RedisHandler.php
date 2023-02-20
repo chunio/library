@@ -206,4 +206,8 @@ class RedisHandler{
         return $cacheList;
     }
 
+    public static function checkRedisKey(){
+        //TODO:檢測全局緩存是否重名
+    }
+
 }
