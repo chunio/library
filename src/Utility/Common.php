@@ -150,21 +150,21 @@ if (!function_exists('redisInstance')) {
     }
 }
 
-if (!function_exists('prettyJsonEncode')) {
-    /**
-     * author : zengweitao@gmail.com
-     * datetime: 2023/01/30 15:10
-     * memo : null
-     */
-    function prettyJsonEncode($object, ?int $flag = JSON_PRETTY_PRINT): string
-    {
-        $flagCounter = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
-        if (!is_null($flag)) {
-            $flagCounter |= $flag;
-        }
-        return json_encode($object, $flagCounter);
-    }
-}
+//if (!function_exists('prettyJsonEncode')) {
+//    /**
+//     * author : zengweitao@gmail.com
+//     * datetime: 2023/01/30 15:10
+//     * memo : null
+//     */
+//    function prettyJsonEncode($object, ?int $flag = JSON_PRETTY_PRINT): string
+//    {
+//        $flagCounter = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
+//        if (!is_null($flag)) {
+//            $flagCounter |= $flag;
+//        }
+//        return json_encode($object, $flagCounter);
+//    }
+//}
 
 if (!function_exists('commonJsonEncode')) {
     /**
