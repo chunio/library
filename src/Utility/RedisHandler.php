@@ -28,7 +28,7 @@ class RedisHandler{
      * datetime: 2023/02/20 11:53
      * memo : null
      */
-    public static function autoGet(callable $func, string $redisKey, int $ttl = self::INIT['ttl'])
+    public static function autoGet(string $redisKey, callable $func, int $ttl = self::INIT['ttl'])
     {
         $Redis = redisInstance();
         $value = $Redis->get($redisKey);
@@ -50,7 +50,7 @@ class RedisHandler{
      * datetime: 2023/02/20 11:53
      * memo : null
      */
-    public static function autoHashGet(callable $func, string $redisKey, string $hashField, int $ttl = self::INIT['ttl'])
+    public static function autoHashGet(string $redisKey, string $hashField, callable $func, int $ttl = self::INIT['ttl'])
     {
         $Redis = redisInstance();
         $value = $Redis->hGet($redisKey, $hashField);
@@ -79,7 +79,7 @@ class RedisHandler{
      * datetime: 2023/02/20 11:50
      * memo : 互斥鎖
      */
-    public static function mutex(callable $func, string $mutexName, int $lockedTime = 3/* , int &$retry = 0 */, bool $returnCacheResult = true)
+    public static function mutex(string $mutexName, callable $func, int $lockedTime = 3/* , int &$retry = 0 */, bool $returnCacheResult = true)
     {
         try {
             $owner = uniqid('', true);
