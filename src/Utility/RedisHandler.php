@@ -28,7 +28,7 @@ class RedisHandler{
      * datetime : 2022-04-17 15:50
      * memo : null
      */
-    static function checkGet(callable $callable, string $redisKey, $ttl = null)
+    static function attemptGet(callable $callable, string $redisKey, $ttl = null)
     {
         $Redis = redisInstance();
         $value = $Redis->get($redisKey);
@@ -49,21 +49,17 @@ class RedisHandler{
      * datetime : 2022-04-17 15:50
      * memo : null
      */
-    static function checkHashGet(string $redisKey, string $hashField, callable $callable, int $ttl = 0)
+    static function attemptHashGet(string $redisKey, string $hashField, callable $callable, int $ttl = 0)
     {
-        try{
-            $Redis = redisInstance();
-            $value = $Redis->hGet($redisKey, $hashField);
-            if ($value === false) {
-                $result = $callable();
-                $value = commonJsonEncode($result);
-                $Redis->hSet($redisKey, $hashField, $value);
-            }
-            if($ttl !== -1) $Redis->expire($redisKey,$ttl ?: self::$init['ttl']);
-            return json_decode($value, true);
-        }catch (\Throwable $e){
-            xdebug($e);
+        $Redis = redisInstance();
+        $value = $Redis->hGet($redisKey, $hashField);
+        if ($value === false) {
+            $result = $callable();
+            $value = commonJsonEncode($result);
+            $Redis->hSet($redisKey, $hashField, $value);
         }
+        if($ttl !== -1) $Redis->expire($redisKey,$ttl ?: self::$init['ttl']);
+        return json_decode($value, true);
     }
 
     /**
