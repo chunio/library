@@ -176,7 +176,6 @@ if(!function_exists('commonFormatVariable')){
         try {
             $traceInfo = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);//TODO：此函數性能如何？
             $file1 = ($startIndex = strrpos(($file1 = $traceInfo[1]['file']), env('APP_NAME'))) ? substr($file1, $startIndex + 1) : $file1;
-            //$file2 = ($startIndex = strrpos(($file2 = $traceInfo[2]['file']), env('APP_NAME'))) ? substr($file2, $startIndex + 1) : $file2;
             $funcFormat = function($variable, $jsonEncodeStatus){
                 if ($variable === true) return 'TRUE(BOOL)';
                 if ($variable === false) return 'FALSE(BOOL)';
@@ -190,12 +189,6 @@ if(!function_exists('commonFormatVariable')){
                 'date' => date('Y-m-d H:i:s'),
                 'traceId' => ContextHandler::pullTraceId(),
                 "debugBacktrace" =>  "./{$file1}(line:{$traceInfo[1]['line']})",
-                /*****
-                'debugBacktrace' => [
-                    "./{$file1}(line:{$traceInfo[1]['line']})",
-                    "./{$file2}(line:{$traceInfo[2]['line']}/func:{$traceInfo[2]['function']})",
-                ],
-                *****/
                 'label' => $label ?: 'default',
                 'message' => $funcFormat($variable, $jsonEncodeStatus),
                 'request' => ContextHandler::pullRequestAbstract(),
