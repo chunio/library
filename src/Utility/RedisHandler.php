@@ -58,8 +58,8 @@ class RedisHandler{
             $result = $func();
             $value = commonJsonEncode($result);
             $Redis->hSet($redisKey, $hashField, $value);
-            $Redis->expire($redisKey, $ttl);//-1表示永不過期，詳情參見expire();
         }
+        $Redis->expire($redisKey, $ttl);//-1表示永不過期，詳情參見expire();
         return json_decode($value, true);
     }
 
