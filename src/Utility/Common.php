@@ -185,7 +185,7 @@ if(!function_exists('commonFormatVariable')){
                 if(is_object($variable) && $jsonEncodeStatus) return (array)$variable;
                 return $variable;
             };
-            $trace = [
+            $traceArray = [
                 'date' => date('Y-m-d H:i:s'),
                 'traceId' => ContextHandler::pullTraceId(),
                 "debugBacktrace" =>  "./{$file1}(line:{$traceInfo[1]['line']})",
@@ -194,7 +194,7 @@ if(!function_exists('commonFormatVariable')){
                 'request' => ContextHandler::pullRequestAbstract(),
             ];
             //check memory[START]
-            $traceJson = prettyJsonEncode($trace);
+            $traceJson = prettyJsonEncode($traceArray);
             if(strlen($traceJson) > (($megabyteLimit = 1024/*unit:KB*/) * 1024)){//超出限額則截取
                 $jsonEncodeStatus = true;
                 $traceJson = substr($traceJson, 0,$megabyteLimit * 1024);
@@ -203,8 +203,7 @@ if(!function_exists('commonFormatVariable')){
             if($jsonEncodeStatus) {
                 $trace = "{$traceJson}\n";
             }else{
-                $trace = print_r($trace, false);//print_r()的換行會將大變量瞬間膨脹導致內存滿載
-                $trace = "\n:<<UNIT[START]\n{$trace}\nUNIT[END]\n";
+                $trace = "\n:<<UNIT[START]\n" . print_r($traceArray, false) . "\nUNIT[END]\n";//print_r()的換行會將大變量瞬間膨脹導致內存滿載
             }
             if(matchEnvi('local')) echo $trace;
             return $trace;
