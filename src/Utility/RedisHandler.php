@@ -34,7 +34,7 @@ class RedisHandler{
         $value = $Redis->get($redisKey);
         if ($value === false) {
             $value = $func();
-            $Redis->set($redisKey, commonJsonEncode($value), ($ttl === -1 ? null: $ttl));//null表示永不過期，詳情參見set();
+            $Redis->set($redisKey, prettyJsonEncode($value), ($ttl === -1 ? null: $ttl));//null表示永不過期，詳情參見set();
             return $value;
         }
         return json_decode($value, true);
@@ -56,7 +56,7 @@ class RedisHandler{
         $value = $Redis->hGet($redisKey, $hashField);
         if ($value === false) {
             $result = $func();
-            $value = commonJsonEncode($result);
+            $value = prettyJsonEncode($result);
             $Redis->hSet($redisKey, $hashField, $value);
         }
         //refresh ttl[START]
@@ -88,11 +88,11 @@ class RedisHandler{
             $resultRedisKey = RedisKeyEnum::STRING['STRING:MutexResult:'] . $mutexName;
             if ($Redis->set($lockedRedisKey, $owner, ['EX' => $lockedTime, 'NX']) === true) {
                 $result = $func();
-                if($returnCacheResult) $Redis->lPush($resultRedisKey, commonJsonEncode($result)); // 共享#並發邏輯#返回值
+                if($returnCacheResult) $Redis->lPush($resultRedisKey, prettyJsonEncode($result)); // 共享#並發邏輯#返回值
             } elseif($returnCacheResult) {
                 if ($result/* 返回:「含:1鍵名，2鍵值」的索引數組 */ = $Redis->brPop([$resultRedisKey], $lockedTime)) {// 阻塞，提取#並發邏輯#返回值
                     $result = json_decode($result[1], true);
-                    $Redis->lPush($resultRedisKey, commonJsonEncode($result));
+                    $Redis->lPush($resultRedisKey, prettyJsonEncode($result));
                 }
             }
         } finally {

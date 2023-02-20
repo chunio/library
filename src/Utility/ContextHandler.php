@@ -55,8 +55,8 @@ class ContextHandler
             $requestAbstract =  [
                 'api' => "(method:" . $Request->getMethod() . ")" . $Request->getUri()->__toString(),
                 'header' => array_map(fn ($v) => count($v) === 1 ? $v[0] : $v, $Request->getHeaders()),
-                'query' => commonJsonEncode($Request->getQueryParams()),
-                'body' => commonJsonEncode($Request->getParsedBody()),
+                'query' => prettyJsonEncode($Request->getQueryParams()),
+                'body' => prettyJsonEncode($Request->getParsedBody()),
             ];
             unset($RequestClass);
         }

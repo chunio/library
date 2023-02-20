@@ -150,29 +150,13 @@ if (!function_exists('redisInstance')) {
     }
 }
 
-//if (!function_exists('prettyJsonEncode')) {
-//    /**
-//     * author : zengweitao@gmail.com
-//     * datetime: 2023/01/30 15:10
-//     * memo : null
-//     */
-//    function prettyJsonEncode($object, ?int $flag = JSON_PRETTY_PRINT): string
-//    {
-//        $flagCounter = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
-//        if (!is_null($flag)) {
-//            $flagCounter |= $flag;
-//        }
-//        return json_encode($object, $flagCounter);
-//    }
-//}
-
-if (!function_exists('commonJsonEncode')) {
+if (!function_exists('prettyJsonEncode')) {
     /**
      * author : zengweitao@gmail.com
      * datetime: 2023/01/30 15:10
      * memo : null
      */
-    function commonJsonEncode($object, int $flag = 0): string
+    function prettyJsonEncode($object, ?int $flag = JSON_PRETTY_PRINT): string
     {
         //JSON_PRETTY_PRINT//易讀格式（即：自動換行）
         $flagCounter = JSON_UNESCAPED_SLASHES/*不轉義反斜杠*/ | JSON_UNESCAPED_UNICODE/*unicode轉至中文*/;
@@ -202,7 +186,7 @@ if(!function_exists('sendAlarm2DingTalk')){
         $content = '';
         $content .= "[" . env('APP_NAME') . ' / ' . env('APP_ENV') . "]";
         $content .=  str_replace("\"","'", commonFormatVariable($variable));
-        $content = commonJsonEncode([
+        $content = prettyJsonEncode([
             'msgtype' => 'text',
             'text' => [
                 'content' => $content
@@ -270,7 +254,7 @@ if(!function_exists('commonFormatVariable')){
                 'request' => ContextHandler::pullRequestAbstract(),
             ];
             //check memory[START]
-            $traceJson = commonJsonEncode($trace);
+            $traceJson = prettyJsonEncode($trace);
             if(strlen($traceJson) > (($megabyteLimit = 1024/*unit:KB*/) * 1024)){//超出限額則截取
                 $jsonEncodeStatus = true;
                 $traceJson = substr($traceJson, 0,$megabyteLimit * 1024);
@@ -285,7 +269,7 @@ if(!function_exists('commonFormatVariable')){
             if(matchEnvi('local')) echo $trace;
             return $trace;
         } catch (Throwable $e) {
-            return commonJsonEncode([
+            return prettyJsonEncode([
                 'date' => date('Y-m-d H:i:s'),
                 'traceId' => ContextHandler::pullTraceId(),
                 'debugBacktrace' => $e->getFile() . "(line:{$e->getLine()})",
