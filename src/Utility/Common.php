@@ -8,8 +8,8 @@ use Baichuan\Library\Utility\ContextHandler;
 use GuzzleHttp\Cookie\CookieJar;
 use Hyperf\Redis\RedisFactory;
 
-if (!function_exists('xdebug')) {
-    function xdebug($variable, string $label = '', string $level = 'info'): bool
+if (!function_exists('monolog')) {
+    function monolog($variable, string $label = '', string $level = 'info'): bool
     {
         if(class_exists(MonologHandler::class)){
             MonologHandler::$level($variable, $label);
@@ -17,13 +17,13 @@ if (!function_exists('xdebug')) {
             //非協程I/O[START]
             $path = BASE_PATH . "/runtime/logs/" . __FUNCTION__ . "-0000-00-" . date("d") . ".log";//keep it for one month
             if (!file_exists($path)) touch($path);//compatible file_put_contents() cannot be created automatically
-            $variable = commonFormatVariable($variable);
+            $trace = commonFormatVariable(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2), $variable, $label);
             if (abs(filesize($path)) > 1024 * 1024 * 1024) {//flush beyond the limit/1024m
-                file_put_contents($path, $variable/*, LOCK_EX*/); //TODO:阻塞風險
+                file_put_contents($path, $trace/*, LOCK_EX*/); //TODO:阻塞風險
             } else {
-                file_put_contents($path, $variable, FILE_APPEND/* | LOCK_EX*/);
+                file_put_contents($path, $trace, FILE_APPEND/* | LOCK_EX*/);
             }
-            if(matchEnvi('local')) echo "$variable\n";//DEBUG_LABEL
+            if(matchEnvi('local')) echo "$trace\n";
             //非協程I/O[END]
         }
         return true;
@@ -125,14 +125,14 @@ if (!function_exists('colorString')) {
 }
 
 if(!function_exists('sendAlarm2DingTalk')){
-    function sendAlarm2DingTalk(&$variable)
+    function sendAlarm2DingTalk($variable)
     {
         $timestamp = time() * 1000;
         $accessToken = 'b76e1cf33a222a8ddee2fde1c930be03cdc1f04a31d1a1036be9803a6f712319';
         $secret = 'SEC8e6642f7e93939b4e04edefc7e06248d8b8c8120c8ff439879fc1ad5970ff601';
         $content = '';
         $content .= "[" . env('APP_NAME') . ' / ' . env('APP_ENV') . "]";
-        $content .=  str_replace("\"","'", commonFormatVariable($variable));
+        $content .=  str_replace("\"","'", commonFormatVariable(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2), $variable));
         $content = prettyJsonEncode([
             'msgtype' => 'text',
             'text' => [
@@ -171,11 +171,11 @@ if(!function_exists('commonFormatVariable')){
      * datetime: 2023/02/10 16:58
      * memo : null
      */
-    function commonFormatVariable($variable, string $label = '', bool $jsonEncodeStatus = false): string
+    function commonFormatVariable(array $traceInfo, $variable, string $label = '', bool $jsonEncodeStatus = false): string
     {
         try {
-            $traceInfo = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);//TODO：此函數性能如何？
-            $file1 = ($startIndex = strrpos(($file1 = $traceInfo[2]['file']), env('APP_NAME'))) ? substr($file1, $startIndex + 1) : $file1;
+            //$traceInfo = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);//TODO：此函數性能如何？
+            $file1 = ($startIndex = strrpos(($file1 = $traceInfo[1]['file']), env('APP_NAME'))) ? substr($file1, $startIndex + 1) : $file1;
             $funcFormat = function($variable, $jsonEncodeStatus){
                 if ($variable === true) return 'TRUE(BOOL)';
                 if ($variable === false) return 'FALSE(BOOL)';
@@ -188,7 +188,7 @@ if(!function_exists('commonFormatVariable')){
             $traceArray = [
                 'date' => date('Y-m-d H:i:s'),
                 'traceId' => ContextHandler::pullTraceId(),
-                "debugBacktrace" =>  "./{$file1}(line:{$traceInfo[2]['line']})",
+                "debugBacktrace" =>  "./{$file1}(line:{$traceInfo[1]['line']})",
                 'label' => $label ?: 'default',
                 'message' => $funcFormat($variable, $jsonEncodeStatus),
                 'request' => ContextHandler::pullRequestAbstract(),
