@@ -279,33 +279,33 @@ if (!function_exists('idemExecute')) {
 }
 
 if (!function_exists('commonPagination')) {
-    function commonPagination(array $list, int $page, int $pageSize): array
+    function commonPagination(array $list, int $pageIndex, int $pageSize): array
     {
         $recordNum = count($list);
-        $maxPage = ceil($recordNum / $pageSize);
-        if ($page < 1) {
-            $page = 1;
-        } elseif ($page > $maxPage && 0 != $maxPage) {
-            $page = $maxPage;
+        $pageLimit = ceil($recordNum / $pageSize);
+        if ($pageIndex < 1) {
+            $pageIndex = 1;
+        } elseif ($pageIndex > $pageLimit && 0 != $pageLimit) {
+            $pageIndex = $pageLimit;
         }
-        $start = intval(($page - 1) * $pageSize);
+        $start = intval(($pageIndex - 1) * $pageSize);
         $currentList = $list ? array_slice($list, $start, $pageSize) : [];
         return [
-            'list' => $currentList,
-            'page' => $page,
+            'current_list' => $currentList,
+            'page_index' => $pageIndex,
             'page_size' => $pageSize,
-            'max_page' => $maxPage,
-            'total' => $recordNum,
+            'page_limit' => $pageLimit,
+            'record_num' => $recordNum,
         ];
     }
 }
 
 if (!function_exists('commonSort')) {
-    function commonSort(array $array, string $slaveKey, string $sort = 'DESC'): array
+    function commonSort(array $array, string $slaveField, string $sort = 'DESC'): array
     {
         $newArray = $valueArray = [];
         foreach ($array as $key => $value) {
-            $valueArray[$key] = $value[$slaveKey];
+            $valueArray[$key] = $value[$slaveField];
         }
         if (strtoupper($sort) === 'ASC') {
             asort($valueArray);
