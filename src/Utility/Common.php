@@ -8,7 +8,7 @@ use Baichuan\Library\Utility\ContextHandler;
 use GuzzleHttp\Cookie\CookieJar;
 use Hyperf\Redis\RedisFactory;
 
-if (!function_exists('xdebug')) {
+if (!function_exists('xdebugOld')) {
     /**
      * @param $variable
      * @param string $title
@@ -19,7 +19,7 @@ if (!function_exists('xdebug')) {
      * datetime: 2023/01/30 16:54
      * memo : null
      */
-    function xdebug($variable, string $title = 'defaultTitle', string $path = '', bool $append = true, bool $output = true): void
+    function xdebugOld($variable, string $title = 'defaultTitle', string $path = '', bool $append = true, bool $output = true): void
     {
         $traceInfo = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
         //co(function() use($variable, $title, $traceInfo){
@@ -73,6 +73,13 @@ if (!function_exists('xdebug')) {
             //TODO:none...
         }
         //});
+    }
+}
+
+if (!function_exists('xdebug')) {
+    function xdebug(mixed $message, string $label = '', string $level = 'info')
+    {
+        return MonologHandler::$level($message, $label);
     }
 }
 
@@ -194,7 +201,7 @@ if(!function_exists('sendAlarm2DingTalk')){
         $secret = 'SEC8e6642f7e93939b4e04edefc7e06248d8b8c8120c8ff439879fc1ad5970ff601';
         $content = '';
         $content .= "[" . env('APP_NAME') . ' / ' . env('APP_ENV') . "]";
-        $content .=  str_replace("\"","'", formatTraceVariable($variable));
+        $content .=  str_replace("\"","'", commonFormatVariable($variable));
         $content = commonJsonEncode([
             'msgtype' => 'text',
             'text' => [
@@ -223,7 +230,7 @@ if(!function_exists('sendAlarm2DingTalk')){
     }
 }
 
-if(!function_exists('formatTraceVariable')){
+if(!function_exists('commonFormatVariable')){
     /**
      * @param $variable
      * @param string $label
@@ -233,19 +240,19 @@ if(!function_exists('formatTraceVariable')){
      * datetime: 2023/02/10 16:58
      * memo : null
      */
-    function formatTraceVariable(&$variable, string $label = '', bool $jsonEncodeStatus = false): string
+    function commonFormatVariable($variable, string $label = '', bool $jsonEncodeStatus = false): string
     {
         try {
             $traceInfo = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);//TODO：此函數性能如何？
             $file1 = ($startIndex = strrpos(($file1 = $traceInfo[1]['file']), env('APP_NAME'))) ? substr($file1, $startIndex + 1) : $file1;
             //$file2 = ($startIndex = strrpos(($file2 = $traceInfo[2]['file']), env('APP_NAME'))) ? substr($file2, $startIndex + 1) : $file2;
-            $funcFormat = function(&$variable, $jsonEncodeStatus){
+            $funcFormat = function($variable, $jsonEncodeStatus){
                 if ($variable === true) return 'TRUE(BOOL)';
                 if ($variable === false) return 'FALSE(BOOL)';
                 if ($variable === null) return 'NULL';
                 if ($variable === '') return "(EMPTY STRING)";
                 if ($variable instanceof Throwable) return ['message' => $variable->getMessage(), 'trace' => $variable->getTrace()];
-                if($jsonEncodeStatus && is_object($variable)) return (array)$variable;
+                if(is_object($variable) && $jsonEncodeStatus) return (array)$variable;
                 return $variable;
             };
             $trace = [
@@ -264,19 +271,18 @@ if(!function_exists('formatTraceVariable')){
             ];
             //check memory[START]
             $traceJson = commonJsonEncode($trace);
-            if(strlen($traceJson) > (($megabyteLimit = 32/*unit:KB*/) * 1024)){//超出限額則截取
-                $traceJson = substr($traceJson, 0,$megabyteLimit * 1024);
+            if(strlen($traceJson) > (($megabyteLimit = 1024/*unit:KB*/) * 1024)){//超出限額則截取
                 $jsonEncodeStatus = true;
+                $traceJson = substr($traceJson, 0,$megabyteLimit * 1024);
             }
             //check memory[END]
             if($jsonEncodeStatus) {
-                echo strlen($traceJson);
                 $trace = "{$traceJson}\n";
             }else{
                 $trace = print_r($trace, false);//print_r()的換行會將大變量瞬間膨脹導致內存滿載
                 $trace = "\n:<<UNIT[START]\n{$trace}\nUNIT[END]\n";
             }
-            echo $trace;
+            if(matchEnvi('local')) echo $trace;
             return $trace;
         } catch (Throwable $e) {
             return commonJsonEncode([
@@ -300,7 +306,7 @@ if(!function_exists('commonGet')){
         if($cookieDetail && $cookieDomain){
             $config['cookies'] = CookieJar::fromArray($cookieDetail, $cookieDomain);
         }
-        $client = new \GuzzleHttp\Client($config);
+        $client = new GuzzleHttp\Client($config);
         $result = json_decode((string)$client->request('get', $uri, $config)->getBody(), true);
         return $result;
     }
@@ -316,7 +322,7 @@ if(!function_exists('commonPost')){
         if($cookieDetail && $cookieDomain){
             $config['cookies'] = CookieJar::fromArray($cookieDetail, $cookieDomain);
         }
-        $client = new \GuzzleHttp\Client($config);
+        $client = new GuzzleHttp\Client($config);
         $result = json_decode((string)$client->request('get', $uri, $config)->getBody(), true);
         return $result;
     }

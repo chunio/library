@@ -30,7 +30,7 @@ class MonologHandler
     {
         [$message, $label, $context, $name, $group] = $argument + ['', '', [], '', 'default'];
         $logger = static::instance($name, $group);
-        $logger->{$function}(formatTraceVariable($message, $label), $context);
+        $logger->{$function}(commonFormatVariable($message, $label), $context);
     }
 
     public static function instance(string $name = '', string $group = 'default'): LoggerInterface
