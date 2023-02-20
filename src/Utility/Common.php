@@ -121,7 +121,6 @@ if(!function_exists('sendAlarm2DingTalk')){
                 "verify_peer_name" => false
             ]
         ];
-        MonologHandler::info('xxxx');
         return file_get_contents($webhook, false, stream_context_create($option));
     }
 }
