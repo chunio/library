@@ -20,6 +20,7 @@ use Hyperf\Resource\Response\Response;
  */
 class ResponseAspect extends AbstractAspect
 {
+
     public $classes = [
         'Hyperf\Resource\Response\Response::wrap',
     ];
@@ -40,4 +41,5 @@ class ResponseAspect extends AbstractAspect
         }
         return $return;
     }
+
 }
