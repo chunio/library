@@ -26,20 +26,20 @@ class RequestAspect extends AbstractAspect
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         // 記錄請求開始時間
-        if ($proceedingJoinPoint->className == 'Hyperf\HttpServer\Server' && $proceedingJoinPoint->methodName == 'onRequest') {
+        if ($proceedingJoinPoint->className === 'Hyperf\HttpServer\Server' && $proceedingJoinPoint->methodName === 'onRequest') {
             Context::set(ContextEnum::RequestStartMicroTime, microtime(true));
             /** @var Request $swooleRequest */
             //$swooleRequest = $proceedingJoinPoint->getArguments()[0];
             //$requestId = matchNonNullValue('x-request-id', $swooleRequest->header, $swooleRequest->get);
         }
         //  打印請求內容
-        if ($proceedingJoinPoint->className == 'Hyperf\HttpServer\CoreMiddleware' && $proceedingJoinPoint->methodName == 'dispatch') {
+        if ($proceedingJoinPoint->className === 'Hyperf\HttpServer\CoreMiddleware' && $proceedingJoinPoint->methodName === 'dispatch') {
             //MonologHandler::info('Hyperf\HttpServer\CoreMiddleware::dispatch');
             return $proceedingJoinPoint->process();
         }
         $result = $proceedingJoinPoint->process();
         // 打印響應內容
-        if ($proceedingJoinPoint->className == 'Hyperf\HttpServer\ResponseEmitter' && $proceedingJoinPoint->methodName == 'emit') {
+        if ($proceedingJoinPoint->className === 'Hyperf\HttpServer\ResponseEmitter' && $proceedingJoinPoint->methodName === 'emit') {
             //$request = Context::get(ServerRequestInterface::class);
             //$response = $proceedingJoinPoint->getArguments()[0];
         }
