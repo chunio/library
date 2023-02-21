@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace Component;
 
+use GuzzleHttp\Client;
 use Hyperf\Di\Exception\Exception;
 
 /**
  * Class AppleJWTHandler
  * @package Component
+ * author : zengweitao@gmail.com
+ * datetime: 2023/02/21 20:12
+ * memo : null
  */
 class AppleJWTHandler
 {
@@ -43,7 +47,7 @@ class AppleJWTHandler
         $uri = 'https://appleid.apple.com/auth/keys';
         $config = ['timeout' => config('system.curl.timeout')];
         if(in_array(env('APP_ENV'), ['dev', 'test'])) $config['proxy'] = config('system.curl.proxy_server') . ":" . config('system.curl.proxy_port');
-        $client = new \GuzzleHttp\Client($config);
+        $client = new Client($config);
         $result = json_decode((string)$client->request('get', $uri, $config)->getBody(), true);
         if(!($result['keys'] ?? '')) throw new Exception("curl {$uri} error");
         $publicKeyArray = array_column($result['keys'],null,'kid');
