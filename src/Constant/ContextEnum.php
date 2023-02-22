@@ -18,4 +18,6 @@ class ContextEnum extends AbstractConstants
 
     public const RequestAbstract = 'RequestAbstract';//請求信息
 
+    public const SignaturePayload = 'SignaturePayload';//[簽名]payload
+
 }

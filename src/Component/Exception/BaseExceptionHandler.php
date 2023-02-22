@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Baichuan\Library\Handler;
+namespace Baichuan\Library\Component\Exception;
 
 use Baichuan\Library\Constant\ErrorCodeEnum;
-use Baichuan\Library\Http\Resource\JsonResource;
+use Baichuan\Library\Component\Resource\JsonResource;
+use Baichuan\Library\Handler\MonologHandler;
 use Hyperf\ExceptionHandler\ExceptionHandler;
 use Hyperf\Utils\Arr;
 use Psr\Http\Message\ResponseInterface;
