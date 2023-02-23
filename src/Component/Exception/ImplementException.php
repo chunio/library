@@ -14,3 +14,4 @@ interface ImplementException
     public function getMessageLocale(?string $locale = null);
 
 }
+
