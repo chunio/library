@@ -25,6 +25,7 @@ class MongoHandler
 
     public $operator = [
         'IN' => '$in',
+        '!IN' => '$nin',
         '>' => '$gt',
         '>=' => '$gte',
         '<' => '$lt',
@@ -91,9 +92,9 @@ class MongoHandler
      * datetime: 2023/02/23 20:59
      * memo : 以$field分組，並統計各每組成員總數
      */
-    public function aggregate(string $field)
+    public function aggregate(string $field): array
     {
-        $result = $this->MongoClient->database($this->db)->collection($this->collection)->aggregate([
+        return $this->MongoClient->database($this->db)->collection($this->collection)->aggregate([
             [
                 '$group' =>
                     [
