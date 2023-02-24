@@ -17,14 +17,22 @@ use Baichuan\Library\Handler\MongoHandler;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
 use MongoDB\Driver\Command;
+use Psr\Container\ContainerInterface;
 
 /**
  * @Listener
  */
 class MongoQueryExecutedListener implements ListenerInterface
 {
-    public function __construct(/*ContainerInterface $container*/)
+
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    public function __construct(ContainerInterface $container)
     {
+        $this->container = $container;
     }
 
     public function listen(): array
