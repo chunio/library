@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Component\Hyperf\Aspect;
+namespace Baichuan\Library\Aspect;
 
 use Hyperf\Di\Annotation\Aspect;
 use Hyperf\Di\Aop\AbstractAspect;
