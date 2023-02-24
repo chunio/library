@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
-namespace App\Listener;
+namespace Baichuan\Library\Listener;
 
 use Baichuan\Library\Handler\MongoHandler;
 use Hyperf\Event\Annotation\Listener;
@@ -25,15 +25,15 @@ use Psr\Container\ContainerInterface;
 class MongoQueryExecutedListener implements ListenerInterface
 {
 
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
-
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
+//    /**
+//     * @var ContainerInterface
+//     */
+//    private $container;
+//
+//    public function __construct(ContainerInterface $container)
+//    {
+//        $this->container = $container;
+//    }
 
     public function listen(): array
     {
