@@ -45,7 +45,7 @@ class MongoHandler
      */
     public $MongoClient;
 
-    public function __construct(string $collection, string $db = '')
+    public function __construct(string $collection, string $db = '')//
     {
         $this->db = $db ?: config('mongodb.db');
         $this->collection = $collection;
