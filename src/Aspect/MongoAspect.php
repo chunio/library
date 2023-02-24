@@ -14,7 +14,7 @@ use Hyperf\Di\Aop\ProceedingJoinPoint;
 class MongoAspect extends AbstractAspect
 {
     public $classes = [
-        "Hyperf\GoTask\MongoClient\MongoProxy::find",
+        "Hyperf\GoTask\GoTaskProxy::call",
     ];
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
