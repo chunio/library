@@ -19,7 +19,7 @@ class MongoAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        monolog('process come in');
+        monolog($proceedingJoinPoint->result,'MongoAspect');
         return $proceedingJoinPoint->process();
     }
 }
