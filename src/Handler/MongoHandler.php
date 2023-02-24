@@ -9,6 +9,7 @@ use Hyperf\GoTask\MongoClient\Collection;
 use Hyperf\GoTask\MongoClient\MongoClient;
 use Hyperf\GoTask\MongoClient\Type\InsertManyResult;
 use Hyperf\GoTask\MongoClient\Type\InsertOneResult;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 //TODO:待調試
 class MongoHandler
@@ -38,6 +39,12 @@ class MongoHandler
         '<' => '$lt',
         '<=' => '$lte',
     ];
+
+    /**
+     * @Inject
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
 
     /**
      * @Inject()
