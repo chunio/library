@@ -47,7 +47,9 @@ class MongoHandler
 
     public function __construct(string $collection, string $db = '')
     {
-        $this->MongoClient->database($db ?: config('mongodb.db'))->collection($collection);
+        $this->db = $db ?: config('mongodb.db');
+        $this->collection = $collection;
+        //$this->MongoClient->database()->collection($collection);
     }
 
     public function one(array $where, array $field = ['*'], array $order = []): array
@@ -66,6 +68,7 @@ class MongoHandler
      */
     public function commonList(array $where, array $select = [], array $group = []/*預留*/, array $order = []): array
     {
+        monolog('commonList come in');
         //format where[START]
         $formatWhere = [];
         foreach ($where as $value){
@@ -90,6 +93,10 @@ class MongoHandler
             }
         }
         //format option[END]
+        monolog([
+            '$formatWhere' => $formatWhere,
+            '$option' => $option,
+        ],'commonList');
         return $this->MongoClient->database($this->db)->collection($this->collection)->find($formatWhere, $option);
     }
 
