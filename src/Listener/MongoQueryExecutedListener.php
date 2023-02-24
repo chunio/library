@@ -13,11 +13,9 @@ declare(strict_types=1);
 
 namespace App\Listener;
 
-use Baichuan\Library\Handler\MonologHandler;
+use Baichuan\Library\Handler\MongoHandler;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
-use Hyperf\Utils\Arr;
-use Hyperf\Utils\Str;
 use MongoDB\Driver\Command;
 
 /**
@@ -32,7 +30,7 @@ class MongoQueryExecutedListener implements ListenerInterface
     public function listen(): array
     {
         return [
-            Command::class,
+            MongoHandler::class,
         ];
     }
 
@@ -41,7 +39,7 @@ class MongoQueryExecutedListener implements ListenerInterface
      */
     public function process(object $event)
     {
-        if (matchEnvi('local') && $event instanceof Command) {
+        if (/*matchEnvi('local') && */$event instanceof MongoHandler) {
             monolog('MongoQueryExecutedListener come in');
             //MonologHandler::pushCustomTrace(__FUNCTION__, json_encode($event), 0);
         }
