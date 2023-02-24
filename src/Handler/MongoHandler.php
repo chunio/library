@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Baichuan\Library\Handler;
 
 use Hyperf\Di\Annotation\Inject;
+use Hyperf\GoTask\MongoClient\Collection;
 use Hyperf\GoTask\MongoClient\MongoClient;
 use Hyperf\GoTask\MongoClient\Type\InsertManyResult;
 use Hyperf\GoTask\MongoClient\Type\InsertOneResult;
@@ -12,6 +13,12 @@ use Hyperf\GoTask\MongoClient\Type\InsertOneResult;
 //TODO:待調試
 class MongoHandler
 {
+
+    /**
+     * @var string
+     * db.tupop_stat.createIndex({"payment_datetime":-1})//倒序索引
+     * db.tupop_stat.createIndex({"coin_status":"hashed"})//哈希索引
+     */
 
     public $db = '';
 
@@ -25,7 +32,7 @@ class MongoHandler
 
     public $operator = [
         'IN' => '$in',
-        '!IN' => '$nin',
+        'NIN' => '$nin',
         '>' => '$gt',
         '>=' => '$gte',
         '<' => '$lt',
@@ -38,9 +45,9 @@ class MongoHandler
      */
     public $MongoClient;
 
-    public function __construct(string $db, string $collection)
+    public function __construct(string $collection, string $db = '')
     {
-       $this->MongoClient->database($db)->collection($collection);
+        $this->MongoClient->database($db ?: config('mongodb.db'))->collection($collection);
     }
 
     public function one(array $where, array $field = ['*'], array $order = []): array

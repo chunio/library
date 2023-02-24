@@ -40,6 +40,7 @@ if(!function_exists('commonFormatVariable')){
                 'label' => $label ?: 'default',
                 'message' => $funcFormat($variable, $jsonEncodeStatus),
                 'request' => ContextHandler::pullRequestAbstract(),
+                'db' => MonologHandler::pullCustomTrace()
             ];
             //check memory[START]
             $traceJson = prettyJsonEncode($traceArray);

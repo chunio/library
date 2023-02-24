@@ -53,20 +53,20 @@ class MonologHandler
      * datetime : 2022-04-25 15:10
      * memo : //TODO:待優化
      */
-    public static function pushSqlTrace(string $sql, float $elapsedTime): bool
+    public static function pushCustomTrace(string $event, string $command, float $elapsedTime): bool
     {
         self::refresh();
-        self::$trace[ContextHandler::pullTraceId()]['sql'][/*TODO:並發時，需防止覆蓋同一指針下標*/] = [//TODO:防止內存洩漏
-            'sql' => $sql,//sql
+        self::$trace[ContextHandler::pullTraceId()][$event][/*TODO:並發時，需防止覆蓋同一指針下標*/] = [//TODO:防止內存洩漏
+            'sql' => $command,//sql
             'unitElapsedTime' => sprintf("%0.10f", ($elapsedTime / 1000))//單位：秒
         ];
         return true;
     }
 
-    public static function pullSqlTrace(): array
+    public static function pullCustomTrace(): array
     {
         self::refresh();
-        return self::$trace[ContextHandler::pullTraceId()]['sql'];
+        return self::$trace[ContextHandler::pullTraceId()];
     }
 
     //TODO:將自動清理添加至定時器
