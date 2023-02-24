@@ -68,7 +68,6 @@ class MongoHandler
      */
     public function commonList(array $where, array $select = [], array $group = []/*預留*/, array $order = []): array
     {
-        monolog('commonList come in');
         //format where[START]
         $formatWhere = [];
         foreach ($where as $value){
@@ -93,10 +92,6 @@ class MongoHandler
             }
         }
         //format option[END]
-        monolog([
-            '$formatWhere' => $formatWhere,
-            '$option' => $option,
-        ],'commonList');
         return $this->MongoClient->database($this->db)->collection($this->collection)->find($formatWhere, $option);
     }
 

@@ -42,7 +42,8 @@ class MongoQueryExecutedListener implements ListenerInterface
     public function process(object $event)
     {
         if (matchEnvi('local') && $event instanceof Command) {
-            MonologHandler::pushCustomTrace(__FUNCTION__, json_encode($event), 0);
+            monolog('MongoQueryExecutedListener come in');
+            //MonologHandler::pushCustomTrace(__FUNCTION__, json_encode($event), 0);
         }
     }
 }

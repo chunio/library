@@ -57,7 +57,7 @@ class MonologHandler
     {
         self::refresh();
         self::$trace[ContextHandler::pullTraceId()][$event][/*TODO:並發時，需防止覆蓋同一指針下標*/] = [//TODO:防止內存洩漏
-            'sql' => $command,//sql
+            'command'/*如：sql*/ => $command,
             'unitElapsedTime' => sprintf("%0.10f", ($elapsedTime / 1000))//單位：秒
         ];
         return true;
