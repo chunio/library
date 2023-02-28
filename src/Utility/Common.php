@@ -31,6 +31,8 @@ if(!function_exists('commonFormatVariable')){
                 if ($variable === '') return "(EMPTY STRING)";
                 if ($variable instanceof Throwable) return ['message' => $variable->getMessage(), 'trace' => $variable->getTrace()];
                 if(is_object($variable) && $jsonEncodeStatus) return (array)$variable;
+                //解決json_encode()錯誤：Malformed UTF-8 characters, possibly incorrectly encoded
+                if(is_string($variable)) return mb_convert_encoding($variable, 'UTF-8', 'UTF-8,GBK,GB2312,BIG5');
                 return $variable;
             };
             $traceArray = [
