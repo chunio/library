@@ -212,16 +212,16 @@ if (!function_exists('prettyJsonEncode')) {
      */
     function prettyJsonEncode($object, ?int $flag = JSON_PRETTY_PRINT)//: string|bool
     {
-//        try {
+        //try {
             //JSON_PRETTY_PRINT//易讀格式（即：自動換行）
             $flagCounter = JSON_UNESCAPED_SLASHES/*不轉義反斜杠*/ | JSON_UNESCAPED_UNICODE/*unicode轉至中文*/;
             if (!$flag) {
                 $flagCounter |= $flag;
             }
             return json_encode($object, $flagCounter);
-//        }catch (\Throwable $e){
-//            return "json_encode() throwable : ". json_last_error_msg();
-//        }
+        //}catch (\Throwable $e){
+        //    return "json_encode() throwable : ". json_last_error_msg();
+        //}
     }
 }
 
