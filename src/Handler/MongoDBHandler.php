@@ -5,20 +5,19 @@ declare(strict_types=1);
 namespace Baichuan\Library\Handler;
 
 use Hyperf\Di\Annotation\Inject;
-use Hyperf\GoTask\MongoClient\Collection;
 use Hyperf\GoTask\MongoClient\MongoClient;
 use Hyperf\GoTask\MongoClient\Type\InsertManyResult;
 use Hyperf\GoTask\MongoClient\Type\InsertOneResult;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 //TODO:待調試
-class MongoHandler
+class MongoDBHandler
 {
 
     /**
      * @var string
-     * db.tupop_stat.createIndex({"payment_datetime":-1})//倒序索引
-     * db.tupop_stat.createIndex({"coin_status":"hashed"})//哈希索引
+     * db.tupop_stat.createIndex({"payment_datetime":-1})//創建倒序索引
+     * db.tupop_stat.createIndex({"coin_status":"hashed"})//創建哈希索引
      */
 
     public $db = '';
