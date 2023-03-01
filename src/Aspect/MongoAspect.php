@@ -14,12 +14,12 @@ use Hyperf\Di\Aop\ProceedingJoinPoint;
 class MongoAspect extends AbstractAspect
 {
     public $classes = [
-        "MongoDB\Driver\Manager::executeCommand",
+        "Hyperf\GoTask\GoTaskProxy::call",
     ];
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        var_dump($proceedingJoinPoint->getArguments()[0]);
+        monolog($proceedingJoinPoint->getArguments()[0],'MongoAspect');
         return $proceedingJoinPoint->process();
     }
 }
