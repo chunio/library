@@ -19,11 +19,15 @@ class MongoAspect extends AbstractAspect
     ];
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        $command = $proceedingJoinPoint->getArguments()[1] ?? '';//payload//TODO:待優化至採集可執行命令
-        $start = microtime(true);
-        $return = $proceedingJoinPoint->process();
-        $end = microtime(true);
-        MonologHandler::pushDBTrace(MonologHandler::$TRACE_EVENT['MONGODB'], $command, intval($end - $start));
-        return $return;
+        try{
+            $command = $proceedingJoinPoint->getArguments()[1] ?? '';//payload//TODO:待優化至採集可執行命令
+            $start = microtime(true);
+            $return = $proceedingJoinPoint->process();
+            $end = microtime(true);
+            MonologHandler::pushDBTrace(MonologHandler::$TRACE_EVENT['MONGODB'], $command, intval($end - $start));
+            return $return;
+        }catch (\Throwable $e){
+            monolog($e);
+        }
     }
 }
