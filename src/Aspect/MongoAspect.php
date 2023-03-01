@@ -21,7 +21,7 @@ class MongoAspect extends AbstractAspect
     {
         try{
             $command = $proceedingJoinPoint->getArguments()[1] ?? '';//payload//TODO:待優化至採集可執行命令
-            $command = str_replace(['\001', '\002', '\003', '\005', '"'],'[X]', $command);
+            $command = filterAscii(str_replace(['"'],'[X]', $command));
             monolog($command,'$command');
             $start = microtime(true);
             $return = $proceedingJoinPoint->process();
