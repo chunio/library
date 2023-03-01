@@ -94,7 +94,7 @@ class MonologHandler
     public static function pullCustomTrace(): array
     {
         self::refresh();
-        return self::$trace[ContextHandler::pullTraceId()];
+        return self::$trace[ContextHandler::pullTraceId()] ?? [];
     }
 
     //TODO:將自動清理添加至定時器
