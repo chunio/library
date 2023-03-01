@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Baichuan\Library\Constant\AsciiEnum;
 use Baichuan\Library\Handler\MonologHandler;
 use Baichuan\Library\Constant\AnsiColorEnum;
 use Baichuan\Library\Handler\ContextHandler;
@@ -353,14 +354,14 @@ if (!function_exists('filterControlCharacter')) {
      * datetime: 2023/03/01 16:56
      * memo : 過濾[ASCII]控制字符
      */
-    function filterControlCharacter(string $string, string $replace = ' ')
+    function filterControlCharacter(string $string)
     {
         if(!$string) return '';
         $format = '';
         for($i = 0; isset($string[$i]); $i++) {
             $asciiCode = ord($string[$i]);
             if($asciiCode <= 31 || $asciiCode == 127){
-                $format .= $replace;
+                $format .= AsciiEnum::CONTROL_CHARACTER[$asciiCode];
             }elseif($asciiCode > 31){
                 $format .= $string[$i];
             }
