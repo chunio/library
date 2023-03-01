@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Baichuan\Library\Listener;
 
+use Baichuan\Library\Handler\MonologHandler;
 use Hyperf\Database\Events\QueryExecuted;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
@@ -24,6 +25,7 @@ use Hyperf\Utils\Str;
  */
 class DbQueryExecutedListener implements ListenerInterface
 {
+
     public function __construct(/*ContainerInterface $container*/)
     {
     }
@@ -47,7 +49,8 @@ class DbQueryExecutedListener implements ListenerInterface
                     $sql = Str::replaceFirst('?', "'{$value}'", $sql);
                 }
             }
-            //TraceHandler::addSqlTrace($sql, $event->time);
+            MonologHandler::pushDBTrace(MonologHandler::$TRACE_EVENT['MYSQL'], $sql, $event->time / 1000);
         }
     }
+
 }
