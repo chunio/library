@@ -35,6 +35,8 @@ class MonologHandler
 
     public static $ttl = 300;//unit:second
 
+    public static $lastestReleaseTime = 0;
+
     public static function __callStatic($function, $argument)
     {
         [$message, $label, $context, $name, $group] = $argument + ['', '', [], '', 'default'];
@@ -89,16 +91,22 @@ class MonologHandler
     public static function pullCustomTrace(): array
     {
         self::refresh();
-        return self::$trace[ContextHandler::pullTraceId()] ?? [];
+        $customTrace = self::$trace[ContextHandler::pullTraceId()] ?? [];
+        self::release();
+        return $customTrace;
     }
 
     //TODO:將自動清理添加至定時器
     public static function release(): bool
     {
-        foreach (self::$trace as $traceId => $value){
-            if((time() - $value['activeTime']) > self::$ttl){
-                unset(self::$trace[$traceId]);
+        $currentTime = time();
+        if($currentTime - self::$lastestReleaseTime > self::$ttl){
+            foreach (self::$trace as $traceId => $value){
+                if((time() - $value['activeTime']) > self::$ttl){
+                    unset(self::$trace[$traceId]);
+                }
             }
+            self::$lastestReleaseTime = $currentTime;
         }
         return true;
     }
