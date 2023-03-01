@@ -52,23 +52,18 @@ class MonologHandler
 
     /**
      * @param string $command
-     * @param int $unitElapsedTime //單位：毫秒
+     * @param float $unitElapsedTime //unit:second
      * @return bool
      * author : zengweitao@msn.com
      * datetime : 2022-04-25 15:10
      * memo : //TODO:待優化
      */
-    public static function pushDBTrace(string $event, string $command, int $unitElapsedTime): bool
+    public static function pushDBTrace(string $event, string $command, float $unitElapsedTime): bool
     {
-        monolog([
-            '$event' => $event,
-            '$command' => $command,
-            '$unitElapsedTime' => $unitElapsedTime,
-        ],'pushDBTrace');
         self::refresh();
         self::$trace[ContextHandler::pullTraceId()][$event][/*TODO:並發時，需防止覆蓋同一指針下標*/] = [//TODO:防止內存洩漏
             'command'/*如：sql*/ => $command,
-            'unitElapsedTime' => floatval(number_format(($unitElapsedTime / 1000), 5,'.',''))//單位：秒
+            'unitElapsedTime' => $unitElapsedTime
         ];
         return true;
     }
