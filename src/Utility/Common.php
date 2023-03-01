@@ -361,7 +361,7 @@ if (!function_exists('filterControlCharacter')) {
         for($i = 0; isset($string[$i]); $i++) {
             $asciiCode = ord($string[$i]);
             if($asciiCode <= 31 || $asciiCode == 127){
-                $format .= AsciiEnum::CONTROL_CHARACTER[$asciiCode];
+                $format .= '[' . AsciiEnum::CONTROL_CHARACTER[$asciiCode] . ']';
             }elseif($asciiCode > 31){
                 $format .= $string[$i];
             }
