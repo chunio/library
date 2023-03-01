@@ -26,6 +26,11 @@ use Psr\Log\LoggerInterface;
 class MonologHandler
 {
 
+    public static $TRACE_EVENT = [
+        'MYSQL' => 'MYSQL',
+        'MONGODB' => 'MONGODB',
+    ];
+
     public static $trace = [];
 
     public static $ttl = 300;//unit:second
@@ -47,18 +52,36 @@ class MonologHandler
 
     /**
      * @param string $command
-     * @param float $elapsedTime
+     * @param int $unitElapsedTime //單位：毫秒
      * @return bool
      * author : zengweitao@msn.com
      * datetime : 2022-04-25 15:10
      * memo : //TODO:待優化
      */
-    public static function pushCustomTrace(string $event, string $command, float $elapsedTime): bool
+    public static function pushDBTrace(string $event, string $command, int $unitElapsedTime): bool
     {
         self::refresh();
         self::$trace[ContextHandler::pullTraceId()][$event][/*TODO:並發時，需防止覆蓋同一指針下標*/] = [//TODO:防止內存洩漏
             'command'/*如：sql*/ => $command,
-            'unitElapsedTime' => sprintf("%0.10f", ($elapsedTime / 1000))//單位：秒
+            'unitElapsedTime' => floatval(number_format((string)($unitElapsedTime / 1000), 5,'.',''))//單位：秒
+        ];
+        return true;
+    }
+
+    /**
+     * @param string $command
+     * @param float $millisecond 單位：毫秒
+     * @return bool
+     * author : zengweitao@msn.com
+     * datetime : 2022-04-25 15:10
+     * memo : //TODO:待優化
+     */
+    public static function pushCustomTrace(string $event, string $command, float $millisecond): bool
+    {
+        self::refresh();
+        self::$trace[ContextHandler::pullTraceId()][$event][/*TODO:並發時，需防止覆蓋同一指針下標*/] = [//TODO:防止內存洩漏
+            'command'/*如：sql*/ => $command,
+            'unitElapsedTime' => floatval(number_format((string)($millisecond / 1000), 5,'.',''))//單位：秒
         ];
         return true;
     }
