@@ -15,13 +15,14 @@ use Hyperf\Di\Aop\ProceedingJoinPoint;
 class MongoAspect extends AbstractAspect
 {
     public $classes = [
-        "Hyperf\GoTask\MongoClient\Collection::makePayload",
+        //"Hyperf\GoTask\MongoClient\Collection::makePayload",
+        "Hyperf\GoTask\GoTaskProxy::call",
     ];
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         try{
-            [$partial, $option] = $proceedingJoinPoint->getArguments();//payload//TODO:待優化至採集可執行命令
-            $command = prettyJsonEncode(['partial' => $partial, 'option' => $option]);
+            $command = $proceedingJoinPoint->getArguments()[1];//payload//TODO:待優化至採集可執行命令
+            $command = unserialize($command);
             $start = microtime(true);
             $return = $proceedingJoinPoint->process();
             $end = microtime(true);
