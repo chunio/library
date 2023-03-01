@@ -327,22 +327,19 @@ if (!function_exists('commonSort')) {
     }
 }
 
-function filterAscii(string $string)
+function filterAscii(string $string, $replace = ' ')
 {
     if(!$string) return '';
-    $new_string = '';
-    for($i =0; isset($string[$i]); $i++)
-    {
-        $asc_code = ord($string[$i]);//得到其asc码
-//以下代码旨在过滤非法字符
-        if($asc_code == 9 || $asc_code == 10 || $asc_code == 13){
-            $new_string .= ' ';
-        }
-        else if($asc_code > 31 && $asc_code != 127){
-            $new_string .= $string[$i];
+    $format = '';
+    for($i = 0; isset($string[$i]); $i++) {
+        $asciiCode = ord($string[$i]);
+        if($asciiCode == 9 || $asciiCode == 10 || $asciiCode == 13){
+            $format .= $replace;
+        }elseif($asciiCode > 31 && $asciiCode != 127){
+            $format .= $string[$i];
         }
     }
-    return trim($new_string);
+    return trim($format);
 }
 
 
