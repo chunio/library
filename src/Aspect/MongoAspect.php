@@ -22,16 +22,16 @@ class MongoAspect extends AbstractAspect
         try{
             $command = $proceedingJoinPoint->getArguments()[1] ?? '';//payload//TODO:待優化至採集可執行命令
             $command = filterControlCharacter(str_replace(['"'],'[x]', $command));
-            monolog('A011111111');
+            monolog($command,'D0');
+            monolog([
+                '$command' => $command,
+            ],'D1');
             $start = microtime(true);
             monolog('A11111111');
             $return = $proceedingJoinPoint->process();
             monolog('B11111111');
             $end = microtime(true);
-            monolog([
-                '$command' => $command,
-                '$unitElapsedTime' => $end - $start
-            ],'$command');
+
             MonologHandler::pushDBTrace(MonologHandler::$TRACE_EVENT['MONGODB'], $command, intval($end - $start));
             return $return;
         }catch (\Throwable $e){
