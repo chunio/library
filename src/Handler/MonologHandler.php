@@ -63,7 +63,7 @@ class MonologHandler
         self::refresh();
         self::$trace[ContextHandler::pullTraceId()][$event][/*TODO:並發時，需防止覆蓋同一指針下標*/] = [//TODO:防止內存洩漏
             'command'/*如：sql*/ => $command,
-            'unitElapsedTime' => $unitElapsedTime
+            'unitElapsedTime' => floatval(number_format($unitElapsedTime,5,'.',''))
         ];
         return true;
     }
