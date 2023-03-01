@@ -327,19 +327,46 @@ if (!function_exists('commonSort')) {
     }
 }
 
-function filterAscii(string $string, $replace = ' ')
-{
-    if(!$string) return '';
-    $format = '';
-    for($i = 0; isset($string[$i]); $i++) {
-        $asciiCode = ord($string[$i]);
-        if($asciiCode == 9 || $asciiCode == 10 || $asciiCode == 13){
-            $format .= $replace;
-        }elseif($asciiCode > 31 && $asciiCode != 127){
-            $format .= $string[$i];
+//if (!function_exists('filterAscii')) {
+//    function filterAscii(string $string, string $replace = ' ')
+//    {
+//        if(!$string) return '';
+//        $format = '';
+//        for($i = 0; isset($string[$i]); $i++) {
+//            $asciiCode = ord($string[$i]);
+//            if($asciiCode == 9 || $asciiCode == 10 || $asciiCode == 13){
+//                $format .= $replace;
+//            }elseif($asciiCode > 31 && $asciiCode != 127){
+//                $format .= $string[$i];
+//            }
+//        }
+//        return trim($format);
+//    }
+//}
+
+if (!function_exists('filterControlCharacter')) {
+    /**
+     * @param string $string
+     * @param string $replace
+     * @return string
+     * author : zengweitao@gmail.com
+     * datetime: 2023/03/01 16:56
+     * memo : 過濾[ASCII]控制字符
+     */
+    function filterControlCharacter(string $string, string $replace = ' ')
+    {
+        if(!$string) return '';
+        $format = '';
+        for($i = 0; isset($string[$i]); $i++) {
+            $asciiCode = ord($string[$i]);
+            if($asciiCode <= 31 || $asciiCode == 127){
+                $format .= $replace;
+            }elseif($asciiCode > 31){
+                $format .= $string[$i];
+            }
         }
+        return trim($format);
     }
-    return trim($format);
 }
 
 
