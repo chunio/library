@@ -60,6 +60,11 @@ class MonologHandler
      */
     public static function pushDBTrace(string $event, string $command, int $unitElapsedTime): bool
     {
+        monolog([
+            '$event' => $event,
+            '$command' => $command,
+            '$unitElapsedTime' => $unitElapsedTime,
+        ],'pushDBTrace');
         self::refresh();
         self::$trace[ContextHandler::pullTraceId()][$event][/*TODO:並發時，需防止覆蓋同一指針下標*/] = [//TODO:防止內存洩漏
             'command'/*如：sql*/ => $command,
