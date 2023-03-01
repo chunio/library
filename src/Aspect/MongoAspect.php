@@ -27,7 +27,7 @@ class MongoAspect extends AbstractAspect
             $end = microtime(true);
             monolog([
                 '$command' => $command,
-                '$unitElapsedTime' => intval($end - $start)
+                '$unitElapsedTime' => $end - $start
             ],'$command');
             MonologHandler::pushDBTrace(MonologHandler::$TRACE_EVENT['MONGODB'], $command, intval($end - $start));
             return $return;
