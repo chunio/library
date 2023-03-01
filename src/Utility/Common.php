@@ -39,11 +39,11 @@ if(!function_exists('commonFormatVariable')){
             $traceArray = [
                 'date' => date('Y-m-d H:i:s'),
                 'traceId' => ContextHandler::pullTraceId(),
-                "debugBacktrace" =>  "./{$file1}(line:{$traceInfo[1]['line']})",
+                "script" =>  "./{$file1}(line:{$traceInfo[1]['line']})",
                 'label' => $label ?: 'default',
                 'message' => $funcFormat($variable, $jsonEncodeStatus),
                 'request' => ContextHandler::pullRequestAbstract(),
-                'db' => MonologHandler::pullCustomTrace()
+                'customTrace' => MonologHandler::pullCustomTrace()
             ];
             //check memory[START]
             $traceJson = prettyJsonEncode($traceArray);
@@ -63,10 +63,11 @@ if(!function_exists('commonFormatVariable')){
             return prettyJsonEncode([
                 'date' => date('Y-m-d H:i:s'),
                 'traceId' => ContextHandler::pullTraceId(),
-                'debugBacktrace' => $e->getFile() . "(line:{$e->getLine()})",
+                'script' => $e->getFile() . "(line:{$e->getLine()})",
                 'label' => "{$label} throwable",
                 'message' => $e->getMessage(),
                 'request' => ContextHandler::pullRequestAbstract(),
+                'customTrace' => [],
             ]);
         }
     }
