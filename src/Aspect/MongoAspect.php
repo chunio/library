@@ -23,6 +23,7 @@ class MongoAspect extends AbstractAspect
         try{
             $command = $proceedingJoinPoint->getArguments()[1];//payload//TODO:待優化至採集可執行命令
             $command = serialize($command);
+            monolog($command,'$command');
             $start = microtime(true);
             $return = $proceedingJoinPoint->process();
             $end = microtime(true);
