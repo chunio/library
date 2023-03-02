@@ -22,6 +22,7 @@ class TraceHandler
 
     public static function initRequest(): bool
     {
+        //TODO:存在其他非請求入口
         $traceId = ContextHandler::pullTraceId();
         if(!(self::$trace[$traceId] ?? [])) {
             self::$trace[$traceId] = [
@@ -67,7 +68,7 @@ class TraceHandler
      * datetime: 2023/02/10 16:58
      * memo : null
      */
-    public static function outputResponse(bool $jsonEncodeStatus = false): string
+    public static function outputResponse(bool $jsonEncodeStatus = false)
     {
         try {
             $traceArray = self::pull();
@@ -78,10 +79,10 @@ class TraceHandler
                     $trace = "\n:<<UNIT[START]\n" . print_r($traceArray, true) . "\nUNIT[END]\n";//print_r()的換行會將大變量瞬間膨脹導致內存滿載
                 }
                 if(matchEnvi('local')) echo $trace;
-                return $trace;
+                MonologHandler::info($trace,'',[],'','default', true);
             }
         } catch (Throwable $e) {
-            return prettyJsonEncode([
+            $trace = prettyJsonEncode([
                 'date' => date('Y-m-d H:i:s'),
                 'traceId' => ContextHandler::pullTraceId(),
                 'script' => $e->getFile() . "(line:{$e->getLine()})",

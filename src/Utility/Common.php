@@ -20,9 +20,10 @@ if(!function_exists('commonFormatVariable')){
      * datetime: 2023/02/10 16:58
      * memo : null
      */
-    function commonFormatVariable($variable, string $label = '', array $traceInfo = [], bool $jsonEncodeStatus = false): string
+    function commonFormatVariable($variable, string $label = '', array $traceInfo = [], bool $jsonEncodeStatus = false, bool $base = false): string
     {
         try {
+            if($base) return $variable;
             $traceInfo = $traceInfo ?: debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);//TODO：此函數性能如何？
             $file1 = ($startIndex = strrpos(($file1 = $traceInfo[1]['file']), env('APP_NAME'))) ? substr($file1, $startIndex + 1) : $file1;
             $traceArray = [

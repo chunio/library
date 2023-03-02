@@ -28,9 +28,9 @@ class MonologHandler
 
     public static function __callStatic($function, $argument)
     {
-        [$message, $label, $context, $name, $group] = $argument + ['', '', [], '', 'default'];
+        [$message, $label, $context, $name, $group, $base] = $argument + ['', '', [], '', 'default', false];
         $logger = static::instance($name, $group);
-        $logger->{$function}(commonFormatVariable($message, $label, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)), $context);
+        $logger->{$function}(commonFormatVariable($message, $label, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2), false, $base), $context);
     }
 
     public static function instance(string $name = '', string $group = 'default'): LoggerInterface
