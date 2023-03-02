@@ -51,7 +51,7 @@ class TraceHandler
     {
         switch ($event){
             case self::EVENT['TRACE']:
-                $index = microtime(true) . '#' . Str::random(10);//TODO:並發時，需防止覆蓋同一指針下標
+                $index = microtime(true) . '(' . Str::random(10) . ')';//TODO:並發時，需防止覆蓋同一指針下標
                 self::$trace[ContextHandler::pullTraceId()][$event][$index] = traceFormatter($variable, $label, $debugBacktraceLimit, false);
                 break;
             case self::EVENT['SERVICE']:
