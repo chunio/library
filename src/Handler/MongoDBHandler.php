@@ -72,7 +72,7 @@ class MongoDBHandler
      * datetime: 2023/02/23 14:13
      * memo : $where僅支持邏輯與
      */
-    public function commonList(array $where, array $select = [], array $group = []/*預留*/, array $order = []): array
+    public function multiList(array $where, array $select = [], array $group = []/*預留*/, array $order = []): array
     {
         //format where[START]
         $formatWhere = [];
@@ -120,14 +120,14 @@ class MongoDBHandler
         ]);
     }
 
-    public function commonInsert(array $data): InsertOneResult
+    public function multiInsert(array $data)/*: InsertOneResult|InsertManyResult*/
     {
-        return $this->MongoClient->database($this->db)->collection($this->collection)->insertOne($data);
-    }
+        if(!($data[0] ?? [])){
+            return $this->MongoClient->database($this->db)->collection($this->collection)->insertOne($data);
 
-    public function multiInsert(array $data): InsertManyResult
-    {
-        return $this->MongoClient->database($this->db)->collection($this->collection)->insertMany($data);
+        }else{
+            return $this->MongoClient->database($this->db)->collection($this->collection)->insertMany($data);
+        }
     }
 
     /**
@@ -136,32 +136,26 @@ class MongoDBHandler
      * @return int 返回改變行數
      * author : zengweitao@gmail.com
      * datetime: 2023/02/23 13:48
-     * memo : null
+     * memo : 返回改變行數
      */
-    public function commonUpdate(array $where, array $data = []): int
+    public function multiUpdate(array $where, array $data): int
     {
+        //format where[START]
+        $formatWhere = [];
+        foreach ($where as $value){
+            [$unitField, $unitOperator, $unitValue] = $value;
+            if($mongoOperation = ($this->operator[$unitOperator] ?? '')){
+                $formatWhere[$unitField][$mongoOperation] = $unitValue;
+            }else{
+                $formatWhere[$unitField] = $unitValue;
+            }
+        }
+        //format where[END]
         $update = [
             '$set' => $data
         ];
-        $UpdateResult = $this->MongoClient->database($this->db)->collection($this->collection)->updateMany($where, $update);
+        $UpdateResult = $this->MongoClient->database($this->db)->collection($this->collection)->updateMany($formatWhere, $update);
         return $UpdateResult->getModifiedCount();
     }
-
-    // memo : 返回改變行數
-    public function multiUpdate(array $multiWhere, array $data)
-    {
-
-    }
-
-//    public function multiList(
-//        array $mutliWhere,
-//        array $field = ['*'], //example : ['id', 'name']
-//        array $group = [],
-//        array $order = [], //example : ['id', 'DESC']
-//        int $limit = 0
-//    )
-//    {
-//
-//    }
 
 }
