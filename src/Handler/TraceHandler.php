@@ -26,9 +26,9 @@ class TraceHandler
         if(!(self::$trace[$traceId] ?? [])) {
             self::$trace[$traceId] = [
                 'traceId' => $traceId,
-                'request' => ContextHandler::pullRequestAbstract(),
                 'trace' => [],
                 'service' => [],
+                'request' => ContextHandler::pullRequestAbstract(),
                 'response' => [],
                 'activeTime' => time(),
             ];
@@ -40,12 +40,12 @@ class TraceHandler
     {
         switch ($event){
             case self::EVENT['TRACE']:
-                $traceInfo = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);//TODO：此函數性能如何？
-                $file1 = ($startIndex = strrpos(($file1 = $traceInfo[1]['file']), env('APP_NAME'))) ? substr($file1, $startIndex + 1) : $file1;
+                $traceInfo = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);//TODO：此函數性能如何？
+                $file1 = ($startIndex = strrpos(($file1 = $traceInfo[2]['file']), env('APP_NAME'))) ? substr($file1, $startIndex + 1) : $file1;
                 $index = microtime(true) . '#' . md5((string)rand());//TODO:並發時，需防止覆蓋同一指針下標
                 self::$trace[ContextHandler::pullTraceId()][$event][$index] = [
                     'date' => date('Y-m-d H:i:s'),
-                    "script" =>  "./{$file1}(line:{$traceInfo[1]['line']})",
+                    "script" =>  "./{$file1}(line:{$traceInfo[2]['line']})",
                     'label' => $label,
                     'message' => prettyVariable($variable),
                 ];
