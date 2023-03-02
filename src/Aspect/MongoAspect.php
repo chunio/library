@@ -25,8 +25,6 @@ class MongoAspect extends AbstractAspect
         $start = microtime(true);
         $return = $proceedingJoinPoint->process();
         $end = microtime(true);
-        $command3 = \MongoDB\Driver\Monitoring\CommandStartedEvent::getCommand();
-        monolog($command3,'$command3');
         MonologHandler::pushDBTrace(MonologHandler::$TRACE_EVENT['MONGODB'], prettyJsonEncode($command), $end - $start);
         return $return;
     }
