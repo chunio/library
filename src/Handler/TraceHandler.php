@@ -31,9 +31,9 @@ class TraceHandler
         if(!(self::$trace[$traceId] ?? [])) {
             self::$trace[$traceId] = [//template
                 'traceId' => $traceId,
+                'request' => ContextHandler::pullRequestAbstract(),
                 'trace' => [],
                 'service' => [],
-                'request' => ContextHandler::pullRequestAbstract(),
                 'response' => [],
                 'activeTime' => time(),
             ];
