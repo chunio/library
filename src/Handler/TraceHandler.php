@@ -65,11 +65,12 @@ class TraceHandler
      * datetime: 2023/02/10 16:58
      * memo : response
      */
-    public static function output(bool $jsonEncodeStatus = false)
+    public static function output(string $response, bool $jsonEncodeStatus = false)
     {
 //        try {
         $traceArray = self::pull();
         if($traceArray['trace'] && $traceArray['service']){
+            $traceArray['response'] = $response;
             if($jsonEncodeStatus) {
                 $trace = prettyJsonEncode($traceArray) . "\n";
             }else{
