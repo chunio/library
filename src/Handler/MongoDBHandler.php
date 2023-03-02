@@ -6,9 +6,6 @@ namespace Baichuan\Library\Handler;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\GoTask\MongoClient\MongoClient;
-use Hyperf\GoTask\MongoClient\Type\InsertManyResult;
-use Hyperf\GoTask\MongoClient\Type\InsertOneResult;
-use Psr\EventDispatcher\EventDispatcherInterface;
 
 //TODO:待調試
 class MongoDBHandler
@@ -79,7 +76,7 @@ class MongoDBHandler
      * datetime: 2023/02/23 14:13
      * memo : $where僅支持邏輯與
      */
-    public function multiList(array $where, array $select = [], array $group = []/*預留*/, array $order = []): array
+    public function commonList(array $where, array $select = [], array $group = []/*預留*/, array $order = []): array
     {
         //format where[START]
         $formatWhere = [];
@@ -127,7 +124,7 @@ class MongoDBHandler
         ]);
     }
 
-    public function multiInsert(array $data)/*: InsertOneResult|InsertManyResult*/
+    public function commonInsert(array $data)/*: InsertOneResult|InsertManyResult*/
     {
         if(!($data[0] ?? [])){
             return $this->MongoClient->database($this->db)->collection($this->collection)->insertOne($data);
@@ -145,7 +142,7 @@ class MongoDBHandler
      * datetime: 2023/02/23 13:48
      * memo : 返回改變行數
      */
-    public function multiUpdate(array $where, array $data): int
+    public function commonUpdate(array $where, array $data): int
     {
         //format where[START]
         $formatWhere = [];

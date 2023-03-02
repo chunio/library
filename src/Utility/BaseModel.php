@@ -35,7 +35,7 @@ class BaseModel extends \Hyperf\DbConnection\Model\Model
         return $result[0] ?? [];
     }
 
-    public function multiList(
+    public function commonList(
         array $where, //example:[['field1', '=', 'value1'], ['field2', '<=', 'value2'], ['field2', '>=', 'value3'], ['field3', 'IN', 'value4List']]
         array $select = ['*'], //example:['field1', 'field2', ...]
         array $group = [],
@@ -67,7 +67,7 @@ class BaseModel extends \Hyperf\DbConnection\Model\Model
         return $handler->get()->toArray();
     }
 
-    public function multiInsert(array $data)/*: int|bool*/
+    public function commonInsert(array $data)/*: int|bool*/
     {
         if(count($data) === 1){
             return DB::table($this->table)->insertGetId($data[0]);
@@ -84,7 +84,7 @@ class BaseModel extends \Hyperf\DbConnection\Model\Model
      * datetime: 2023/03/02 22:20
      * memo : 返回改變行數
      */
-    public function multiUpdate(array $where, array $data): int
+    public function commonUpdate(array $where, array $data): int
     {
         $handler = DB::table($this->table); // ->select(...$field);//->where($where);
         foreach ($where as &$value){
