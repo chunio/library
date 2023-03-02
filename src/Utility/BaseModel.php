@@ -12,7 +12,7 @@ declare(strict_types=1);
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
-namespace App\Model;
+namespace Baichuan\Library\Utility;
 
 use Hyperf\DbConnection\Db;
 
@@ -44,7 +44,7 @@ class BaseModel extends \Hyperf\DbConnection\Model\Model
     ): array
     {
         $handler = DB::table($this->table)->select(...$select); // ->where($where);
-        foreach ($where as $value){
+        foreach ($where as &$value){
             [$unitField, $unitOperator, $unitValue] = $value;
             $function = self::$querier[$unitOperator] ?? '';
             switch ($function) {
@@ -87,7 +87,7 @@ class BaseModel extends \Hyperf\DbConnection\Model\Model
     public function multiUpdate(array $where, array $data): int
     {
         $handler = DB::table($this->table); // ->select(...$field);//->where($where);
-        foreach ($where as $value){
+        foreach ($where as &$value){
             [$unitField, $unitOperator, $unitValue] = $value;
             $function = self::$querier[$unitOperator] ?? '';
             switch ($function) {
