@@ -72,7 +72,7 @@ class TraceHandler
         if($traceArray['trace'] && $traceArray['service']){
             $responseArray = json_decode($responseJson, true);
             $responseArray['data'] = 0;
-            $traceArray['response'] = $responseJson;
+            $traceArray['response'] = $responseArray;
             if($jsonEncodeStatus) {
                 $trace = prettyJsonEncode($traceArray) . "\n";
             }else{
