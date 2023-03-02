@@ -40,10 +40,11 @@ if(!function_exists('traceFormatter')){
     function traceFormatter($variable, string $label = 'default', int $debugBacktraceLimit = 2, bool $separator = true)/*: string|array*/
     {
         try {
+            $currentMicrotime = microtime(true);
             $traceInfo = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, $debugBacktraceLimit);//TODO：此函數性能如何？
             $file1 = ($startIndex = strrpos(($file1 = $traceInfo[$debugBacktraceLimit - 1]['file']), env('APP_NAME'))) ? substr($file1, $startIndex + 1) : $file1;
             $traceArray = [
-                'date' => date('Y-m-d H:i:s'),
+                'date' => date('Y-m-d H:i:s', intval($currentMicrotime)) . "({$currentMicrotime})",
                 "script" =>  "./{$file1}(line:{$traceInfo[$debugBacktraceLimit - 1]['line']})",
                 'label' => $label,
                 'message' => variableFormatter($variable),
