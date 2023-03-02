@@ -71,13 +71,15 @@ class TraceHandler
     {
         try {
             $traceArray = self::pull();
-            if($jsonEncodeStatus) {
-                $trace = prettyJsonEncode($traceArray) . "\n";
-            }else{
-                $trace = "\n:<<UNIT[START]\n" . print_r($traceArray, true) . "\nUNIT[END]\n";//print_r()的換行會將大變量瞬間膨脹導致內存滿載
+            if($traceArray['trace'] && $traceArray['service']){
+                if($jsonEncodeStatus) {
+                    $trace = prettyJsonEncode($traceArray) . "\n";
+                }else{
+                    $trace = "\n:<<UNIT[START]\n" . print_r($traceArray, true) . "\nUNIT[END]\n";//print_r()的換行會將大變量瞬間膨脹導致內存滿載
+                }
+                if(matchEnvi('local')) echo $trace;
+                return $trace;
             }
-            if(matchEnvi('local')) echo $trace;
-            return $trace;
         } catch (Throwable $e) {
             return prettyJsonEncode([
                 'date' => date('Y-m-d H:i:s'),
