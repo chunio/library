@@ -22,13 +22,11 @@ class MongoAspect extends AbstractAspect
     {
         $payload = $proceedingJoinPoint->getArguments()[1];
         $command = \MongoDB\BSON\toPHP($payload);//TODO:待優化至採集可執行命令
-        $command2 = \MongoDB\Driver\Monitoring\CommandStartedEvent::getCommand();
-        monolog($command2,'$command2');
         $start = microtime(true);
         $return = $proceedingJoinPoint->process();
         $end = microtime(true);
         $command3 = \MongoDB\Driver\Monitoring\CommandStartedEvent::getCommand();
-        monolog($command2,'$command3');
+        monolog($command3,'$command3');
         MonologHandler::pushDBTrace(MonologHandler::$TRACE_EVENT['MONGODB'], prettyJsonEncode($command), $end - $start);
         return $return;
     }
