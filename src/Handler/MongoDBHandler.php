@@ -40,12 +40,6 @@ class MongoDBHandler
     ];
 
     /**
-     * @Inject
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
-
-    /**
      * @Inject()
      * @var MongoClient
      */
@@ -58,9 +52,22 @@ class MongoDBHandler
         //$this->MongoClient->database()->collection($collection);
     }
 
-    public function one(array $where, array $field = ['*'], array $order = []): array
+    public function one(array $where, array $select = [], array $order = []): array
     {
-        return $this->MongoClient->database($this->db)->collection($this->collection)->findOne($where);
+        //format option[START]
+        $option = [];
+        if($select){
+            foreach ($select as $unitField){
+                $option['projection'/*聲明需返回的字段*/][$unitField] = 1;//1表示返回
+            }
+        }
+        if($order){
+            foreach ($order as $unitField => $unitSequence){
+                $option['sort'][$unitField] = ($unitSequence === 'ASC') ? 1/*正序*/ : -1/*倒敘*/;
+            }
+        }
+        //format option[END]
+        return $this->MongoClient->database($this->db)->collection($this->collection)->findOne($where, $option);
     }
 
     /**
