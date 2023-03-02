@@ -41,7 +41,7 @@ class MonologHandler
     {
         [$message, $label, $context, $formatFunc, $name, $group] = $argument + ['', '', [], self::$formatter['COMMON'], '', 'default'];
         $logger = static::instance($name, $group);
-        $message = $formatFunc ? self::$formatFunc($message, $label) : $message;
+        $message = $formatFunc ? $formatFunc($message, $label) : $message;
         $logger->{$function}($message, $context);
     }
 
