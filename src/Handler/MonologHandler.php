@@ -26,17 +26,6 @@ use Psr\Log\LoggerInterface;
 class MonologHandler
 {
 
-    public static $TRACE_EVENT = [
-        'MYSQL' => 'MYSQL',
-        'MONGODB' => 'MONGODB',
-    ];
-
-    public static $trace = [];
-
-    public static $ttl = 300;//unit:second
-
-    public static $lastestReleaseTime = 0;
-
     public static function __callStatic($function, $argument)
     {
         [$message, $label, $context, $name, $group] = $argument + ['', '', [], '', 'default'];
@@ -51,71 +40,5 @@ class MonologHandler
         }
         return ApplicationContext::getContainer()->get(LoggerFactory::class)->get($name, $group);
     }
-
-    /**
-     * @param string $command
-     * @param float $unitElapsedTime //unit:second
-     * @return bool
-     * author : zengweitao@msn.com
-     * datetime : 2022-04-25 15:10
-     * memo : //TODO:待優化
-     */
-    public static function pushDBTrace(string $event, string $command, float $unitElapsedTime): bool
-    {
-        self::refresh();
-        self::$trace[ContextHandler::pullTraceId()][$event][/*TODO:並發時，需防止覆蓋同一指針下標*/] = [//TODO:防止內存洩漏
-            'command'/*如：sql*/ => $command,
-            'unitElapsedTime' => floatval(number_format($unitElapsedTime,5,'.',''))
-        ];
-        return true;
-    }
-
-    /**
-     * @param string $command
-     * @param float $millisecond 單位：毫秒
-     * @return bool
-     * author : zengweitao@msn.com
-     * datetime : 2022-04-25 15:10
-     * memo : //TODO:待優化
-     */
-    public static function pushCustomTrace(string $event, string $command, float $millisecond): bool
-    {
-        self::refresh();
-        self::$trace[ContextHandler::pullTraceId()][$event][/*TODO:並發時，需防止覆蓋同一指針下標*/] = [//TODO:防止內存洩漏
-            'command'/*如：sql*/ => $command,
-            'unitElapsedTime' => floatval(number_format((string)($millisecond / 1000), 5,'.',''))//單位：秒
-        ];
-        return true;
-    }
-
-    public static function pullCustomTrace(): array
-    {
-        self::refresh();
-        $customTrace = self::$trace[ContextHandler::pullTraceId()] ?? [];
-        self::release();
-        return $customTrace;
-    }
-
-    //TODO:將自動清理添加至定時器
-    public static function release(): bool
-    {
-        $currentTime = time();
-        if($currentTime - self::$lastestReleaseTime > self::$ttl){
-            foreach (self::$trace as $traceId => $value){
-                if((time() - $value['activeTime']) > self::$ttl){
-                    unset(self::$trace[$traceId]);
-                }
-            }
-            self::$lastestReleaseTime = $currentTime;
-        }
-        return true;
-    }
-
-    public static function refresh(): bool
-    {
-        self::$trace[ContextHandler::pullTraceId()]['activeTime'] = time();
-        return true;
-    }
-
 
 }

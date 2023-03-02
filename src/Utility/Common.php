@@ -25,25 +25,13 @@ if(!function_exists('commonFormatVariable')){
         try {
             $traceInfo = $traceInfo ?: debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);//TODO：此函數性能如何？
             $file1 = ($startIndex = strrpos(($file1 = $traceInfo[1]['file']), env('APP_NAME'))) ? substr($file1, $startIndex + 1) : $file1;
-            $funcFormat = function($variable, $jsonEncodeStatus){
-                if ($variable === true) return 'TRUE(BOOL)';
-                if ($variable === false) return 'FALSE(BOOL)';
-                if ($variable === null) return 'NULL';
-                if ($variable === '') return "(EMPTY STRING)";
-                if ($variable instanceof Throwable) return ['message' => $variable->getMessage(), 'trace' => $variable->getTrace()];
-                if(is_object($variable) && $jsonEncodeStatus) return (array)$variable;
-                //解決json_encode()錯誤：Malformed UTF-8 characters, possibly incorrectly encoded
-                if(is_string($variable)) return mb_convert_encoding($variable, 'UTF-8', 'UTF-8,GBK,GB2312,BIG5');
-                return $variable;
-            };
             $traceArray = [
                 'date' => date('Y-m-d H:i:s'),
                 'traceId' => ContextHandler::pullTraceId(),
                 "script" =>  "./{$file1}(line:{$traceInfo[1]['line']})",
                 'label' => $label ?: 'default',
-                'message' => $funcFormat($variable, $jsonEncodeStatus),
+                'message' => prettyVariable($variable, $jsonEncodeStatus),
                 'request' => ContextHandler::pullRequestAbstract(),
-                'customTrace' => MonologHandler::pullCustomTrace()
             ];
             //check memory[START]
             $traceJson = prettyJsonEncode($traceArray);
@@ -73,6 +61,21 @@ if(!function_exists('commonFormatVariable')){
     }
 }
 
+if(!function_exists('prettyVariable')){
+    function prettyVariable($variable, bool $jsonEncodeStatus = false)
+    {
+        if ($variable === true) return 'TRUE(BOOL)';
+        if ($variable === false) return 'FALSE(BOOL)';
+        if ($variable === null) return 'NULL';
+        if ($variable === '') return "(EMPTY STRING)";
+        if ($variable instanceof Throwable) return ['message' => $variable->getMessage(), 'trace' => $variable->getTrace()];
+        if(is_object($variable) && $jsonEncodeStatus) return (array)$variable;
+        //解決json_encode()錯誤：Malformed UTF-8 characters, possibly incorrectly encoded
+        if(is_string($variable)) return mb_convert_encoding($variable, 'UTF-8', 'UTF-8,GBK,GB2312,BIG5');
+        return $variable;
+    }
+}
+
 if (!function_exists('monolog')) {
     function monolog($variable, string $label = '', string $level = 'info'): bool
     {
@@ -92,6 +95,13 @@ if (!function_exists('monolog')) {
             //非協程I/O[END]
         }
         return true;
+    }
+}
+
+if(!function_exists('addTrace')){
+    function addTrace($variable, string $label = ''): bool
+    {
+        MonologHandler::info($variable, $label);
     }
 }
 

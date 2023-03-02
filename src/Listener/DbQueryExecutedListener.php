@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Baichuan\Library\Listener;
 
-use Baichuan\Library\Handler\MonologHandler;
+use Baichuan\Library\Handler\TraceHandler;
 use Hyperf\Database\Events\QueryExecuted;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
@@ -49,7 +49,10 @@ class DbQueryExecutedListener implements ListenerInterface
                     $sql = Str::replaceFirst('?', "'{$value}'", $sql);
                 }
             }
-            MonologHandler::pushDBTrace(MonologHandler::$TRACE_EVENT['MYSQL'], $sql, $event->time / 1000);
+            TraceHandler::push([
+                'command'/*如：sql*/ => $sql,
+                'unitElapsedTime' => floatval(number_format($event->time / 1000,5,'.',''))
+            ], 'mongodb', TraceHandler::EVENT['SERVICE']);
         }
     }
 

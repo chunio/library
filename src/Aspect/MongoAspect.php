@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Baichuan\Library\Aspect;
 
-use Baichuan\Library\Handler\MonologHandler;
+use Baichuan\Library\Handler\TraceHandler;
 use Hyperf\Di\Annotation\Aspect;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -25,7 +25,10 @@ class MongoAspect extends AbstractAspect
         $start = microtime(true);
         $return = $proceedingJoinPoint->process();
         $end = microtime(true);
-        MonologHandler::pushDBTrace(MonologHandler::$TRACE_EVENT['MONGODB'], prettyJsonEncode($command), $end - $start);
+        TraceHandler::push([
+            'command'/*如：sql*/ => $command,
+            'unitElapsedTime' => floatval(number_format($end - $start,5,'.',''))
+        ], 'mongodb', TraceHandler::EVENT['SERVICE']);
         return $return;
     }
 }
