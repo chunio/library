@@ -12,11 +12,11 @@ declare(strict_types=1);
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
-namespace Baichuan\Library\Utility;
+namespace Baichuan\Library\Handler;
 
 use Hyperf\DbConnection\Db;
 
-class BaseModel extends \Hyperf\DbConnection\Model\Model
+class ModelHandler extends \Hyperf\DbConnection\Model\Model
 {
 
     public static $DELETED_STATUS = [
