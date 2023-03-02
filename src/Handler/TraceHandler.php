@@ -40,7 +40,7 @@ class TraceHandler
                 'request' => ContextHandler::pullRequestAbstract(),
                 'trace' => [],
                 'service' => [],
-                'response' => [],
+                //'response' => [],
                 'activeTime' => time(),
             ];
         }
@@ -71,14 +71,14 @@ class TraceHandler
      * datetime: 2023/02/10 16:58
      * memo : response
      */
-    public static function output(string $responseJson)
+    public static function output(/*string $response*/)
     {
 //        try {
         $traceArray = self::pull();
         if($traceArray['trace'] && $traceArray['service']){
             //$responseArray = json_decode($responseJson, true);
             //$responseArray['data'] = 'hide';
-            $traceArray['response'] = $responseJson;
+            //$traceArray['response'] = $responseJson;
             if(self::$jsonEncodeStatus) {
                 $trace = prettyJsonEncode($traceArray) . "\n";
             }else{

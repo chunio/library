@@ -44,8 +44,8 @@ class RequestAspect extends AbstractAspect
         // 打印響應內容
         if ($proceedingJoinPoint->className === 'Hyperf\HttpServer\ResponseEmitter' && $proceedingJoinPoint->methodName === 'emit') {
             //$request = Context::get(ServerRequestInterface::class);
-            $response = $proceedingJoinPoint->getArguments()[0];
-            TraceHandler::output($response->getBody()->getContents());
+            //$response = $proceedingJoinPoint->getArguments()[0];
+            TraceHandler::output(/*$response->getBody()->getContents()*/);
         }
         return $result;
     }
