@@ -76,7 +76,7 @@ if(!function_exists('variableFormatter')){
         return $variable;
     }
 }
-if(!function_exists('variableFormatter')){
+if(!function_exists('traceFormatter')){
     /**
      * @param $variable
      * @param string $label
