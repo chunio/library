@@ -10,70 +10,121 @@ use GuzzleHttp\Cookie\CookieJar;
 use Hyperf\Kafka\ProducerManager;
 use Hyperf\Redis\RedisFactory;
 
-if(!function_exists('commonFormatVariable')){
-    /**
-     * @param $variable
-     * @param string $label
-     * @param bool $jsonEncodeStatus
-     * @return string
-     * author : zengweitao@gmail.com
-     * datetime: 2023/02/10 16:58
-     * memo : null
-     */
-    function commonFormatVariable($variable, string $label = '', array $traceInfo = [], bool $jsonEncodeStatus = false, bool $base = false): string
-    {
-        try {
-            if($base) return $variable;
-            $traceInfo = $traceInfo ?: debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);//TODO：此函數性能如何？
-            $file1 = ($startIndex = strrpos(($file1 = $traceInfo[1]['file']), env('APP_NAME'))) ? substr($file1, $startIndex + 1) : $file1;
-            $traceArray = [
-                'date' => date('Y-m-d H:i:s'),
-                'traceId' => ContextHandler::pullTraceId(),
-                "script" =>  "./{$file1}(line:{$traceInfo[1]['line']})",
-                'label' => $label ?: 'default',
-                'message' => prettyVariable($variable, $jsonEncodeStatus),
-                'request' => ContextHandler::pullRequestAbstract(),
-            ];
-            //check memory[START]
-            $traceJson = prettyJsonEncode($traceArray);
-            if(strlen($traceJson) > (($megabyteLimit = 1024/*unit:KB*/) * 1024)){//超出限額則截取
-                $jsonEncodeStatus = true;
-                $traceJson = substr($traceJson, 0,$megabyteLimit * 1024);
-            }
-            //check memory[END]
-            if($jsonEncodeStatus) {
-                $trace = "{$traceJson}\n";
-            }else{
-                $trace = "\n:<<UNIT[START]\n" . print_r($traceArray, true) . "\nUNIT[END]\n";//print_r()的換行會將大變量瞬間膨脹導致內存滿載
-            }
-            if(matchEnvi('local')) echo $trace;
-            return $trace;
-        } catch (Throwable $e) {
-            return prettyJsonEncode([
-                'date' => date('Y-m-d H:i:s'),
-                'traceId' => ContextHandler::pullTraceId(),
-                'script' => $e->getFile() . "(line:{$e->getLine()})",
-                'label' => "{$label} throwable",
-                'message' => $e->getMessage(),
-                'request' => ContextHandler::pullRequestAbstract(),
-                'customTrace' => [],
-            ]);
-        }
-    }
-}
+//if(!function_exists('commonFormatVariable')){
+//    /**
+//     * @param $variable
+//     * @param string $label
+//     * @param bool $jsonEncodeStatus
+//     * @return string
+//     * author : zengweitao@gmail.com
+//     * datetime: 2023/02/10 16:58
+//     * memo : null
+//     */
+//    function commonFormatVariable($variable, string $label = '', array $traceInfo = [], bool $jsonEncodeStatus = false, bool $base = false): string
+//    {
+//        try {
+//            if($base) return $variable;
+//            $traceInfo = $traceInfo ?: debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);//TODO：此函數性能如何？
+//            $file1 = ($startIndex = strrpos(($file1 = $traceInfo[1]['file']), env('APP_NAME'))) ? substr($file1, $startIndex + 1) : $file1;
+//            $traceArray = [
+//                'date' => date('Y-m-d H:i:s'),
+//                'traceId' => ContextHandler::pullTraceId(),
+//                "script" =>  "./{$file1}(line:{$traceInfo[1]['line']})",
+//                'label' => $label ?: 'default',
+//                'message' => prettyVariable($variable, $jsonEncodeStatus),
+//                'request' => ContextHandler::pullRequestAbstract(),
+//            ];
+//            //check memory[START]
+//            $traceJson = prettyJsonEncode($traceArray);
+//            if(strlen($traceJson) > (($megabyteLimit = 1024/*unit:KB*/) * 1024)){//超出限額則截取
+//                $jsonEncodeStatus = true;
+//                $traceJson = substr($traceJson, 0,$megabyteLimit * 1024);
+//            }
+//            //check memory[END]
+//            if($jsonEncodeStatus) {
+//                $trace = "{$traceJson}\n";
+//            }else{
+//                $trace = "\n:<<UNIT[START]\n" . print_r($traceArray, true) . "\nUNIT[END]\n";//print_r()的換行會將大變量瞬間膨脹導致內存滿載
+//            }
+//            if(matchEnvi('local')) echo $trace;
+//            return $trace;
+//        } catch (Throwable $e) {
+//            return prettyJsonEncode([
+//                'date' => date('Y-m-d H:i:s'),
+//                'traceId' => ContextHandler::pullTraceId(),
+//                'script' => $e->getFile() . "(line:{$e->getLine()})",
+//                'label' => "{$label} throwable",
+//                'message' => $e->getMessage(),
+//                'request' => ContextHandler::pullRequestAbstract(),
+//                'customTrace' => [],
+//            ]);
+//        }
+//    }
+//}
 
-if(!function_exists('prettyVariable')){
-    function prettyVariable($variable, bool $jsonEncodeStatus = false)
+if(!function_exists('variableFormatter')){
+    function variableFormatter($variable/*, bool $jsonEncodeStatus = false*/)
     {
         if ($variable === true) return 'TRUE(BOOL)';
         if ($variable === false) return 'FALSE(BOOL)';
         if ($variable === null) return 'NULL';
         if ($variable === '') return "(EMPTY STRING)";
         if ($variable instanceof Throwable) return ['message' => $variable->getMessage(), 'trace' => $variable->getTrace()];
-        if(is_object($variable) && $jsonEncodeStatus) return (array)$variable;
+        if(is_object($variable)/* && $jsonEncodeStatus*/) return (array)$variable;
         //解決json_encode()錯誤：Malformed UTF-8 characters, possibly incorrectly encoded
-        if(is_string($variable)) return mb_convert_encoding($variable, 'UTF-8', 'UTF-8,GBK,GB2312,BIG5');
+        //if(is_string($variable)) return mb_convert_encoding($variable, 'UTF-8', 'UTF-8,GBK,GB2312,BIG5');
         return $variable;
+    }
+}
+if(!function_exists('variableFormatter')){
+    /**
+     * @param $variable
+     * @param string $label
+     * @param int $debugBacktraceLimit
+     * @param bool $unit 是否添加分隔符
+     * @return string
+     * author : zengweitao@gmail.com
+     * datetime: 2023/03/02 15:45
+     * memo : null
+     */
+    function traceFormatter($variable, string $label = 'default', int $debugBacktraceLimit = 2, bool $separator = true)/*: string|array*/
+    {
+        try {
+            $traceInfo = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, $debugBacktraceLimit);//TODO：此函數性能如何？
+            $file1 = ($startIndex = strrpos(($file1 = $traceInfo[$debugBacktraceLimit - 1]['file']), env('APP_NAME'))) ? substr($file1, $startIndex + 1) : $file1;
+            $traceArray = [
+                'date' => date('Y-m-d H:i:s'),
+                "script" =>  "./{$file1}(line:{$traceInfo[$debugBacktraceLimit - 1]['line']})",
+                'label' => $label,
+                'message' => variableFormatter($variable),
+            ];
+            //check memory[START]
+//            $traceJson = prettyJsonEncode($traceArray);
+//            if(strlen($traceJson) > (($megabyteLimit = 1024/*unit:KB*/) * 1024)){//超出限額則截取
+//                $jsonEncodeStatus = true;
+//                $traceJson = substr($traceJson, 0,$megabyteLimit * 1024);
+//            }
+            //check memory[END]
+            if($separator){
+                $traceArray['traceId'] = ContextHandler::pullTraceId();
+                if(MonologHandler::$jsonEncodeStatus ?? false) {
+                    $trace = prettyJsonEncode($traceArray) . "\n";
+                }else{
+                    $trace = "\n:<<UNIT[START]\n" . print_r($traceArray, true) . "\nUNIT[END]\n";//print_r()的換行會將大變量瞬間膨脹導致內存滿載
+                }
+                if(MonologHandler::$output ?? true) echo $trace;
+
+            }
+            return $trace ?? $traceArray;
+        } catch (Throwable $e) {
+            return prettyJsonEncode([
+                'traceId' => ContextHandler::pullTraceId(),
+                'date' => date('Y-m-d H:i:s'),
+                'script' => $e->getFile() . "(line:{$e->getLine()})",
+                'label' => "{$label} throwable",
+                'message' => $e->getMessage(),
+            ]);
+        }
     }
 }
 

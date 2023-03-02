@@ -41,15 +41,8 @@ class TraceHandler
     {
         switch ($event){
             case self::EVENT['TRACE']:
-                $traceInfo = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);//TODO：此函數性能如何？
-                $file1 = ($startIndex = strrpos(($file1 = $traceInfo[2]['file']), env('APP_NAME'))) ? substr($file1, $startIndex + 1) : $file1;
                 $index = microtime(true) . '#' . md5((string)rand());//TODO:並發時，需防止覆蓋同一指針下標
-                self::$trace[ContextHandler::pullTraceId()][$event][$index] = [
-                    'date' => date('Y-m-d H:i:s'),
-                    "script" =>  "./{$file1}(line:{$traceInfo[2]['line']})",
-                    'label' => $label,
-                    'message' => prettyVariable($variable),
-                ];
+                self::$trace[ContextHandler::pullTraceId()][$event][$index] = traceFormatter($variable, $label, 2, false);
                 break;
             case self::EVENT['SERVICE']:
                 self::$trace[ContextHandler::pullTraceId()][$event][$label][] = $variable;
@@ -79,7 +72,7 @@ class TraceHandler
                     $trace = "\n:<<UNIT[START]\n" . print_r($traceArray, true) . "\nUNIT[END]\n";//print_r()的換行會將大變量瞬間膨脹導致內存滿載
                 }
                 if(matchEnvi('local')) echo $trace;
-                MonologHandler::info($trace,'',[],'','default', true);
+                MonologHandler::info($trace);
             }
         } catch (Throwable $e) {
             $trace = prettyJsonEncode([
