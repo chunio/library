@@ -33,10 +33,6 @@ class MonologHandler
         'COMMON' => 'traceFormatter',//function name
     ];
 
-    public static $jsonEncodeStatus = false;//是否單行
-
-    public static $output = true;//是否輸出至控制台
-
     public static function __callStatic($function, $argument)
     {
         [$message, $label, $context, $formatFunc, $name, $group] = $argument + ['', '', [], self::$formatter['COMMON'], '', 'default'];

@@ -35,26 +35,11 @@ class ContextHandler
             (!$requestAbstract = Context::get(ContextEnum::RequestAbstract)) &&
             ($Request = Context::get(ServerRequestInterface::class))
         ){
-            /*****
-            $ignore = [
-                'host',//請求域名
-                'connection',//是否需要持久連接
-                'user-agent',//請求的用戶信息
-                'accept',
-                'referer',
-                'accept-encoding',
-                'accept-language',
-                'cache-control',
-                'upgrade-insecure-requests'
-            ];
-            $header = $Request->getHeaders();
-            foreach ($header as $key => $value){
-                if(in_array($key, $ignore)) unset($header[$key]);
-            }
-            *****/
-            $requestAbstract =  [
+            $header = array_map(fn ($v) => count($v) === 1 ? $v[0] : $v, $Request->getHeaders());
+            unset($header['user-agent']);
+            $requestAbstract = [
                 'api' => "(method:" . $Request->getMethod() . ")" . $Request->getUri()->__toString(),
-                'header' => array_map(fn ($v) => count($v) === 1 ? $v[0] : $v, $Request->getHeaders()),
+                'header' => $header,
                 'query' => prettyJsonEncode($Request->getQueryParams()),
                 'body' => prettyJsonEncode($Request->getParsedBody()),
             ];

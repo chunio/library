@@ -12,6 +12,10 @@ class TraceHandler
         'SERVICE' => 'service',
     ];
 
+    public static $jsonEncodeStatus = false;//是否單行
+
+    public static $output = true;//是否輸出至控制台
+
     public static $ttl = 300;//unit:second
 
     public static $lastestReleaseTime = 0;
@@ -65,20 +69,20 @@ class TraceHandler
      * datetime: 2023/02/10 16:58
      * memo : response
      */
-    public static function output(string $responseJson, bool $jsonEncodeStatus = false)
+    public static function output(string $responseJson)
     {
 //        try {
         $traceArray = self::pull();
         if($traceArray['trace'] && $traceArray['service']){
-            $responseArray = json_decode($responseJson, true);
-            $responseArray['data'] = 0;
-            $traceArray['response'] = $responseArray;
-            if($jsonEncodeStatus) {
+            //$responseArray = json_decode($responseJson, true);
+            //$responseArray['data'] = 'hide';
+            $traceArray['response'] = $responseJson;
+            if(self::$jsonEncodeStatus) {
                 $trace = prettyJsonEncode($traceArray) . "\n";
             }else{
                 $trace = "\n:<<UNIT[START]\n" . print_r($traceArray, true) . "\nUNIT[END]\n";//print_r()的換行會將大變量瞬間膨脹導致內存滿載
             }
-            if(matchEnvi('local')) echo $trace;
+            if(self::$output) echo $trace;
             MonologHandler::info($trace,'', [], MonologHandler::$formatter['NONE']);
         }
 //        } catch (Throwable $e) {
