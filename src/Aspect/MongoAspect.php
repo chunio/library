@@ -26,7 +26,7 @@ class MongoAspect extends AbstractAspect
         $return = $proceedingJoinPoint->process();
         $end = microtime(true);
         TraceHandler::push([
-            'command'/*如：sql*/ => $command,
+            'command' => $command,
             'unitElapsedTime' => floatval(number_format($end - $start,5,'.',''))
         ], 'mongodb', TraceHandler::EVENT['SERVICE']);
         return $return;
