@@ -20,13 +20,13 @@ class MongoAspect extends AbstractAspect
     ];
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        $payload = $proceedingJoinPoint->getArguments()[1];
-        $command = \MongoDB\BSON\toPHP($payload);//TODO:待優化至採集可執行命令
+        $payloadBson = $proceedingJoinPoint->getArguments()[1];
+        $payloadArray = \MongoDB\BSON\toPHP($payloadBson);//TODO:待優化至採集可執行命令
         $start = microtime(true);
         $return = $proceedingJoinPoint->process();
         $end = microtime(true);
         TraceHandler::push([
-            'command' => prettyJsonEncode($command),
+            'command' => prettyJsonEncode($payloadArray),
             'unitElapsedTime' => floatval(number_format($end - $start,5,'.',''))
         ], 'mongodb', TraceHandler::EVENT['SERVICE']);
         return $return;

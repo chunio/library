@@ -6,61 +6,10 @@ use Baichuan\Library\Constant\AsciiEnum;
 use Baichuan\Library\Handler\MonologHandler;
 use Baichuan\Library\Constant\AnsiColorEnum;
 use Baichuan\Library\Handler\ContextHandler;
+use Baichuan\Library\Handler\TraceHandler;
 use GuzzleHttp\Cookie\CookieJar;
 use Hyperf\Kafka\ProducerManager;
 use Hyperf\Redis\RedisFactory;
-
-//if(!function_exists('commonFormatVariable')){
-//    /**
-//     * @param $variable
-//     * @param string $label
-//     * @param bool $jsonEncodeStatus
-//     * @return string
-//     * author : zengweitao@gmail.com
-//     * datetime: 2023/02/10 16:58
-//     * memo : null
-//     */
-//    function commonFormatVariable($variable, string $label = '', array $traceInfo = [], bool $jsonEncodeStatus = false, bool $base = false): string
-//    {
-//        try {
-//            if($base) return $variable;
-//            $traceInfo = $traceInfo ?: debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);//TODO：此函數性能如何？
-//            $file1 = ($startIndex = strrpos(($file1 = $traceInfo[1]['file']), env('APP_NAME'))) ? substr($file1, $startIndex + 1) : $file1;
-//            $traceArray = [
-//                'date' => date('Y-m-d H:i:s'),
-//                'traceId' => ContextHandler::pullTraceId(),
-//                "script" =>  "./{$file1}(line:{$traceInfo[1]['line']})",
-//                'label' => $label ?: 'default',
-//                'message' => prettyVariable($variable, $jsonEncodeStatus),
-//                'request' => ContextHandler::pullRequestAbstract(),
-//            ];
-//            //check memory[START]
-//            $traceJson = prettyJsonEncode($traceArray);
-//            if(strlen($traceJson) > (($megabyteLimit = 1024/*unit:KB*/) * 1024)){//超出限額則截取
-//                $jsonEncodeStatus = true;
-//                $traceJson = substr($traceJson, 0,$megabyteLimit * 1024);
-//            }
-//            //check memory[END]
-//            if($jsonEncodeStatus) {
-//                $trace = "{$traceJson}\n";
-//            }else{
-//                $trace = "\n:<<UNIT[START]\n" . print_r($traceArray, true) . "\nUNIT[END]\n";//print_r()的換行會將大變量瞬間膨脹導致內存滿載
-//            }
-//            if(matchEnvi('local')) echo $trace;
-//            return $trace;
-//        } catch (Throwable $e) {
-//            return prettyJsonEncode([
-//                'date' => date('Y-m-d H:i:s'),
-//                'traceId' => ContextHandler::pullTraceId(),
-//                'script' => $e->getFile() . "(line:{$e->getLine()})",
-//                'label' => "{$label} throwable",
-//                'message' => $e->getMessage(),
-//                'request' => ContextHandler::pullRequestAbstract(),
-//                'customTrace' => [],
-//            ]);
-//        }
-//    }
-//}
 
 if(!function_exists('variableFormatter')){
     function variableFormatter($variable/*, bool $jsonEncodeStatus = false*/)
@@ -76,6 +25,7 @@ if(!function_exists('variableFormatter')){
         return $variable;
     }
 }
+
 if(!function_exists('traceFormatter')){
     /**
      * @param $variable
@@ -150,10 +100,10 @@ if (!function_exists('monolog')) {
     }
 }
 
-if(!function_exists('addTrace')){
+if (!function_exists('monolog')) {
     function addTrace($variable, string $label = ''): bool
     {
-        MonologHandler::info($variable, $label);
+        return TraceHandler::push($variable, $label, TraceHandler::EVENT['TRACE'],3);
     }
 }
 
@@ -390,23 +340,6 @@ if (!function_exists('commonSort')) {
         return $newArray;
     }
 }
-
-//if (!function_exists('filterAscii')) {
-//    function filterAscii(string $string, string $replace = ' ')
-//    {
-//        if(!$string) return '';
-//        $format = '';
-//        for($i = 0; isset($string[$i]); $i++) {
-//            $asciiCode = ord($string[$i]);
-//            if($asciiCode == 9 || $asciiCode == 10 || $asciiCode == 13){
-//                $format .= $replace;
-//            }elseif($asciiCode > 31 && $asciiCode != 127){
-//                $format .= $string[$i];
-//            }
-//        }
-//        return trim($format);
-//    }
-//}
 
 if (!function_exists('filterControlCharacter')) {
     /**

@@ -53,41 +53,4 @@ class MonologHandler
         return ApplicationContext::getContainer()->get(LoggerFactory::class)->get($name, $group);
     }
 
-//    public static function commonFormatter($variable, string $label = 'default', int $debugBacktraceLimit = 2): string
-//    {
-//        try {
-//            $traceInfo = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, $debugBacktraceLimit);//TODO：此函數性能如何？
-//            $file1 = ($startIndex = strrpos(($file1 = $traceInfo[2]['file']), env('APP_NAME'))) ? substr($file1, $startIndex + 1) : $file1;
-//            $traceArray = [
-//                'traceId' => ContextHandler::pullTraceId(),
-//                'date' => date('Y-m-d H:i:s'),
-//                "script" =>  "./{$file1}(line:{$traceInfo[2]['line']})",
-//                'label' => $label,
-//                'message' => variableFormatter($variable),
-//            ];
-//            //check memory[START]
-////            $traceJson = prettyJsonEncode($traceArray);
-////            if(strlen($traceJson) > (($megabyteLimit = 1024/*unit:KB*/) * 1024)){//超出限額則截取
-////                $jsonEncodeStatus = true;
-////                $traceJson = substr($traceJson, 0,$megabyteLimit * 1024);
-////            }
-//            //check memory[END]
-//            if(self::$jsonEncodeStatus) {
-//                $trace = prettyJsonEncode($traceArray) . "\n";
-//            }else{
-//                $trace = "\n:<<UNIT[START]\n" . print_r($traceArray, true) . "\nUNIT[END]\n";//print_r()的換行會將大變量瞬間膨脹導致內存滿載
-//            }
-//            if(self::$output) echo $trace;
-//            return $trace;
-//        } catch (Throwable $e) {
-//            return prettyJsonEncode([
-//                'traceId' => ContextHandler::pullTraceId(),
-//                'date' => date('Y-m-d H:i:s'),
-//                'script' => $e->getFile() . "(line:{$e->getLine()})",
-//                'label' => "{$label} throwable",
-//                'message' => $e->getMessage(),
-//            ]);
-//        }
-//    }
-
 }

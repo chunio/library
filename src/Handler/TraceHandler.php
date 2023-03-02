@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Baichuan\Library\Handler;
 
-use Throwable;
-
 class TraceHandler
 {
 
@@ -20,12 +18,18 @@ class TraceHandler
 
     public static $trace = [];
 
-    public static function initRequest(): bool
+    /**
+     * @return bool
+     * author : zengweitao@gmail.com
+     * datetime: 2023/03/02 18:22
+     * memo : request
+     */
+    public static function init(): bool
     {
         //TODO:存在其他非請求入口
         $traceId = ContextHandler::pullTraceId();
         if(!(self::$trace[$traceId] ?? [])) {
-            self::$trace[$traceId] = [
+            self::$trace[$traceId] = [//template
                 'traceId' => $traceId,
                 'trace' => [],
                 'service' => [],
@@ -37,12 +41,12 @@ class TraceHandler
         return true;
     }
 
-    public static function push($variable, string $label = 'default', string $event = self::EVENT['TRACE']): bool
+    public static function push($variable, string $label = 'default', string $event = self::EVENT['TRACE'], int $debugBacktraceLimit = 2): bool
     {
         switch ($event){
             case self::EVENT['TRACE']:
                 $index = microtime(true) . '#' . md5((string)rand());//TODO:並發時，需防止覆蓋同一指針下標
-                self::$trace[ContextHandler::pullTraceId()][$event][$index] = traceFormatter($variable, $label, 2, false);
+                self::$trace[ContextHandler::pullTraceId()][$event][$index] = traceFormatter($variable, $label, $debugBacktraceLimit, false);
                 break;
             case self::EVENT['SERVICE']:
                 self::$trace[ContextHandler::pullTraceId()][$event][$label][] = $variable;
@@ -59,32 +63,32 @@ class TraceHandler
     /**
      * author : zengweitao@gmail.com
      * datetime: 2023/02/10 16:58
-     * memo : null
+     * memo : response
      */
-    public static function outputResponse(bool $jsonEncodeStatus = false)
+    public static function output(bool $jsonEncodeStatus = false)
     {
-        try {
-            $traceArray = self::pull();
-            if($traceArray['trace'] && $traceArray['service']){
-                if($jsonEncodeStatus) {
-                    $trace = prettyJsonEncode($traceArray) . "\n";
-                }else{
-                    $trace = "\n:<<UNIT[START]\n" . print_r($traceArray, true) . "\nUNIT[END]\n";//print_r()的換行會將大變量瞬間膨脹導致內存滿載
-                }
-                if(matchEnvi('local')) echo $trace;
-                MonologHandler::info($trace,'', [], MonologHandler::$formatter['NONE']);
+//        try {
+        $traceArray = self::pull();
+        if($traceArray['trace'] && $traceArray['service']){
+            if($jsonEncodeStatus) {
+                $trace = prettyJsonEncode($traceArray) . "\n";
+            }else{
+                $trace = "\n:<<UNIT[START]\n" . print_r($traceArray, true) . "\nUNIT[END]\n";//print_r()的換行會將大變量瞬間膨脹導致內存滿載
             }
-        } catch (Throwable $e) {
-            $trace = prettyJsonEncode([
-                'date' => date('Y-m-d H:i:s'),
-                'traceId' => ContextHandler::pullTraceId(),
-                'script' => $e->getFile() . "(line:{$e->getLine()})",
-                'label' => __FUNCTION__ . "throwable",
-                'message' => $e->getMessage(),
-                'request' => ContextHandler::pullRequestAbstract(),
-                'customTrace' => [],
-            ]);
+            if(matchEnvi('local')) echo $trace;
+            MonologHandler::info($trace,'', [], MonologHandler::$formatter['NONE']);
         }
+//        } catch (Throwable $e) {
+//            $trace = prettyJsonEncode([
+//                'date' => date('Y-m-d H:i:s'),
+//                'traceId' => ContextHandler::pullTraceId(),
+//                'script' => $e->getFile() . "(line:{$e->getLine()})",
+//                'label' => __FUNCTION__ . "throwable",
+//                'message' => $e->getMessage(),
+//                'request' => ContextHandler::pullRequestAbstract(),
+//                'customTrace' => [],
+//            ]);
+//        }
     }
 
     //TODO:將自動清理添加至定時器

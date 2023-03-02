@@ -37,13 +37,13 @@ class RequestAspect extends AbstractAspect
         //  打印請求內容
         if ($proceedingJoinPoint->className === 'Hyperf\HttpServer\CoreMiddleware' && $proceedingJoinPoint->methodName === 'dispatch') {
             //MonologHandler::info('Hyperf\HttpServer\CoreMiddleware::dispatch');
-            TraceHandler::initRequest();
+            TraceHandler::init();
             return $proceedingJoinPoint->process();
         }
         $result = $proceedingJoinPoint->process();
         // 打印響應內容
         if ($proceedingJoinPoint->className === 'Hyperf\HttpServer\ResponseEmitter' && $proceedingJoinPoint->methodName === 'emit') {
-            TraceHandler::outputResponse();
+            TraceHandler::output();
             //$request = Context::get(ServerRequestInterface::class);
             //$response = $proceedingJoinPoint->getArguments()[0];
         }
