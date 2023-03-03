@@ -6,7 +6,6 @@ namespace Baichuan\Library\Handler;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\GoTask\MongoClient\MongoClient;
-use Hyperf\GoTask\MongoClient\Type\DeleteResult;
 
 //TODO:待調試
 class MongoDBHandler
