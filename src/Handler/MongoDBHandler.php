@@ -6,6 +6,7 @@ namespace Baichuan\Library\Handler;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\GoTask\MongoClient\MongoClient;
+use Hyperf\GoTask\MongoClient\Type\DeleteResult;
 
 //TODO:待調試
 class MongoDBHandler
@@ -124,13 +125,14 @@ class MongoDBHandler
         ]);
     }
 
-    public function commonInsert(array $data)/*: InsertOneResult|InsertManyResult*/
+    public function commonInsert(array $data)/*: ?ObjectId|array*/
     {
         if(!($data[0] ?? [])){
-            return $this->MongoClient->database($this->db)->collection($this->collection)->insertOne($data);
-
+            $InsertOneResult = $this->MongoClient->database($this->db)->collection($this->collection)->insertOne($data);
+            return $InsertOneResult->getInsertedId();
         }else{
-            return $this->MongoClient->database($this->db)->collection($this->collection)->insertMany($data);
+            $InsertManyResult = $this->MongoClient->database($this->db)->collection($this->collection)->insertMany($data);
+            return $InsertManyResult->getInsertedIDs();
         }
     }
 
@@ -160,6 +162,17 @@ class MongoDBHandler
         ];
         $UpdateResult = $this->MongoClient->database($this->db)->collection($this->collection)->updateMany($formatWhere, $update);
         return $UpdateResult->getModifiedCount();
+    }
+
+    public function commonDelete($where): int
+    {
+        $DeleteResult = $this->MongoClient->database($this->db)->collection($this->collection)->deleteMany($where);
+        return $DeleteResult->getDeletedCount();
+    }
+
+    public function commonCount($where): int
+    {
+        return $this->MongoClient->database($this->db)->collection($this->collection)->countDocuments($where);
     }
 
 }

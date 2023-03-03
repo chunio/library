@@ -69,7 +69,7 @@ class ModelHandler extends \Hyperf\DbConnection\Model\Model
 
     public function commonInsert(array $data)/*: int|bool*/
     {
-        if(count($data) === 1){
+        if(!($data[0] ?? [])){
             return DB::table($this->table)->insertGetId($data[0]);
         }else{
             return DB::table($this->table)->insert($data);
