@@ -6,13 +6,12 @@ use Baichuan\Library\Constant\AsciiEnum;
 use Baichuan\Library\Handler\MonologHandler;
 use Baichuan\Library\Constant\AnsiColorEnum;
 use Baichuan\Library\Handler\ContextHandler;
-use Baichuan\Library\Handler\TraceHandler;
 use GuzzleHttp\Cookie\CookieJar;
 use Hyperf\Kafka\ProducerManager;
 use Hyperf\Redis\RedisFactory;
 
 if(!function_exists('variableFormatter')){
-    function variableFormatter($variable/*, bool $jsonEncodeStatus = false*/)
+    function variableFormatter(&$variable/*, bool $jsonEncodeStatus = false*/)
     {
         if ($variable === true) return 'TRUE(BOOL)';
         if ($variable === false) return 'FALSE(BOOL)';
@@ -37,7 +36,7 @@ if(!function_exists('traceFormatter')){
      * datetime: 2023/03/02 15:45
      * memo : null
      */
-    function traceFormatter($variable, string $label = 'default', int $debugBacktraceLimit = 2, bool $separator = true)/*: string|array*/
+    function traceFormatter(&$variable, string $label = 'default', int $debugBacktraceLimit = 2, bool $separator = true)/*: string|array*/
     {
         try {
             $traceInfo = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, $debugBacktraceLimit);//TODO：此函數性能如何？
@@ -57,7 +56,7 @@ if(!function_exists('traceFormatter')){
             //check memory[END]
             if($separator){
                 $traceArray['traceId'] = ContextHandler::pullTraceId();
-                if(MonologHandler::$jsonEncodeStatus ?? false) {
+                if(MonologHandler::$output ?? false) {
                     $trace = prettyJsonEncode($traceArray) . "\n";
                 }else{
                     $trace = "\n:<<UNIT[START]\n" . print_r($traceArray, true) . "\nUNIT[END]\n";//print_r()的換行會將大變量瞬間膨脹導致內存滿載
@@ -79,15 +78,15 @@ if(!function_exists('traceFormatter')){
 }
 
 if (!function_exists('monolog')) {
-    function monolog($variable, string $label = '', string $level = 'info'): bool
+    function monolog($variable, string $label = '', string $level = 'info', $monolog = true): bool
     {
-        if(class_exists(MonologHandler::class)){
+        if($monolog && class_exists(MonologHandler::class)){
             MonologHandler::$level($variable, $label);
         }else{
             //非協程I/O[START]
             $path = BASE_PATH . "/runtime/logs/" . __FUNCTION__ . "-0000-00-" . date("d") . ".log";//keep it for one month
             if (!file_exists($path)) touch($path);//compatible file_put_contents() cannot be created automatically
-            $trace = commonFormatVariable($variable, $label, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2));
+            $trace = traceFormatter($variable, $label);
             if (abs(filesize($path)) > 1024 * 1024 * 1024) {//flush beyond the limit/1024m
                 file_put_contents($path, $trace/*, LOCK_EX*/); //TODO:阻塞風險
             } else {
@@ -100,13 +99,6 @@ if (!function_exists('monolog')) {
     }
 }
 
-if (!function_exists('monolog')) {
-    function addTrace($variable, string $label = ''): bool
-    {
-        return TraceHandler::push($variable, $label, TraceHandler::EVENT['TRACE'],3);
-    }
-}
-
 if(!function_exists('sendAlarm2DingTalk')){
     function sendAlarm2DingTalk($variable)
     {
@@ -115,7 +107,7 @@ if(!function_exists('sendAlarm2DingTalk')){
         $secret = 'SEC8e6642f7e93939b4e04edefc7e06248d8b8c8120c8ff439879fc1ad5970ff601';
         $content = '';
         $content .= "[" . env('APP_NAME') . ' / ' . env('APP_ENV') . "]";
-        $content .=  str_replace("\"","'", commonFormatVariable($variable, '', debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)));
+        $content .=  str_replace("\"","'", traceFormatter($variable, ''));
         $content = prettyJsonEncode([
             'msgtype' => 'text',
             'text' => [

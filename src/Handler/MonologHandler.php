@@ -27,6 +27,10 @@ use Throwable;
 class MonologHandler
 {
 
+    public static $jsonEncodeStatus = false;//是否單行
+
+    public static $output = true;//是否輸出至控制台
+
     //註冊#樣式方式#
     public static $formatter = [
         'NONE' => null,

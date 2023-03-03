@@ -100,6 +100,12 @@ class ConfigProvider
                     'Access-Control-Max-Age' => 86400,
                 ],
             ],
+            'baichuan' => [
+                'monolog' => [
+                    'jsonEncodeStatus' => true,
+                    'output' => true
+                ],
+            ]
         ];
     }
 }

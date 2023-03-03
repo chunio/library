@@ -14,9 +14,9 @@ class TraceHandler
         'SERVICE' => 'service',
     ];
 
-    public static $jsonEncodeStatus = false;//是否單行
-
-    public static $output = true;//是否輸出至控制台
+//    public static $jsonEncodeStatus = false;//是否單行
+//
+//    public static $output = true;//是否輸出至控制台
 
     public static $ttl = 300;//unit:second
 
@@ -79,12 +79,12 @@ class TraceHandler
             //$responseArray = json_decode($responseJson, true);
             //$responseArray['data'] = 'hide';
             //$traceArray['response'] = $responseJson;
-            if(self::$jsonEncodeStatus) {
+            if(MonologHandler::$jsonEncodeStatus) {
                 $trace = prettyJsonEncode($traceArray) . "\n";
             }else{
                 $trace = "\n:<<UNIT[START]\n" . print_r($traceArray, true) . "\nUNIT[END]\n";//print_r()的換行會將大變量瞬間膨脹導致內存滿載
             }
-            if(self::$output) echo $trace;
+            if(MonologHandler::$output) echo $trace;
             MonologHandler::info($trace,'', [], MonologHandler::$formatter['NONE']);
         }
 //        } catch (Throwable $e) {
