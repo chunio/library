@@ -88,7 +88,7 @@ class TraceHandler
     {
 //        try {
         $traceArray = self::pull();
-        if($traceArray['trace'] && $traceArray['service']){
+        if($traceArray['trace'] || $traceArray['service']){
             //$responseArray = json_decode($responseJson, true);
             //$responseArray['data'] = 'hide';
             //$traceArray['response'] = $responseJson;
