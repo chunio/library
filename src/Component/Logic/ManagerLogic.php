@@ -22,9 +22,9 @@ class ManagerLogic
     public function apiRank(){
         $keyword = RedisKeyEnum::STRING['STRING:ApiElapsedTimeRank:Second:'];
         $result = RedisHandler::matchList($keyword);
-        $result = array_map(fn&($i) => str_replace($keyword,'', $i), $result);
+        $redisKeyList = array_map(fn($i) => str_replace($keyword,'', $i), $result);
         //$numKeyword = RedisKeyEnum::STRING['STRING:ApiElapsedTimeRank:Num:'];
-        TraceHandler::push($result);
+        TraceHandler::push($redisKeyList);
         return $result;
     }
 
