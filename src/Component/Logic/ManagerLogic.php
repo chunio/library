@@ -24,6 +24,7 @@ class ManagerLogic
         $numKeyword = RedisKeyEnum::STRING['STRING:ApiElapsedTimeRank:Num:'];
         $result = RedisHandler::matchList($secondKeyword);
         TraceHandler::push($result);
+        return $result;
     }
 
 }

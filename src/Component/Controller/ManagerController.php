@@ -26,8 +26,8 @@ class ManagerController extends AbstractController
      */
     public function ApiRank()
     {
-        make(ManagerLogic::class)->apiRank();
-        return $this->success(3);
+        $result = make(ManagerLogic::class)->apiRank();
+        return $this->success($result);
     }
 
 }
