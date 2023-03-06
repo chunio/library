@@ -22,7 +22,7 @@ class ManagerLogic
     public function apiRank(){
         $secondKeyword = RedisKeyEnum::STRING['STRING:ApiElapsedTimeRank:Second:'];
         $numKeyword = RedisKeyEnum::STRING['STRING:ApiElapsedTimeRank:Num:'];
-        $result = RedisHandler::matchList($secondKeyword);
+        $result = RedisHandler::matchList($secondKeyword);//
         TraceHandler::push($result);
         return $result;
     }
