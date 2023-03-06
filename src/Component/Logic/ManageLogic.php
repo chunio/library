@@ -10,7 +10,7 @@ use Baichuan\Library\Handler\TraceHandler;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\GoTask\MongoClient\MongoClient;
 
-class ManageLogic
+class ManagerLogic
 {
 
     /**
