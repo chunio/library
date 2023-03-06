@@ -6,6 +6,7 @@ namespace Baichuan\Library\Component\Resource;
 
 use Baichuan\Library\Constant\ContextEnum;
 use Baichuan\Library\Handler\ContextHandler;
+use Baichuan\Library\Handler\TraceHandler;
 use Hyperf\Context\Context;
 use Psr\Http\Message\ResponseInterface;
 use Swoole\Http\Status;
@@ -77,12 +78,14 @@ class JsonResource extends \Hyperf\Resource\Json\JsonResource
     public function with(): array
     {
         $requestStartMicroTime = Context::get(ContextEnum::RequestStartMicroTime);
+        $elapsedTime = floatval(number_format((microtime(true) - $requestStartMicroTime), 5,'.',''));
+        TraceHandler::ApiElapsedTimeRank($elapsedTime);
         return [
             'status' => $this->getStatusCode(),
             'code' => $this->getAppCode(),
             'message' => $this->getMsg(),
             'timestamp' => time(),
-            'elapsedTime' => $requestStartMicroTime ? floatval(number_format((microtime(true) - $requestStartMicroTime), 5,'.','')) : null,//DEBUG_LABEL
+            'elapsedTime' => $requestStartMicroTime ? $elapsedTime : null,//DEBUG_LABEL
             'traceId' => ContextHandler::pullTraceId(),
         ];
     }
