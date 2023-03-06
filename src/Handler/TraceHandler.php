@@ -88,7 +88,7 @@ class TraceHandler
     {
 //        try {
         $traceArray = self::pull();
-        //if($traceArray['trace'] || $traceArray['service']){
+        if($traceArray['trace'] || $traceArray['service']){
             //$responseArray = json_decode($responseJson, true);
             //$responseArray['data'] = 'hide';
             //$traceArray['response'] = $responseJson;
@@ -99,7 +99,7 @@ class TraceHandler
             }
             if(MonologHandler::$output) echo $trace;
             MonologHandler::info($trace,'', [], MonologHandler::$formatter['NONE']);
-        //}
+        }
 //        } catch (Throwable $e) {
 //            $trace = prettyJsonEncode([
 //                'date' => date('Y-m-d H:i:s'),
