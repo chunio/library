@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Logic;
+namespace Baichuan\Library\Component\Logic;
 
 use Baichuan\Library\Constant\RedisKeyEnum;
 use Baichuan\Library\Handler\RedisHandler;
