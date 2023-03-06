@@ -51,7 +51,7 @@ class TraceHandler
 
     public static function ApiElapsedTimeRank(float $elapsedTime): bool
     {
-        $requestAbstract = ContextHandler::pullRequestAbstract();//
+        $requestAbstract = ContextHandler::pullRequestAbstract();////
         $replaceApi = str_replace([':', 'http'], '', $requestAbstract['api']);
         $numRedisKey = RedisKeyEnum::STRING['STRING:ApiElapsedTimeRank:Num:'] . $replaceApi;
         $secondRedisKey = RedisKeyEnum::STRING['STRING:ApiElapsedTimeRank:Second:'] . $replaceApi;
