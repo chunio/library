@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Baichuan\Library\Component\Controller;
 
 use Baichuan\Library\Component\Logic\ManagerLogic;
+use Baichuan\Library\Handler\TraceHandler;
 use Hyperf\HttpServer\Annotation\AutoController;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\RequestMapping;
@@ -26,6 +27,7 @@ class ManagerController extends AbstractController
      */
     public function ApiRank()
     {
+        TraceHandler::push('api_rank come in');
         $result = make(ManagerLogic::class)->apiRank();
         return $this->success($result);
     }
