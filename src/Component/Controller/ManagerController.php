@@ -6,11 +6,12 @@ namespace Baichuan\Library\Component\Controller;
 
 use App\Logic\ManagerLogic;
 use Hyperf\HttpServer\Annotation\AutoController;
+use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Router\Router;
 
 /**
- * @AutoController()
+ * @Controller()
  */
 class ManagerController extends AbstractController
 {
@@ -21,7 +22,7 @@ class ManagerController extends AbstractController
 //    }
 
     /**
-     * @RequestMapping(path="index3", methods="get,post")
+     * @RequestMapping(path="api_rank", methods="get,post")
      */
     public function ApiRank()
     {
