@@ -22,7 +22,7 @@ class RedisHandler{
     /**
      * @param callable $func
      * @param string $redisKey
-     * @param int $ttl
+     * @param int $ttl -1/永不過期
      * @return mixed
      * author : zengweitao@gmail.com
      * datetime: 2023/02/20 11:53
@@ -44,7 +44,7 @@ class RedisHandler{
      * @param callable $func
      * @param string $redisKey
      * @param string $hashField
-     * @param int $ttl
+     * @param int $ttl -1/永不過期
      * @return mixed
      * author : zengweitao@gmail.com
      * datetime: 2023/02/20 11:53

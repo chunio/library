@@ -20,6 +20,8 @@ class RedisKeyEnum extends AbstractConstants
         'STRING:MutexName:' => 'STRING:MutexName:',//[互斥鎖]名稱前綴
         'STRING:MutexResult:' => 'STRING:MutexResult:',//[互斥鎖]結果前綴
         'STRING:BookShelfList:' => 'STRING:PthreadCondInt:',//[互斥鎖？]條件變量
+        'STRING:ApiElapsedTimeRank:Second:' => 'STRING:ApiElapsedTimeRank:Second:',//[API耗時排行]時間
+        'STRING:ApiElapsedTimeRank:Num:' => 'STRING:ApiElapsedTimeRank:Num:',//[API耗時排行]次數
     ];
 
     public const HASH = [

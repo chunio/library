@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Baichuan\Library\Handler;
 
+use Baichuan\Library\Constant\RedisKeyEnum;
+use Co\Redis;
 use Hyperf\Utils\Str;
 
 class TraceHandler
@@ -44,6 +46,17 @@ class TraceHandler
                 'activeTime' => time(),
             ];
         }
+        return true;
+    }
+
+    public static function ApiElapsedTimeRank(float $elapsedTime): bool
+    {
+        $requestAbstract = ContextHandler::pullRequestAbstract();
+        $replaceApi = str_replace([':', 'http'], '', $requestAbstract['api']);
+        $numRedisKey = RedisKeyEnum::STRING['STRING:ApiElapsedTimeRank:Num:'] . $replaceApi;
+        $secondRedisKey = RedisKeyEnum::STRING['STRING:ApiElapsedTimeRank:Second:'] . $replaceApi;
+        redisInstance()->incr($numRedisKey);
+        redisInstance()->incrByFloat($secondRedisKey, $elapsedTime);
         return true;
     }
 
