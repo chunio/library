@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Baichuan\Library\Component\Controller;
 
+use App\Logic\ManageLogic;
 use Baichuan\Library\Component\Resource\JsonResource;
 use Baichuan\Library\Handler\TraceHandler;
 use Hyperf\HttpServer\Annotation\AutoController;
@@ -20,7 +21,7 @@ class ManageController extends AbstractController
      */
     public function ApiRank()
     {
-
+        make(ManageLogic::class)->apiRank();
         return $this->success(1);
     }
 
