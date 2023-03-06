@@ -20,7 +20,6 @@ class ManagerLogic
     public $MongoClient;
 
     public function apiRank(){
-        TraceHandler::push('come in');
         $secondKeyword = RedisKeyEnum::STRING['STRING:ApiElapsedTimeRank:Second:'];
         $numKeyword = RedisKeyEnum::STRING['STRING:ApiElapsedTimeRank:Num:'];
         $result = RedisHandler::matchList($secondKeyword);//
