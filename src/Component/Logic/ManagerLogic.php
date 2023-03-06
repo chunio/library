@@ -20,9 +20,10 @@ class ManagerLogic
     public $MongoClient;
 
     public function apiRank(){
-        $secondKeyword = RedisKeyEnum::STRING['STRING:ApiElapsedTimeRank:Second:'];
-        $numKeyword = RedisKeyEnum::STRING['STRING:ApiElapsedTimeRank:Num:'];
-        $result = RedisHandler::matchList($secondKeyword);//
+        $keyword = RedisKeyEnum::STRING['STRING:ApiElapsedTimeRank:Second:'];
+        $result = RedisHandler::matchList($keyword);
+        array_map(fn ($i) => str_replace($keyword,'', $i), $result);
+        //$numKeyword = RedisKeyEnum::STRING['STRING:ApiElapsedTimeRank:Num:'];
         TraceHandler::push($result);
         return $result;
     }
