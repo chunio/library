@@ -19,13 +19,24 @@ class ManagerLogic
      */
     public $MongoClient;
 
-    public function apiRank(){
-        $keyword = RedisKeyEnum::STRING['STRING:ApiElapsedTimeRank:Second:'];
-        $result = RedisHandler::matchList($keyword);
-        $redisKeyList = array_map(fn($i) => str_replace($keyword,'', $i), $result);
-        //$numKeyword = RedisKeyEnum::STRING['STRING:ApiElapsedTimeRank:Num:'];
-        TraceHandler::push($redisKeyList);
-        return $result;
+    public function apiRank(): array
+    {
+        $Redis = redisInstance();
+        $prefixKeyword = RedisKeyEnum::STRING['STRING:ApiElapsedTimeRank:Num:'];
+        $result = RedisHandler::matchList($prefixKeyword);
+        $suffixKeywordList = array_map(fn($value) => str_replace($prefixKeyword,'', $value), $result);
+        $rank = [];
+        foreach ($suffixKeywordList as $unitSuffixKeyword){
+            $num = $Redis->get(RedisKeyEnum::STRING['STRING:ApiElapsedTimeRank:Num:'] . $unitSuffixKeyword);
+            $second = $Redis->get(RedisKeyEnum::STRING['STRING:ApiElapsedTimeRank:Second:'] . $unitSuffixKeyword);
+            $rank[] = [
+                'api' => $unitSuffixKeyword,
+                'num' => $num,
+                'second' => $second,
+                'average' => $second / $num,
+            ];
+        }
+        return commonSort($rank,'average', 'DESC');
     }
 
 }
