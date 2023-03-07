@@ -86,7 +86,7 @@ class MongoDBHandler
             if($mongoOperation = ($this->operator[$unitOperator] ?? '')){
                 $formatWhere[$unitField][$mongoOperation] = $unitValue;
             }else{
-                $formatWhere[$unitField] = $unitValue;
+                $formatWhere[$unitField] = $unitValue;//默認：等於
             }
         }
         //format where[END]

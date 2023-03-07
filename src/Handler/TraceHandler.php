@@ -125,18 +125,19 @@ class TraceHandler
         $currentTime = time();
         if($currentTime - self::$lastestReleaseTime > self::$ttl){
             foreach (self::$trace as $traceId => $value){
-                if((time() - $value['activeTime']) > self::$ttl){
+                if(($currentTime - $value['activeTime']) > self::$ttl){
                     unset(self::$trace[$traceId]);
                 }
             }
-            self::$lastestReleaseTime = $currentTime;
         }
         return true;
     }
 
     public static function refresh(): bool
     {
-        self::$trace[ContextHandler::pullTraceId()]['activeTime'] = time();
+        $currentTime = time();
+        self::$trace[ContextHandler::pullTraceId()]['activeTime'] = $currentTime;
+        self::$lastestReleaseTime = $currentTime;
         return true;
     }
 
