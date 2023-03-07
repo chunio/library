@@ -18,7 +18,7 @@ class ManagerController extends AbstractController
 
     public static function addRoute()
     {
-        Router::addRoute(['GET', 'POST'], '/manager/api_rank', [self::class, 'api_rank']);
+        Router::addRoute(['GET', 'POST'], '/manager/apiRank', [self::class, 'apiRank']);
     }
 
 //    /**
