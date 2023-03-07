@@ -6,7 +6,6 @@ namespace Baichuan\Library\Component\Logic;
 
 use Baichuan\Library\Constant\RedisKeyEnum;
 use Baichuan\Library\Handler\RedisHandler;
-use Baichuan\Library\Handler\TraceHandler;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\GoTask\MongoClient\MongoClient;
 
