@@ -79,7 +79,6 @@ class JsonResource extends \Hyperf\Resource\Json\JsonResource
     {
         $requestStartMicroTime = Context::get(ContextEnum::RequestStartMicroTime);
         $elapsedTime = floatval(number_format((microtime(true) - $requestStartMicroTime), 5,'.',''));
-        TraceHandler::ApiElapsedTimeRank($elapsedTime);
         return [
             'status' => $this->getStatusCode(),
             'code' => $this->getAppCode(),

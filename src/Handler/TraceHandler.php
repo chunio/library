@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Baichuan\Library\Handler;
 
+use Baichuan\Library\Constant\ContextEnum;
 use Baichuan\Library\Constant\RedisKeyEnum;
-use Co\Redis;
+use Hyperf\Context\Context;
 use Hyperf\Utils\Str;
 
 class TraceHandler
@@ -49,14 +50,17 @@ class TraceHandler
         return true;
     }
 
-    public static function ApiElapsedTimeRank(float $elapsedTime): bool
+    public static function ApiElapsedTimeRank(): bool
     {
-        $requestAbstract = ContextHandler::pullRequestAbstract();////
-        $replaceApi = str_replace([':', 'http'], '', $requestAbstract['api']);
-        $numRedisKey = RedisKeyEnum::STRING['STRING:ApiElapsedTimeRank:Num:'] . $replaceApi;
-        $secondRedisKey = RedisKeyEnum::STRING['STRING:ApiElapsedTimeRank:Second:'] . $replaceApi;
-        redisInstance()->incr($numRedisKey);
-        redisInstance()->incrByFloat($secondRedisKey, $elapsedTime);
+        try{
+            $requestAbstract = ContextHandler::pullRequestAbstract();////
+            $replaceApi = str_replace([':', 'http'], '', $requestAbstract['api']);
+            $numRedisKey = RedisKeyEnum::STRING['STRING:ApiElapsedTimeRank:Num:'] . $replaceApi;
+            $secondRedisKey = RedisKeyEnum::STRING['STRING:ApiElapsedTimeRank:Second:'] . $replaceApi;
+            $elapsedTime = microtime(true) - Context::get(ContextEnum::RequestStartMicroTime);
+            redisInstance()->incr($numRedisKey);
+            redisInstance()->incrByFloat($secondRedisKey, $elapsedTime);
+        }catch (\Throwable $e){}
         return true;
     }
 
