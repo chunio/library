@@ -27,8 +27,8 @@ class ManagerLogic
         $suffixKeywordList = array_map(fn($value) => str_replace($prefixKeyword,'', $value), $result);
         $rank = [];
         foreach ($suffixKeywordList as $unitSuffixKeyword){
-            $num = $Redis->get(RedisKeyEnum::STRING['STRING:ApiElapsedTimeRank:Num:'] . $unitSuffixKeyword);
-            $second = $Redis->get(RedisKeyEnum::STRING['STRING:ApiElapsedTimeRank:Second:'] . $unitSuffixKeyword);
+            $num = intval($Redis->get(RedisKeyEnum::STRING['STRING:ApiElapsedTimeRank:Num:'] . $unitSuffixKeyword));
+            $second = floatval($Redis->get(RedisKeyEnum::STRING['STRING:ApiElapsedTimeRank:Second:'] . $unitSuffixKeyword));
             $rank[] = [
                 'api' => $unitSuffixKeyword,
                 'num' => $num,
