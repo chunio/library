@@ -12,11 +12,11 @@ use Hyperf\GoTask\MongoClient\MongoClient;
 class ManagerLogic
 {
 
-    /**
-     * @Inject()
-     * @var MongoClient
-     */
-    public $MongoClient;
+//    /**
+//     * @Inject()
+//     * @var MongoClient
+//     */
+//    public $MongoClient;
 
     public function apiRank(): array
     {
