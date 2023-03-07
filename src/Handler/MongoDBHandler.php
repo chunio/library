@@ -34,6 +34,7 @@ class MongoDBHandler
         '>=' => '$gte',
         '<' => '$lt',
         '<=' => '$lte',
+        '!=' => '$ne'
     ];
 
     /**
