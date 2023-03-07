@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Baichuan\Library\Constant\AsciiEnum;
+use Baichuan\Library\Handler\MongoDBHandler;
 use Baichuan\Library\Handler\MonologHandler;
 use Baichuan\Library\Constant\AnsiColorEnum;
 use Baichuan\Library\Handler\ContextHandler;
@@ -200,6 +201,13 @@ if (!function_exists('redisInstance')) {
     function redisInstance(string $poolName = 'default'): Hyperf\Redis\Redis
     {
         return di()->get(RedisFactory::class)->get($poolName);
+    }
+}
+
+if (!function_exists('mongoDBInstance')) {
+    function mongoDBInstance(string $collection, string $db = ''): MongoDBHandler
+    {
+        return make(MongoDBHandler::class, [$collection, $db]);
     }
 }
 
