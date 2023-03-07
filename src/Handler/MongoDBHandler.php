@@ -96,6 +96,7 @@ class MongoDBHandler
             foreach ($select as $unitField){
                 $option['projection'/*聲明需返回的字段*/][$unitField] = 1;//1表示返回
             }
+            if(!isset($select['_id'])) $option['_id'] = 0;//因爲_id默認返回
         }
         if($order){
             foreach ($order as $unitField => $unitSequence){
