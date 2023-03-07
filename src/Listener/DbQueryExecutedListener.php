@@ -52,7 +52,7 @@ class DbQueryExecutedListener implements ListenerInterface
             TraceHandler::push([
                 'command'/*如：sql*/ => $sql,
                 'unitElapsedTime' => floatval(number_format($event->time / 1000,5,'.',''))
-            ], 'mongodb', TraceHandler::EVENT['SERVICE']);
+            ], 'mysql', TraceHandler::EVENT['SERVICE']);
         }
     }
 
