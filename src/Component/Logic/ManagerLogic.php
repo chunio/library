@@ -28,11 +28,12 @@ class ManagerLogic
         foreach ($suffixKeywordList as $unitSuffixKeyword){
             $num = intval($Redis->get(RedisKeyEnum::STRING['STRING:ApiElapsedTimeRank:Num:'] . $unitSuffixKeyword));
             $second = floatval($Redis->get(RedisKeyEnum::STRING['STRING:ApiElapsedTimeRank:Second:'] . $unitSuffixKeyword));
+            $average = floatval(number_format($second / $num, 5,'.',''));
             $rank[] = [
                 'api' => $unitSuffixKeyword,
-                'num' => $num,
+                'average' => $average,
                 'second' => $second,
-                'average' => $second / $num,
+                'num' => $num,
             ];
         }
         return commonSort($rank,'average', 'DESC');
