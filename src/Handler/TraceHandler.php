@@ -75,6 +75,7 @@ class TraceHandler
                 self::$trace[ContextHandler::pullTraceId()][$event][$label][] = $variable;
                 break;
         }
+        self::refresh();
         return true;
     }
 
@@ -115,6 +116,7 @@ class TraceHandler
 //                'customTrace' => [],
 //            ]);
 //        }
+        self::release();
     }
 
     //TODO:將自動清理添加至定時器
