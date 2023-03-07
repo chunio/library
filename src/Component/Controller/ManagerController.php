@@ -8,16 +8,22 @@ use Baichuan\Library\Component\Logic\ManagerLogic;
 use Hyperf\HttpServer\Annotation\AutoController;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use Hyperf\HttpServer\Router\Router;
 
-/**
- * @AutoController()
- */
+///**
+// * @AutoController()
+// */
 class ManagerController extends AbstractController
 {
 
-    /**
-     * @RequestMapping(path="api_rank", methods="get,post")
-     */
+    public static function addRoute()
+    {
+        Router::addRoute(['GET', 'POST'], '/manager/api_rank', [self::class, 'api_rank']);
+    }
+
+//    /**
+//     * @RequestMapping(path="api_rank", methods="get,post")
+//     */
     public function apiRank()
     {
         $result = make(ManagerLogic::class)->apiRank();
