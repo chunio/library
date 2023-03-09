@@ -29,6 +29,14 @@ class ModelHandler extends \Hyperf\DbConnection\Model\Model
         'NIN' => 'whereNotIn'
     ]; // 聲明查詢器
 
+    public \Hyperf\DbConnection\Model\Model $model;
+
+    public function __construct($model, array $attributes = [])
+    {
+        $this->model = $model;
+        parent::__construct($attributes);
+    }
+
     public function one(array $where, array $select = ['*'], array $group = [], array $order = []): array
     {
         $result = $this->multiList($where, $select, $group, $order, 1);
@@ -43,7 +51,7 @@ class ModelHandler extends \Hyperf\DbConnection\Model\Model
         int $limit = 0
     ): array
     {
-        $handler = DB::table($this->table)->select(...$select); // ->where($where);
+        $handler = DB::table($this->model->table)->select(...$select); // ->where($where);
         foreach ($where as &$value){
             [$unitField, $unitOperator, $unitValue] = $value;
             $function = self::$querier[$unitOperator] ?? 'where';
@@ -71,9 +79,9 @@ class ModelHandler extends \Hyperf\DbConnection\Model\Model
     public function commonInsert(array $data)/*: int|bool*/
     {
         if(!($data[0] ?? [])){
-            return DB::table($this->table)->insertGetId($data[0]);
+            return DB::table($this->model->table)->insertGetId($data[0]);
         }else{
-            return DB::table($this->table)->insert($data);
+            return DB::table($this->model->table)->insert($data);
         }
     }
 
@@ -87,7 +95,7 @@ class ModelHandler extends \Hyperf\DbConnection\Model\Model
      */
     public function commonUpdate(array $where, array $data): int
     {
-        $handler = DB::table($this->table);
+        $handler = DB::table($this->model->table);
         foreach ($where as &$value){
             [$unitField, $unitOperator, $unitValue] = $value;
             $function = self::$querier[$unitOperator] ?? 'where';
