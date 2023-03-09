@@ -320,11 +320,16 @@ if (!function_exists('commonPagination')) {
         $start = intval(($pageIndex - 1) * $pageSize);
         $currentList = $list ? array_slice($list, $start, $pageSize) : [];
         return [
-            'current_list' => $currentList,
-            'page_index' => $pageIndex,
+//            'current_list' => $currentList,
+//            'page_index' => $pageIndex,
+//            'page_size' => $pageSize,
+//            'page_limit' => $pageLimit,
+//            'record_num' => $recordNum,
+            'list' => $currentList,
+            'page' => $pageIndex,
             'page_size' => $pageSize,
-            'page_limit' => $pageLimit,
-            'record_num' => $recordNum,
+            'max_page' => $pageLimit,
+            'total' => $recordNum,
         ];
     }
 }
