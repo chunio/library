@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Baichuan\Library\Constant\AsciiEnum;
+use Baichuan\Library\Handler\ModelHandler;
 use Baichuan\Library\Handler\MongoDBHandler;
 use Baichuan\Library\Handler\MonologHandler;
 use Baichuan\Library\Constant\AnsiColorEnum;
@@ -204,17 +205,24 @@ if (!function_exists('redisInstance')) {
     }
 }
 
-if (!function_exists('mongoDBInstance')) {
-    function mongoDBInstance(string $collection, string $db = ''): MongoDBHandler
+if (!function_exists('kafkaInstance')) {
+    function kafkaInstance(string $poolName = 'default'): Hyperf\Kafka\Producer
+    {
+        return di()->get(ProducerManager::class)->getProducer($poolName);
+    }
+}
+
+if (!function_exists('mongoDBHandler')) {
+    function mongoDBHandler(string $collection, string $db = ''): MongoDBHandler
     {
         return make(MongoDBHandler::class, [$collection, $db]);
     }
 }
 
-if (!function_exists('kafkaInstance')) {
-    function kafkaInstance(string $poolName = 'default'): Hyperf\Kafka\Producer
+if (!function_exists('modelHandler')) {
+    function modelHandler(string $model)
     {
-        return di()->get(ProducerManager::class)->getProducer($poolName);
+        return new ModelHandler($model);
     }
 }
 
