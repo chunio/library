@@ -31,9 +31,9 @@ class ModelHandler extends \Hyperf\DbConnection\Model\Model
 
     public \Hyperf\DbConnection\Model\Model $model;
 
-    public function __construct($model, array $attributes = [])
+    public function __construct(string $model, array $attributes = [])
     {
-        $this->model = $model;
+        $this->model = new $model();
         parent::__construct($attributes);
     }
 
