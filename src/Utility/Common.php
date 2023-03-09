@@ -307,32 +307,27 @@ if(!function_exists('commonHttpPost')){
 //    }
 //}
 
-if (!function_exists('commonPagination')) {
-    function commonPagination(array $list, int $pageIndex, int $pageSize): array
-    {
-        $recordNum = count($list);
-        $pageLimit = intval(ceil($recordNum / $pageSize));
-        if ($pageIndex < 1) {
-            $pageIndex = 1;
-        } elseif ($pageIndex > $pageLimit && $pageLimit != 0 ) {
-            $pageIndex = $pageLimit;
-        }
-        $start = intval(($pageIndex - 1) * $pageSize);
-        $currentList = $list ? array_slice($list, $start, $pageSize) : [];
-        return [
+//if (!function_exists('commonPagination')) {
+//    function commonPagination(array $list, int $pageIndex, int $pageSize): array
+//    {
+//        $recordNum = count($list);
+//        $pageLimit = intval(ceil($recordNum / $pageSize));
+//        if ($pageIndex < 1) {
+//            $pageIndex = 1;
+//        } elseif ($pageIndex > $pageLimit && $pageLimit != 0 ) {
+//            $pageIndex = $pageLimit;
+//        }
+//        $start = intval(($pageIndex - 1) * $pageSize);
+//        $currentList = $list ? array_slice($list, $start, $pageSize) : [];
+//        return [
 //            'current_list' => $currentList,
 //            'page_index' => $pageIndex,
 //            'page_size' => $pageSize,
 //            'page_limit' => $pageLimit,
 //            'record_num' => $recordNum,
-            'list' => $currentList,
-            'page' => $pageIndex,
-            'page_size' => $pageSize,
-            'max_page' => $pageLimit,
-            'total' => $recordNum,
-        ];
-    }
-}
+//        ];
+//    }
+//}
 
 if (!function_exists('commonSort')) {
     function commonSort(array $array, string $slaveField, string $sort = 'DESC'): array
