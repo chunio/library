@@ -307,30 +307,30 @@ if(!function_exists('commonHttpPost')){
 //    }
 //}
 
-//if (!function_exists('commonPagination')) {
-//    function commonPagination(array $list, int $pageIndex, int $pageSize): array
-//    {
-//        $recordNum = count($list);
-//        $pageLimit = intval(ceil($recordNum / $pageSize));
-//        if ($pageIndex < 1) {
-//            $pageIndex = 1;
-//        } elseif ($pageIndex > $pageLimit && $pageLimit != 0 ) {
-//            $pageIndex = $pageLimit;
-//        }
-//        $start = intval(($pageIndex - 1) * $pageSize);
-//        $currentList = $list ? array_slice($list, $start, $pageSize) : [];
-//        return [
-//            'current_list' => $currentList,
-//            'page_index' => $pageIndex,
-//            'page_size' => $pageSize,
-//            'page_limit' => $pageLimit,
-//            'record_num' => $recordNum,
-//        ];
-//    }
-//}
+if (!function_exists('multiPagination')) {
+    function multiPagination(array $list, int $pageIndex, int $pageSize): array
+    {
+        $recordNum = count($list);
+        $pageLimit = intval(ceil($recordNum / $pageSize));
+        if ($pageIndex < 1) {
+            $pageIndex = 1;
+        } elseif ($pageIndex > $pageLimit && $pageLimit != 0 ) {
+            $pageIndex = $pageLimit;
+        }
+        $start = intval(($pageIndex - 1) * $pageSize);
+        $currentList = $list ? array_slice($list, $start, $pageSize) : [];
+        return [
+            'current_list' => $currentList,
+            'page_index' => $pageIndex,
+            'page_size' => $pageSize,
+            'page_limit' => $pageLimit,
+            'record_num' => $recordNum,
+        ];
+    }
+}
 
-if (!function_exists('commonSort')) {
-    function commonSort(array $array, string $slaveField, string $sort = 'DESC'): array
+if (!function_exists('commonOrder')) {
+    function commonOrder(array $array, string $slaveField, string $sort = 'DESC'): array
     {
         $newArray = $valueArray = [];
         foreach ($array as $key => $value) {

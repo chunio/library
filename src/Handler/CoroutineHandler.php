@@ -95,7 +95,7 @@ class CoroutineHandler
                 $eachValue = $Redis->hGet($redisKey, $pointer);
                 $throwable[$pointer] = $pointer;//default，執行成功時移除
                 if(self::INIT['CO_CACHE_BUTTON'] && $eachValue === false){
-                    $slicePagination = commonPagination($fullList, intval($pointer), $pageSize);
+                    $slicePagination = multiPagination($fullList, intval($pointer), $pageSize);
                     $sliceList = $slicePagination['list'];
                     self::co(function() use(&$channel, &$throwable, $WaitGroup, $func, $Redis, $redisKey, $sliceList, $pointer){
                         $eachResult = $func($sliceList, intval($pointer));

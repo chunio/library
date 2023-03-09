@@ -36,7 +36,7 @@ class ManagerLogic
                 'num' => $num,
             ];
         }
-        return array_values(commonSort($rank,'average', 'DESC'));
+        return array_values(commonOrder($rank,'average', 'DESC'));
     }
 
 }
