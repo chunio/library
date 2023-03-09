@@ -87,7 +87,7 @@ class ModelHandler extends \Hyperf\DbConnection\Model\Model
      */
     public function commonUpdate(array $where, array $data): int
     {
-        $handler = DB::table($this->table); // ->select(...$field);//->where($where);
+        $handler = DB::table($this->table);
         foreach ($where as &$value){
             [$unitField, $unitOperator, $unitValue] = $value;
             $function = self::$querier[$unitOperator] ?? 'where';
