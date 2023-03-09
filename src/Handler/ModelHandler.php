@@ -48,15 +48,16 @@ class ModelHandler extends \Hyperf\DbConnection\Model\Model
             [$unitField, $unitOperator, $unitValue] = $value;
             $function = self::$querier[$unitOperator] ?? 'where';
             switch ($function) {
+                case 'where':
+                    $whereCondition[] = $value;
+                    break;
                 case 'whereIn':
                 case 'whereNotIn':
                     $handler = $handler->{$function}(...[$unitField, $unitValue]);
                     break;
-                default:
-                    $handler = $handler->{$function}($value);
-                    break;
             }
         }
+        if(isset($whereCondition)) $handler->where($whereCondition);
         if($limit) $handler->limit($limit);//DEBUG_LABEL
         if($group) $handler->groupBy(...$group);
         if($order) {
@@ -91,15 +92,16 @@ class ModelHandler extends \Hyperf\DbConnection\Model\Model
             [$unitField, $unitOperator, $unitValue] = $value;
             $function = self::$querier[$unitOperator] ?? 'where';
             switch ($function) {
+                case 'where':
+                    $whereCondition[] = $value;
+                    break;
                 case 'whereIn':
                 case 'whereNotIn':
                     $handler = $handler->{$function}(...[$unitField, $unitValue]);
                     break;
-                default:
-                    $handler = $handler->{$function}($value);
-                    break;
             }
         }
+        if(isset($whereCondition)) $handler->where($whereCondition);
         return $handler->update($data);
     }
 
