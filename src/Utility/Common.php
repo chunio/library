@@ -220,7 +220,7 @@ if (!function_exists('mongoDBHandler')) {
 }
 
 if (!function_exists('modelHandler')) {
-    function modelHandler(string $model)
+    function modelHandler(string $model): ModelHandler
     {
         return new ModelHandler($model);
     }
