@@ -46,7 +46,7 @@ class ModelHandler extends \Hyperf\DbConnection\Model\Model
         $handler = DB::table($this->table)->select(...$select); // ->where($where);
         foreach ($where as &$value){
             [$unitField, $unitOperator, $unitValue] = $value;
-            $function = self::$querier[$unitOperator] ?? '';
+            $function = self::$querier[$unitOperator] ?? 'where';
             switch ($function) {
                 case 'whereIn':
                 case 'whereNotIn':
@@ -89,7 +89,7 @@ class ModelHandler extends \Hyperf\DbConnection\Model\Model
         $handler = DB::table($this->table); // ->select(...$field);//->where($where);
         foreach ($where as &$value){
             [$unitField, $unitOperator, $unitValue] = $value;
-            $function = self::$querier[$unitOperator] ?? '';
+            $function = self::$querier[$unitOperator] ?? 'where';
             switch ($function) {
                 case 'whereIn':
                 case 'whereNotIn':
