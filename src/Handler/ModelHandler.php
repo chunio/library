@@ -16,7 +16,7 @@ namespace Baichuan\Library\Handler;
 
 use Hyperf\DbConnection\Db;
 
-class ModelHandler extends \Hyperf\DbConnection\Model\Model
+class ModelHandler //extends \Hyperf\DbConnection\Model\Model
 {
 
     public static $DELETED_STATUS = [
@@ -34,7 +34,7 @@ class ModelHandler extends \Hyperf\DbConnection\Model\Model
     public function __construct(\Hyperf\DbConnection\Model\Model $model, array $attributes = [])
     {
         $this->model = $model;
-        parent::__construct($attributes);
+        //parent::__construct($attributes);
     }
 
     public function one(array $where, array $select = ['*'], array $group = [], array $order = []): array
