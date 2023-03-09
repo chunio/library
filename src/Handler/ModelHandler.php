@@ -29,11 +29,11 @@ class ModelHandler extends \Hyperf\DbConnection\Model\Model
         'NIN' => 'whereNotIn'
     ]; // 聲明查詢器
 
-    public \Hyperf\DbConnection\Model\Model $model;
+    public $model;
 
-    public function __construct(string $model, array $attributes = [])
+    public function __construct(\Hyperf\DbConnection\Model\Model $model, array $attributes = [])
     {
-        $this->model = new $model();
+        $this->model = $model;
         parent::__construct($attributes);
     }
 
