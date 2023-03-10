@@ -6,6 +6,7 @@ namespace Baichuan\Library\Component\Logic;
 
 use Baichuan\Library\Constant\RedisKeyEnum;
 use Baichuan\Library\Handler\RedisHandler;
+use Baichuan\Library\Handler\UtilityHandler;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\GoTask\MongoClient\MongoClient;
 
@@ -36,7 +37,7 @@ class ManagerLogic
                 'num' => $num,
             ];
         }
-        return array_values(commonOrder($rank,'average', 'DESC'));
+        return array_values(UtilityHandler::order($rank,'average', 'DESC'));
     }
 
 }
