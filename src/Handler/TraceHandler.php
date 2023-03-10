@@ -224,7 +224,7 @@ class TraceHandler
         }
     }
 
-    function variableFormatter(&$variable/*, bool $jsonEncodeStatus = false*/)
+    public static function variableFormatter(&$variable/*, bool $jsonEncodeStatus = false*/)
     {
         if ($variable === true) return 'TRUE(BOOL)';
         if ($variable === false) return 'FALSE(BOOL)';
