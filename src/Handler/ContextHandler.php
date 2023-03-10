@@ -41,8 +41,8 @@ class ContextHandler
                 'api' => $Request->getUri()->__toString(),
                 'method' => $Request->getMethod(),
                 'header' => $header,
-                'query' => prettyJsonEncode($Request->getQueryParams()),
-                'body' => prettyJsonEncode($Request->getParsedBody()),
+                'query' => UtilityHandler::prettyJsonEncode($Request->getQueryParams()),
+                'body' => UtilityHandler::prettyJsonEncode($Request->getParsedBody()),
             ];
             unset($RequestClass);
         }

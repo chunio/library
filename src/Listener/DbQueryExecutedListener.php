@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Baichuan\Library\Listener;
 
 use Baichuan\Library\Handler\TraceHandler;
+use Baichuan\Library\Handler\UtilityHandler;
 use Hyperf\Database\Events\QueryExecuted;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
@@ -42,7 +43,7 @@ class DbQueryExecutedListener implements ListenerInterface
      */
     public function process(object $event)
     {
-        if (matchEnvi('local') && $event instanceof QueryExecuted) {
+        if (UtilityHandler::matchEnvi('local') && $event instanceof QueryExecuted) {
             $sql = $event->sql;
             if (!Arr::isAssoc($event->bindings)) {
                 foreach ($event->bindings as $key => $value) {

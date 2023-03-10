@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Baichuan\Library\Aspect;
 
 use Baichuan\Library\Handler\TraceHandler;
+use Baichuan\Library\Handler\UtilityHandler;
 use Hyperf\Di\Annotation\Aspect;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -26,7 +27,7 @@ class MongoAspect extends AbstractAspect
         $return = $proceedingJoinPoint->process();
         $end = microtime(true);
         TraceHandler::push([
-            'command' => prettyJsonEncode($payloadArray),
+            'command' => UtilityHandler::prettyJsonEncode($payloadArray),
             'unitElapsedTime' => floatval(number_format($end - $start,5,'.',''))
         ], 'mongodb', TraceHandler::EVENT['SERVICE']);
         return $return;

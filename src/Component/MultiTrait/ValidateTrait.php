@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Baichuan\Library\Component\MultiTrait;
 
+use Baichuan\Library\Handler\UtilityHandler;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Utils\Arr;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface as ValidationFactory;
@@ -40,7 +41,7 @@ trait ValidateTrait
     protected function validateByFormRequest($data, $formRequestClass): array
     {
         /** @var FormRequest $formRequest */
-        $formRequest = di($formRequestClass);
+        $formRequest = UtilityHandler::di($formRequestClass);
         $refClass = new ReflectionClass($formRequestClass); // 傳入對象或類名，得到ReflectionClass
         $refMeth = $refClass->getMethod('getRules'); // 得到ReflectionMethod
         $refMeth->setAccessible(true); // 設置爲可見，也就是可訪問
