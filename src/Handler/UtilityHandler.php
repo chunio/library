@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Baichuan\Library\Handler;
 
 use Baichuan\Library\Constant\AsciiEnum;
-use Baichuan\Library\Constant\ContextEnum;
+use Closure;
 use GuzzleHttp\Cookie\CookieJar;
-use Hyperf\Context\Context;
-use Hyperf\Utils\Str;
-use Psr\Http\Message\ServerRequestInterface;
+use Hyperf\Utils\ApplicationContext;
 
 /**
  * Class UtilityHandler
@@ -152,7 +150,7 @@ class UtilityHandler
      */
     public static function di($id = null)
     {
-        $container = \Hyperf\Utils\ApplicationContext::getContainer();
+        $container = ApplicationContext::getContainer();
         if ($id) {
             return $container->get($id);
         }

@@ -2,20 +2,16 @@
 
 declare(strict_types=1);
 
-use Baichuan\Library\Constant\AsciiEnum;
 use Baichuan\Library\Handler\ModelHandler;
 use Baichuan\Library\Handler\MongoDBHandler;
 use Baichuan\Library\Handler\MonologHandler;
-use Baichuan\Library\Constant\AnsiColorEnum;
-use Baichuan\Library\Handler\ContextHandler;
 use Baichuan\Library\Handler\TraceHandler;
 use Baichuan\Library\Handler\UtilityHandler;
-use GuzzleHttp\Cookie\CookieJar;
 use Hyperf\Kafka\ProducerManager;
 use Hyperf\Redis\RedisFactory;
 
-if (!function_exists('_debug')) {
-    function _debug($variable, string $label = '', string $level = 'info', $monolog = true): bool
+if (!function_exists('traceHandler')) {
+    function traceHandler($variable, string $label = '', string $level = 'info', $monolog = true): bool
     {
         if($monolog && class_exists(MonologHandler::class)){
             MonologHandler::$level($variable, $label);
@@ -36,17 +32,17 @@ if (!function_exists('_debug')) {
     }
 }
 
-if (!function_exists('mongoDBHandler')) {
-    function mongoDBHandler(string $collection, string $db = ''): MongoDBHandler
-    {
-        return make(MongoDBHandler::class, [$collection, $db]);
-    }
-}
-
 if (!function_exists('modelHandler')) {
     function modelHandler(string $model): ModelHandler
     {
         return new ModelHandler($model);
+    }
+}
+
+if (!function_exists('mongoDBHandler')) {
+    function mongoDBHandler(string $collection, string $db = ''): MongoDBHandler
+    {
+        return make(MongoDBHandler::class, [$collection, $db]);
     }
 }
 
