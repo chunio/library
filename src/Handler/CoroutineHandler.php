@@ -233,10 +233,10 @@ class CoroutineHandler
             try{
                 return $func();
             }catch (\Throwable $e){
-                monolog("retryComeIn{$actionNum}");
+                monologHandler("retryComeIn{$actionNum}");
                 $actionNum += 1;
                 if($actionNum > $retryLimit) {
-                    monolog('retryThrowable');
+                    monologHandler('retryThrowable');
                     throw $e;
                 }
             }

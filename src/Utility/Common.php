@@ -14,8 +14,8 @@ use GuzzleHttp\Cookie\CookieJar;
 use Hyperf\Kafka\ProducerManager;
 use Hyperf\Redis\RedisFactory;
 
-if (!function_exists('monolog')) {
-    function monolog($variable, string $label = '', string $level = 'info', $monolog = true): bool
+if (!function_exists('_debug')) {
+    function _debug($variable, string $label = '', string $level = 'info', $monolog = true): bool
     {
         if($monolog && class_exists(MonologHandler::class)){
             MonologHandler::$level($variable, $label);
@@ -36,20 +36,6 @@ if (!function_exists('monolog')) {
     }
 }
 
-if (!function_exists('redisInstance')) {
-    function redisInstance(string $poolName = 'default'): Hyperf\Redis\Redis
-    {
-        return UtilityHandler::di()->get(RedisFactory::class)->get($poolName);
-    }
-}
-
-if (!function_exists('kafkaInstance')) {
-    function kafkaInstance(string $poolName = 'default'): Hyperf\Kafka\Producer
-    {
-        return UtilityHandler::di()->get(ProducerManager::class)->getProducer($poolName);
-    }
-}
-
 if (!function_exists('mongoDBHandler')) {
     function mongoDBHandler(string $collection, string $db = ''): MongoDBHandler
     {
@@ -61,5 +47,19 @@ if (!function_exists('modelHandler')) {
     function modelHandler(string $model): ModelHandler
     {
         return new ModelHandler($model);
+    }
+}
+
+if (!function_exists('redisInstance')) {
+    function redisInstance(string $poolName = 'default'): Hyperf\Redis\Redis
+    {
+        return UtilityHandler::di()->get(RedisFactory::class)->get($poolName);
+    }
+}
+
+if (!function_exists('kafkaInstance')) {
+    function kafkaInstance(string $poolName = 'default'): Hyperf\Kafka\Producer
+    {
+        return UtilityHandler::di()->get(ProducerManager::class)->getProducer($poolName);
     }
 }

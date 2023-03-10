@@ -37,7 +37,7 @@ class AppleJWTHandler
             ($applePayload['sub'] != $appleAccountId) ||
             ($applePayload['exp'] <= time())
         ) {
-            monolog([
+            monologHandler([
                 $header,
                 $applePayload,
                 $signature
@@ -59,7 +59,7 @@ class AppleJWTHandler
         $publicKeyArray = openssl_pkey_get_details($publicKeyResource);//返回公鑰詳情
         $publicKey = $publicKeyArray['key'];
         $bool = self::verify("{$headerBase64}.{$payloadBase64}", static::base64URLDecode($signature), $publicKey, $header['alg']);
-        monolog([
+        monologHandler([
             '$publicKeyArray' => $publicKeyArray,
             '$bool' => $bool
         ],'checkReport');
