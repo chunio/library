@@ -80,13 +80,15 @@ class MongoDBHandler
     public function commonList(array $where, array $select = [], array $group = []/*預留*/, array $order = []): array
     {
         //format where[START]
-        $formatWhere = [];
-        foreach ($where as $value){
-            [$unitField, $unitOperator, $unitValue] = $value;
-            if($mongoOperation = ($this->operator[$unitOperator] ?? '')){
-                $formatWhere[$unitField][$mongoOperation] = $unitValue;
-            }else{
-                $formatWhere[$unitField] = $unitValue;//默認：等於
+        $formatWhere = [];//空表示全部
+        if($where){
+            foreach ($where as $value){
+                [$unitField, $unitOperator, $unitValue] = $value;
+                if($mongoOperation = ($this->operator[$unitOperator] ?? '')){
+                    $formatWhere[$unitField][$mongoOperation] = $unitValue;
+                }else{
+                    $formatWhere[$unitField] = $unitValue;//默認：等於
+                }
             }
         }
         //format where[END]
