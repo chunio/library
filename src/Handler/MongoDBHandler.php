@@ -93,10 +93,12 @@ class MongoDBHandler
         //format option[START]
         $option = [];
         if($select){
+            $id = false;
             foreach ($select as $unitField){
+                if($unitField === '_id') $id = true;
                 $option['projection'/*聲明需返回的字段*/][$unitField] = 1;//1表示返回
             }
-            if(!isset($select['_id'])) $option['projection']['_id'] = 0;//因爲_id默認返回
+            if(!$id) $option['projection']['_id'] = 0;//因爲_id默認返回
         }
         if($order){
             foreach ($order as $unitField => $unitSequence){
