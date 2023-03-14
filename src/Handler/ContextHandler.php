@@ -38,7 +38,7 @@ class ContextHandler
             $header = array_map(fn ($v) => count($v) === 1 ? $v[0] : $v, $Request->getHeaders());
             unset($header['user-agent']);//ignore
             $requestAbstract = [
-                'api' => $Request->getUri()->__toString(),
+                'api' => explode('?', $Request->getUri()->__toString())[0],
                 'method' => $Request->getMethod(),
                 'header' => $header,
                 'query' => UtilityHandler::prettyJsonEncode($Request->getQueryParams()),

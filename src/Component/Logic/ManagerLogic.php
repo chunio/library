@@ -32,9 +32,7 @@ class ManagerLogic
             $average = floatval(number_format($second / $num, 5,'.',''));
             $rank[] = [
                 'api' => $unitSuffixKeyword,
-                'average' => $average,
-                'second' => $second,
-                'num' => $num,
+                'average' => "{$average} ( {$second} / {$num} )",
             ];
         }
         return array_values(UtilityHandler::order($rank,'average', 'DESC'));
