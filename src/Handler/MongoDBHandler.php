@@ -85,7 +85,7 @@ class MongoDBHandler
         $option = self::formatOption($select, $order);
         if($group){
             //$group = array_map(fn ($v) => '$' . $v, $group);
-            return $this->MongoClient->database($this->db)->collection($this->collection)->aggregate([
+            $pipeline = [
                 [
                     '$group' =>
                         [
@@ -93,7 +93,9 @@ class MongoDBHandler
                             'count' => ['$sum' => 1]
                         ]
                 ],
-            ], $option);
+            ];
+            if($where) $pipeline[0]['$match'] = self::formatWhere($where);
+            return $this->MongoClient->database($this->db)->collection($this->collection)->aggregate($pipeline, $option);
         }else{
             $where = self::formatWhere($where);
             return $this->MongoClient->database($this->db)->collection($this->collection)->find($where, $option);
