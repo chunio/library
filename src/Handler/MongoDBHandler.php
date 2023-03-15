@@ -90,8 +90,6 @@ class MongoDBHandler
 
     public function aggregateList(array $where, array $select = [], array $group = [], array $order = [], int $limit = 0): array
     {
-        //;
-        //aggregate時：1$order僅支持作用一個字段（但使用數組入參目的是預留後續兼容多個字段）
         //管道操作符：$match，$project，$group，$sort，$limit，$skip，$unwind，$sum，$lookup，...
         $pipeline/*管道*/ = $project = $formatGroup = $groupIndex = [];
         if($where) $pipeline[]['$match'] = self::formatWhere($where);
@@ -112,7 +110,7 @@ class MongoDBHandler
                 'count' => ['$sum' => 1],
             ];
         }
-        if($order) {
+        if($order) {//TODO:1$order目前僅支持作用一個字段（但使用數組入參目的是預留後續兼容多個字段）
             foreach ($order as $unitField => $unitSequence){
                 $formatGroup[$unitField] = [
                     ($unitSequence === 'ASC') ? '$min'/*正序*/ : '$max'/*倒敘*/ => "\${$unitField}"
