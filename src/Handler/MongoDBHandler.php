@@ -103,8 +103,13 @@ class MongoDBHandler
             $pipeline[]['$project'] = $project;
         }
         if($group){
+            $formatGroup = [];
+            foreach ($group as $field){
+                $formatGroup[$field] = "\${$field}";
+            }
             $pipeline[]['$group'] = [
-                '_id' => array_map(fn($field) => [$field => "\${$field}"], $group),
+                //format: '_id' => ['filed1' => '$filed1', 'filed2' => '$filed2']
+                '_id' => $formatGroup,
                 'count' => ['$sum' => 1],
             ];
         }
