@@ -101,11 +101,11 @@ class MongoDBHandler
                     if($unitField === '_id') $id = true;
                     $project[$unitField] = 1;//1表示返回
                 }
-                if(!$id) $project['_id'] = 0;//因爲_id默認返回
+                if(!$id) $project['_id'] = 0;//默認:返回{$_id}
                 $pipeline[]['$project'] = $project;
             }
             $pipeline[]['$group'] = [
-                '_id' => ['device_type' => 'device_type', 'device_model' => '$device_model'],
+                '_id' => ['device_type' => '$device_type', 'device_model' => '$device_model'],
                 'count' => ['$sum' => 1],
             ];
 //            if($order) {
