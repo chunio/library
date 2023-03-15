@@ -80,11 +80,11 @@ class MongoDBHandler
      * datetime: 2023/02/23 14:13
      * memo : $where僅支持邏輯與
      */
-    public function commonList(array $where, array $select = [], array $group = [], array $order = []): array
+    public function commonList(array $where, array $select = [], string $group = '', array $order = []): array
     {
         $option = self::formatOption($select, $order);
         if($group){
-            $group = array_map(fn ($v) => '$' . $v, $group);
+            //$group = array_map(fn ($v) => '$' . $v, $group);
             return $this->MongoClient->database($this->db)->collection($this->collection)->aggregate([
                 [
                     '$group' =>
