@@ -98,8 +98,8 @@ class MongoDBHandler
                     $pipeline['$sort']['$sort'] = ["document.{$unitField}" => ($unitSequence === 'ASC') ? 1/*正序*/ : -1/*倒敘*/];
                 }
             }
-            if($limit) $pipeline[]['$limit'] = $limit;
-            return $this->MongoClient->database($this->db)->collection($this->collection)->aggregate($pipeline);
+            if($limit) $pipeline['$limit']['$limit'] = $limit;
+            return $this->MongoClient->database($this->db)->collection($this->collection)->aggregate(array_values($pipeline));
         }else{
             $where = self::formatWhere($where);
             $option = self::formatOption($select, $order);
