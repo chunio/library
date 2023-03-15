@@ -105,7 +105,7 @@ class MongoDBHandler
         }
         if($group){
             $pipeline[]['$group'] = [
-                '_id' => array_map(fn&($field) => [$field => "\${$field}"], $group),
+                '_id' => array_map(fn($field) => [$field => "\${$field}"], $group),
                 'count' => ['$sum' => 1],
             ];
         }
