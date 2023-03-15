@@ -90,34 +90,36 @@ class MongoDBHandler
 
     public function aggregateList(array $where, array $select = [], array $group = [], array $order = [], int $limit = 0): array
     {
+        //$group = array_map(fn ($v) => '$' . $v, $group);
+        //aggregate時：1目前$group/$order僅支持作用一個字段（但使用數組入參目的是預留後續兼容多個字段）
+        $pipeline = $project = [];
+        if($where) $pipeline[]['$match'] = self::formatWhere($where);
+        if($select){
+            $id = false;
+            foreach ($select as $unitField){
+                if($unitField === '_id') $id = true;
+                $project[$unitField] = 1;//1表示返回
+            }
+            if(!$id) $project['_id'] = 0;//默認:返回{$_id}
+            $pipeline[]['$project'] = $project;
+        }
         if($group){
-            //$group = array_map(fn ($v) => '$' . $v, $group);
-            //aggregate時：1目前$group/$order僅支持作用一個字段（但使用數組入參目的是預留後續兼容多個字段）
-            $pipeline = $project = [];
-            if($where) $pipeline[]['$match'] = self::formatWhere($where);
-            if($select){
-                $id = false;
-                foreach ($select as $unitField){
-                    if($unitField === '_id') $id = true;
-                    $project[$unitField] = 1;//1表示返回
-                }
-                if(!$id) $project['_id'] = 0;//默認:返回{$_id}
-                $pipeline[]['$project'] = $project;
+            foreach ($group as &$field){
+                $field = [$field => "\${$field}"];
             }
             $pipeline[]['$group'] = [
-                '_id' => ['account_id' => '$account_id', 'device_model' => '$device_model'],
+                '_id' => $group,
                 'count' => ['$sum' => 1],
             ];
-//            if($order) {
-//                //$pipeline['$group']['$group']['document'] = ['$first' => '$$ROOT'];
-//                foreach ($order as $unitField => $unitSequence){
-//                    $pipeline[]['$sort'] = ["document.{$unitField}" => ($unitSequence === 'ASC') ? 1/*正序*/ : -1/*倒敘*/];
-//                }
-//            }
-            if($limit) $pipeline[]['$limit'] = $limit;
-            return $this->MongoClient->database($this->db)->collection($this->collection)->aggregate(array_values($pipeline));
         }
-        return [];
+        if($order) {
+            //$pipeline['$group']['$group']['document'] = ['$first' => '$$ROOT'];
+            foreach ($order as $unitField => $unitSequence){
+                $pipeline[]['$sort'] = ["document.{$unitField}" => ($unitSequence === 'ASC') ? 1/*正序*/ : -1/*倒敘*/];
+            }
+        }
+        if($limit) $pipeline[]['$limit'] = $limit;
+        return $this->MongoClient->database($this->db)->collection($this->collection)->aggregate(array_values($pipeline));
     }
 
 //    /**
