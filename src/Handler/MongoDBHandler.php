@@ -94,7 +94,7 @@ class MongoDBHandler
                         ]
                 ],
             ];
-            if($where) $pipeline[0]['$match'] = self::formatWhere($where);
+            if($where) $pipeline[]['$match'] = self::formatWhere($where);
             return $this->MongoClient->database($this->db)->collection($this->collection)->aggregate($pipeline, $option);
         }else{
             $where = self::formatWhere($where);
