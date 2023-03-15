@@ -109,14 +109,14 @@ class MongoDBHandler
             $pipeline[]['$group'] = [
                 //example: '_id' => ['filed1' => '$filed1', 'filed2' => '$filed2']
                 '_id' => $formatGroup,
-                //'count' => ['$sum' => 1],
-                'tempMin' => [
-                    '$min' => '$rye_download_time'
+                'count' => ['$sum' => 1],
+                'max' => [
+                    '$max' => '$rye_download_time'
                 ]
             ];
         }
         if($order) {
-            //$pipeline['$group']['$group']['document'] = ['$first' => '$$ROOT'];
+            //$pipeline[]['$group']['document'] = ['$first' => '$$ROOT'];
             foreach ($order as $unitField => $unitSequence){
                 $pipeline[]['$sort'] = ["document.{$unitField}" => ($unitSequence === 'ASC') ? 1/*正序*/ : -1/*倒敘*/];
             }
