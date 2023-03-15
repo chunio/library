@@ -191,7 +191,7 @@ class MongoDBHandler
         }
         if($order){
             foreach ($order as $unitField => $unitSequence){
-                $option['sort'][$unitField] = ($unitSequence === 'ASC') ? 1/*正序*/ : -1/*倒敘*/;
+                $option['$sort'][$unitField] = ($unitSequence === 'ASC') ? 1/*正序*/ : -1/*倒敘*/;
             }
         }
         return $option;
