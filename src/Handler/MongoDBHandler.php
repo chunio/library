@@ -97,7 +97,6 @@ class MongoDBHandler
         if($select){
             $project['_id'] = 0;//因爲_id默認返回
             foreach ($select as $unitField){
-                if($unitField === '_id') $id = true;
                 $project[$unitField] = 1;//1表示返回
             }
             $pipeline[]['$project'] = $project;
@@ -107,7 +106,7 @@ class MongoDBHandler
                 $formatGroup[$field] = "\${$field}";
             }
             $pipeline[]['$group'] = [
-                //format: '_id' => ['filed1' => '$filed1', 'filed2' => '$filed2']
+                //example: '_id' => ['filed1' => '$filed1', 'filed2' => '$filed2']
                 '_id' => $formatGroup,
                 'count' => ['$sum' => 1],
             ];
@@ -206,7 +205,6 @@ class MongoDBHandler
         if($select){
             $option['projection']['_id'] = 0;//因爲_id默認返回
             foreach ($select as $unitField){
-                if($unitField === '_id') $id = true;
                 $option['projection'/*聲明需返回的字段*/][$unitField] = 1;//1表示返回
             }
         }
