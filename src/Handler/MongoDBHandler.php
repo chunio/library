@@ -34,7 +34,8 @@ class MongoDBHandler
         '>=' => '$gte',
         '<' => '$lt',
         '<=' => '$lte',
-        '!=' => '$ne'
+        '!=' => '$ne',
+        '=' => '$eq'//使用於$match
     ];
 
     /**
@@ -80,24 +81,18 @@ class MongoDBHandler
      * datetime: 2023/02/23 14:13
      * memo : $where僅支持邏輯與
      */
-    public function commonList(array $where, array $select = [], $group = '', array $order = []): array
+    public function commonList(array $where, array $select = [], $group = [], array $order = [], int $limit = 0): array
     {
-        $option = self::formatOption($select, $order);
         if($group){
             //$group = array_map(fn ($v) => '$' . $v, $group);
-            $pipeline = [
-                [
-                    '$group' =>
-                        [
-                            '_id' => $group,
-                            'count' => ['$sum' => 1]
-                        ]
-                ],
-            ];
+            $pipeline = [];
             if($where) $pipeline[]['$match'] = self::formatWhere($where);
-            return $this->MongoClient->database($this->db)->collection($this->collection)->aggregate($pipeline, $option);
+            $pipeline[]['$group'] = ['_id' => $group, 'count' => ['$sum' => 1]];
+            if($limit) $pipeline[]['$limit'] = $limit;
+            return $this->MongoClient->database($this->db)->collection($this->collection)->aggregate($pipeline);
         }else{
             $where = self::formatWhere($where);
+            $option = self::formatOption($select, $order);
             return $this->MongoClient->database($this->db)->collection($this->collection)->find($where, $option);
         }
     }
