@@ -81,13 +81,23 @@ class MongoDBHandler
      * datetime: 2023/02/23 14:13
      * memo : $where僅支持邏輯與
      */
-    public function commonList(array $where, array $select = [], $group = [], array $order = [], int $limit = 0): array
+    public function commonList(array $where, array $select = [], array $group = [], array $order = [], int $limit = 0): array
     {
         if($group){
             //$group = array_map(fn ($v) => '$' . $v, $group);
+            //aggregate時：1目前$group/$order僅支持作用一個字段（但使用數組入參目的是預留後續兼容多個字段）
             $pipeline = [];
-            if($where) $pipeline[]['$match'] = self::formatWhere($where);
-            $pipeline[]['$group'] = ['_id' => $group, 'count' => ['$sum' => 1]];
+            if($where) $pipeline['$match']['$match'] = self::formatWhere($where);
+            $pipeline['$group']['$group'] = [
+                '_id' => "\${$group[0]}",
+                'count' => ['$sum' => 1],
+            ];
+            if($order) {
+                $pipeline['$group']['$group']['document'] = ['$first' => '$$ROOT'];
+                foreach ($order as $unitField => $unitSequence){
+                    $pipeline['$sort']['$sort'] = ["document.{$unitField}" => ($unitSequence === 'ASC') ? 1/*正序*/ : -1/*倒敘*/];
+                }
+            }
             if($limit) $pipeline[]['$limit'] = $limit;
             return $this->MongoClient->database($this->db)->collection($this->collection)->aggregate($pipeline);
         }else{
