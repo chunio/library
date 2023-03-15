@@ -27,7 +27,7 @@ class MongoDBHandler
         'create_time',
     ];
 
-    public $operator = [
+    public static $operator = [
         'IN' => '$in',
         'NIN' => '$nin',
         '>' => '$gt',
@@ -52,21 +52,6 @@ class MongoDBHandler
 
     public function one(array $where, array $select = [], array $order = []): array
     {
-        //format where[START]
-        $formatWhere = [];
-        //空表示全部
-        if ($where) {
-            foreach ($where as $value) {
-                [$unitField, $unitOperator, $unitValue] = $value;
-                if ($mongoOperation = $this->operator[$unitOperator] ?? '') {
-                    $formatWhere[$unitField][$mongoOperation] = $unitValue;
-                } else {
-                    $formatWhere[$unitField] = $unitValue;
-                    //默認：等於
-                }
-            }
-        }
-        //format where[END]
         //format option[START]
         $option = [];
         if($select){
@@ -83,7 +68,7 @@ class MongoDBHandler
             }
         }
         //format option[END]
-        return $this->MongoClient->database($this->db)->collection($this->collection)->findOne($formatWhere, $option);
+        return $this->MongoClient->database($this->db)->collection($this->collection)->findOne(self::formatWhere($where), $option);
     }
 
     /**
@@ -97,19 +82,6 @@ class MongoDBHandler
      */
     public function commonList(array $where, array $select = [], array $group = []/*預留*/, array $order = []): array
     {
-        //format where[START]
-        $formatWhere = [];//空表示全部
-        if($where){
-            foreach ($where as $value){
-                [$unitField, $unitOperator, $unitValue] = $value;
-                if($mongoOperation = ($this->operator[$unitOperator] ?? '')){
-                    $formatWhere[$unitField][$mongoOperation] = $unitValue;
-                }else{
-                    $formatWhere[$unitField] = $unitValue;//默認：等於
-                }
-            }
-        }
-        //format where[END]
         //format option[START]
         $option = [];
         if($select){
@@ -126,7 +98,7 @@ class MongoDBHandler
             }
         }
         //format option[END]
-        return $this->MongoClient->database($this->db)->collection($this->collection)->find($formatWhere, $option);
+        return $this->MongoClient->database($this->db)->collection($this->collection)->find(self::formatWhere($where), $option);
     }
 
     /**
@@ -169,33 +141,43 @@ class MongoDBHandler
      */
     public function commonUpdate(array $where, array $data): int
     {
-        //format where[START]
-        $formatWhere = [];
-        foreach ($where as $value){
-            [$unitField, $unitOperator, $unitValue] = $value;
-            if($mongoOperation = ($this->operator[$unitOperator] ?? '')){
-                $formatWhere[$unitField][$mongoOperation] = $unitValue;
-            }else{
-                $formatWhere[$unitField] = $unitValue;
-            }
-        }
-        //format where[END]
         $update = [
             '$set' => $data
         ];
-        $UpdateResult = $this->MongoClient->database($this->db)->collection($this->collection)->updateMany($formatWhere, $update);
+        $UpdateResult = $this->MongoClient->database($this->db)->collection($this->collection)->updateMany(self::formatWhere($where), $update);
         return $UpdateResult->getModifiedCount();
     }
 
     public function commonDelete($where): int
     {
-        $DeleteResult = $this->MongoClient->database($this->db)->collection($this->collection)->deleteMany($where);
+        $DeleteResult = $this->MongoClient->database($this->db)->collection($this->collection)->deleteMany(self::formatWhere($where));
         return $DeleteResult->getDeletedCount();
     }
 
     public function commonCount($where): int
     {
-        return $this->MongoClient->database($this->db)->collection($this->collection)->countDocuments($where);
+        return $this->MongoClient->database($this->db)->collection($this->collection)->countDocuments(self::formatWhere($where));
+    }
+
+    /**
+     * @param array $where []表示全部
+     * @return array
+     * author : zengweitao@gmail.com
+     * datetime: 2023/03/15 10:22
+     * memo : null
+     */
+    public static function formatWhere(array $where): array
+    {
+        $formatWhere = [];
+        foreach ($where as $value){
+            [$unitField, $unitOperator, $unitValue] = $value;
+            if($mongoOperation = (self::$operator[$unitOperator] ?? '')){
+                $formatWhere[$unitField][$mongoOperation] = $unitValue;
+            }else{
+                $formatWhere[$unitField] = $unitValue;
+            }
+        }
+        return $formatWhere;
     }
 
 }
