@@ -95,12 +95,11 @@ class MongoDBHandler
         $pipeline = $project = [];
         if($where) $pipeline[]['$match'] = self::formatWhere($where);
         if($select){
-            $id = false;
+            $project['_id'] = 0;//因爲_id默認返回
             foreach ($select as $unitField){
                 if($unitField === '_id') $id = true;
                 $project[$unitField] = 1;//1表示返回
             }
-            if(!$id) $project['_id'] = 0;//默認:返回{$_id}
             $pipeline[]['$project'] = $project;
         }
         if($group){
@@ -201,12 +200,11 @@ class MongoDBHandler
     {
         $option = [];
         if($select){
-            $id = false;
+            $option['projection']['_id'] = 0;//因爲_id默認返回
             foreach ($select as $unitField){
                 if($unitField === '_id') $id = true;
                 $option['projection'/*聲明需返回的字段*/][$unitField] = 1;//1表示返回
             }
-            if(!$id) $option['projection']['_id'] = 0;//因爲_id默認返回
         }
         if($order){
             foreach ($order as $unitField => $unitSequence){
