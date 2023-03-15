@@ -92,7 +92,7 @@ class MongoDBHandler
     {
         //;
         //aggregate時：1目前$group/$order僅支持作用一個字段（但使用數組入參目的是預留後續兼容多個字段）
-        $pipeline = $project = [];
+        $pipeline = $project = $formatGroup = [];
         if($where) $pipeline[]['$match'] = self::formatWhere($where);
         if($select){
             $project['_id'] = 0;//因爲_id默認返回
@@ -103,7 +103,6 @@ class MongoDBHandler
             $pipeline[]['$project'] = $project;
         }
         if($group){
-            $formatGroup = [];
             foreach ($group as $field){
                 $formatGroup[$field] = "\${$field}";
             }
