@@ -109,7 +109,10 @@ class MongoDBHandler
             $pipeline[]['$group'] = [
                 //example: '_id' => ['filed1' => '$filed1', 'filed2' => '$filed2']
                 '_id' => $formatGroup,
-                'count' => ['$sum' => 1],
+                //'count' => ['$sum' => 1],
+                'tempMin' => [
+                    '$min' => '$rye_download_time'
+                ]
             ];
         }
         if($order) {
