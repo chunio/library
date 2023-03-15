@@ -52,12 +52,30 @@ class MongoDBHandler
 
     public function one(array $where, array $select = [], array $order = []): array
     {
+        //format where[START]
+        $formatWhere = [];
+        //空表示全部
+        if ($where) {
+            foreach ($where as $value) {
+                [$unitField, $unitOperator, $unitValue] = $value;
+                if ($mongoOperation = $this->operator[$unitOperator] ?? '') {
+                    $formatWhere[$unitField][$mongoOperation] = $unitValue;
+                } else {
+                    $formatWhere[$unitField] = $unitValue;
+                    //默認：等於
+                }
+            }
+        }
+        //format where[END]
         //format option[START]
         $option = [];
         if($select){
+            $id = false;
             foreach ($select as $unitField){
+                if($unitField === '_id') $id = true;
                 $option['projection'/*聲明需返回的字段*/][$unitField] = 1;//1表示返回
             }
+            if(!$id) $option['projection']['_id'] = 0;//因爲_id默認返回
         }
         if($order){
             foreach ($order as $unitField => $unitSequence){
@@ -65,7 +83,7 @@ class MongoDBHandler
             }
         }
         //format option[END]
-        return $this->MongoClient->database($this->db)->collection($this->collection)->findOne($where, $option);
+        return $this->MongoClient->database($this->db)->collection($this->collection)->findOne($formatWhere, $option);
     }
 
     /**
