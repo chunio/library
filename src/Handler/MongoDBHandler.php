@@ -91,9 +91,9 @@ class MongoDBHandler
     public function aggregateList(array $where, array $select = [], array $group = [], array $order = [], int $limit = 0): array
     {
         //;
-        //aggregate時：1目前$group/$order僅支持作用一個字段（但使用數組入參目的是預留後續兼容多個字段）
+        //aggregate時：1$order僅支持作用一個字段（但使用數組入參目的是預留後續兼容多個字段）
         //管道操作符：$match，$project，$group，$sort，$limit，$skip，$unwind，$sum，$lookup，...
-        $pipeline/*管道*/ = $project = $formatGroup = [];
+        $pipeline/*管道*/ = $project = $formatGroup = $groupIndex = [];
         if($where) $pipeline[]['$match'] = self::formatWhere($where);
         if($select){
             $project['_id'] = 0;//因爲_id默認返回
@@ -104,23 +104,22 @@ class MongoDBHandler
         }
         if($group){
             foreach ($group as $field){
-                $formatGroup[$field] = "\${$field}";
+                $groupIndex[$field] = "\${$field}";
             }
-            $pipeline[]['$group'] = [
+            $formatGroup = [
                 //example: '_id' => ['filed1' => '$filed1', 'filed2' => '$filed2']
-                '_id' => $formatGroup,
+                '_id' => $groupIndex,
                 'count' => ['$sum' => 1],
-                'max' => [
-                    '$max' => '$rye_download_time'
-                ]
             ];
         }
         if($order) {
-            //$pipeline[]['$group']['document'] = ['$first' => '$$ROOT'];
             foreach ($order as $unitField => $unitSequence){
-                $pipeline[]['$sort'] = ["document.{$unitField}" => ($unitSequence === 'ASC') ? 1/*正序*/ : -1/*倒敘*/];
+                $formatGroup[$unitField] = [
+                    ($unitSequence === 'ASC') ? '$min'/*正序*/ : '$max'/*倒敘*/ => "\${$unitField}"
+                ];
             }
         }
+        $pipeline[]['$group'] = $formatGroup;
         if($limit) $pipeline[]['$limit'] = $limit;
         return $this->MongoClient->database($this->db)->collection($this->collection)->aggregate(array_values($pipeline));
     }
