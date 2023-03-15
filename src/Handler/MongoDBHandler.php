@@ -83,6 +83,13 @@ class MongoDBHandler
      */
     public function commonList(array $where, array $select = [], array $group = [], array $order = [], int $limit = 0): array
     {
+        $where = self::formatWhere($where);
+        $option = self::formatOption($select, $order);
+        return $this->MongoClient->database($this->db)->collection($this->collection)->find($where, $option);
+    }
+
+    public function aggregateList(array $where, array $select = [], array $group = [], array $order = [], int $limit = 0): array
+    {
         if($group){
             //$group = array_map(fn ($v) => '$' . $v, $group);
             //aggregate時：1目前$group/$order僅支持作用一個字段（但使用數組入參目的是預留後續兼容多個字段）
@@ -109,11 +116,8 @@ class MongoDBHandler
 //            }
             if($limit) $pipeline[]['$limit'] = $limit;
             return $this->MongoClient->database($this->db)->collection($this->collection)->aggregate(array_values($pipeline));
-        }else{
-            $where = self::formatWhere($where);
-            $option = self::formatOption($select, $order);
-            return $this->MongoClient->database($this->db)->collection($this->collection)->find($where, $option);
         }
+        return [];
     }
 
 //    /**
