@@ -105,7 +105,7 @@ class MongoDBHandler
                 $pipeline[]['$project'] = $project;
             }
             $pipeline[]['$group'] = [
-                '_id' => ['device_type' => '$device_type', 'device_model' => '$device_model'],
+                '_id' => ['account_id' => '$account_id', 'device_model' => '$device_model'],
                 'count' => ['$sum' => 1],
             ];
 //            if($order) {
