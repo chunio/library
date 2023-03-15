@@ -88,6 +88,14 @@ class MongoDBHandler
             //aggregate時：1目前$group/$order僅支持作用一個字段（但使用數組入參目的是預留後續兼容多個字段）
             $pipeline = [];
             if($where) $pipeline['$match']['$match'] = self::formatWhere($where);
+            if($select){
+                $id = false;
+                foreach ($select as $unitField){
+                    if($unitField === '_id') $id = true;
+                    $pipeline['$project']['$project'/*聲明需返回的字段*/][$unitField] = 1;//1表示返回
+                }
+                if(!$id) $pipeline['$project']['$project']['_id'] = 0;//因爲_id默認返回
+            }
             $pipeline['$group']['$group'] = [
                 '_id' => "\${$group[0]}",
                 'count' => ['$sum' => 1],
@@ -202,6 +210,18 @@ class MongoDBHandler
             }
         }
         return $option;
+    }
+
+    public static function formatSelect(array $select)
+    {
+        if($select){
+            $id = false;
+            foreach ($select as $unitField){
+                if($unitField === '_id') $id = true;
+                $option['projection'/*聲明需返回的字段*/][$unitField] = 1;//1表示返回
+            }
+            if(!$id) $option['projection']['_id'] = 0;//因爲_id默認返回
+        }
     }
 
 }
