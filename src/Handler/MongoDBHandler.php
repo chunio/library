@@ -90,7 +90,7 @@ class MongoDBHandler
 
     public function aggregateList(array $where, array $select = [], array $group = [], array $order = [], int $limit = 0): array
     {
-        //$group = array_map(fn ($v) => '$' . $v, $group);
+        //;
         //aggregate時：1目前$group/$order僅支持作用一個字段（但使用數組入參目的是預留後續兼容多個字段）
         $pipeline = $project = [];
         if($where) $pipeline[]['$match'] = self::formatWhere($where);
@@ -104,11 +104,8 @@ class MongoDBHandler
             $pipeline[]['$project'] = $project;
         }
         if($group){
-            foreach ($group as &$field){
-                $field = [$field => "\${$field}"];
-            }
             $pipeline[]['$group'] = [
-                '_id' => $group,
+                '_id' => array_map(fn&($field) => [$field => "\${$field}"], $group),
                 'count' => ['$sum' => 1],
             ];
         }
