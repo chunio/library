@@ -54,22 +54,9 @@ class MongoDBHandler
     public function one(array $where, array $select = [], array $group = [], array $order = []): array
     {
         //format option[START]
-        $option = [];
-        if($select){
-            $id = false;
-            foreach ($select as $unitField){
-                if($unitField === '_id') $id = true;
-                $option['projection'/*聲明需返回的字段*/][$unitField] = 1;//1表示返回
-            }
-            if(!$id) $option['projection']['_id'] = 0;//因爲_id默認返回
-        }
-        if($order){
-            foreach ($order as $unitField => $unitSequence){
-                $option['sort'][$unitField] = ($unitSequence === 'ASC') ? 1/*正序*/ : -1/*倒敘*/;
-            }
-        }
-        //format option[END]
-        return $this->MongoClient->database($this->db)->collection($this->collection)->findOne(self::formatWhere($where), $option);
+        $where = self::formatWhere($where);
+        $option = self::formatOption($select, $order);
+        return $this->MongoClient->database($this->db)->collection($this->collection)->findOne($where, $option);
     }
 
     /**
@@ -81,20 +68,20 @@ class MongoDBHandler
      * datetime: 2023/02/23 14:13
      * memo : $where僅支持邏輯與
      */
-    public function commonList(array $where, array $select = [], array $group = [], array $order = [], int $limit = 0): array
+    public function commonList(array $where, array $select = [], array $group = [], array $order = [], array $limit = []): array
     {
         $where = self::formatWhere($where);
         $option = self::formatOption($select, $order);
         return $this->MongoClient->database($this->db)->collection($this->collection)->find($where, $option);
     }
 
-    public function aggregateList(array $where, array $select = [], array $group = [], array $order = [], int $limit = 0): array
+    public function aggregateList(array $where, array $select = [], array $group = [], array $order = [], array $limit = [/*[$skip, ]$limit*/]): array
     {
         //管道操作符：$match，$project，$group，$sort，$limit，$skip，$unwind，$sum，$lookup，...
         $pipeline/*管道*/ = $project = $formatGroup = $groupIndex = [];
         if($where) $pipeline[]['$match'] = self::formatWhere($where);
         if($select){
-            $project['_id'] = 0;//因爲_id默認返回
+            $project['_id'] = 0;//默認：返回{$_id}
             foreach ($select as $unitField){
                 $project[$unitField] = 1;//1表示返回
             }
@@ -118,28 +105,13 @@ class MongoDBHandler
             }
         }
         $pipeline[]['$group'] = $formatGroup;
-        if($limit) $pipeline[]['$limit'] = $limit;
+        if($limit) {
+            if(count($limit) === 1) array_unshift($limit, 0);
+            $pipeline[]['$skip'] = $limit[0];
+            $pipeline[]['$limit'] = $limit[1];
+        }
         return $this->MongoClient->database($this->db)->collection($this->collection)->aggregate(array_values($pipeline));
     }
-
-//    /**
-//     * @param string $field
-//     * author : zengweitao@gmail.com
-//     * datetime: 2023/02/23 20:59
-//     * memo : 以$field分組，並統計各每組成員總數
-//     */
-//    public function aggregate(string $field): array
-//    {
-//        return $this->MongoClient->database($this->db)->collection($this->collection)->aggregate([
-//            [
-//                '$group' =>
-//                    [
-//                        '_id' => $field,
-//                        'count' => ['$sum' => 1]
-//                    ]
-//            ],
-//        ]);
-//    }
 
     public function commonInsert(array $data)/*: ?ObjectId|array*/
     {
@@ -170,13 +142,15 @@ class MongoDBHandler
 
     public function commonDelete($where): int
     {
-        $DeleteResult = $this->MongoClient->database($this->db)->collection($this->collection)->deleteMany(self::formatWhere($where));
+        $where = self::formatWhere($where);
+        $DeleteResult = $this->MongoClient->database($this->db)->collection($this->collection)->deleteMany($where);
         return $DeleteResult->getDeletedCount();
     }
 
     public function commonCount($where): int
     {
-        return $this->MongoClient->database($this->db)->collection($this->collection)->countDocuments(self::formatWhere($where));
+        $where = self::formatWhere($where);
+        return $this->MongoClient->database($this->db)->collection($this->collection)->countDocuments($where);
     }
 
     /**
@@ -204,7 +178,7 @@ class MongoDBHandler
     {
         $option = [];
         if($select){
-            $option['projection']['_id'] = 0;//因爲_id默認返回
+            $option['projection']['_id'] = 0;//默認：返回{$_id}
             foreach ($select as $unitField){
                 $option['projection'/*聲明需返回的字段*/][$unitField] = 1;//1表示返回
             }
@@ -215,18 +189,6 @@ class MongoDBHandler
             }
         }
         return $option;
-    }
-
-    public static function formatSelect(array $select)
-    {
-        if($select){
-            $id = false;
-            foreach ($select as $unitField){
-                if($unitField === '_id') $id = true;
-                $option['projection'/*聲明需返回的字段*/][$unitField] = 1;//1表示返回
-            }
-            if(!$id) $option['projection']['_id'] = 0;//因爲_id默認返回
-        }
     }
 
 }
