@@ -50,6 +50,7 @@ class TraceHandler
                 ];
             }
         }
+        self::release();
         return true;
     }
 
@@ -121,7 +122,6 @@ class TraceHandler
 //                'customTrace' => [],
 //            ]);
 //        }
-        self::release();
     }
 
     //TODO:將自動清理添加至定時器
@@ -180,7 +180,7 @@ class TraceHandler
         return file_get_contents($webhook, false, stream_context_create($option));
     }
 
-    public static  function commonFormatVariable($variable, string $label = '', array $traceInfo = [], bool $jsonEncodeStatus = false): string
+    public static function commonFormatVariable($variable, string $label = '', array $traceInfo = [], bool $jsonEncodeStatus = false): string
     {
         try {
             $traceInfo = $traceInfo ?: debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);//TODO：此函數性能如何？
