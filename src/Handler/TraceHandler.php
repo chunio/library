@@ -67,14 +67,16 @@ class TraceHandler
 
     public static function push($variable, string $label = 'default', string $event = self::EVENT['TRACE'], int $debugBacktraceLimit = 2): bool
     {
-        switch ($event){
-            case self::EVENT['TRACE']:
-                $index = microtime(true) . '(' . Str::random(10) . ')';//TODO:並發時，需防止覆蓋同一指針下標
-                self::$trace[ContextHandler::pullTraceId()][$event][$index] = self::traceFormatter($variable, $label, $debugBacktraceLimit, false);
-                break;
-            case self::EVENT['SERVICE']:
-                self::$trace[ContextHandler::pullTraceId()][$event][$label][] = $variable;
-                break;
+        if(matchEnvi('local')){
+            switch ($event){
+                case self::EVENT['TRACE']:
+                    $index = microtime(true) . '(' . Str::random(10) . ')';//TODO:並發時，需防止覆蓋同一指針下標
+                    self::$trace[ContextHandler::pullTraceId()][$event][$index] = self::traceFormatter($variable, $label, $debugBacktraceLimit, false);
+                    break;
+                case self::EVENT['SERVICE']:
+                    self::$trace[ContextHandler::pullTraceId()][$event][$label][] = $variable;
+                    break;
+            }
         }
         self::refresh();
         return true;
