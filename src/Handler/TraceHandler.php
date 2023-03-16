@@ -37,16 +37,18 @@ class TraceHandler
     public static function init(): bool
     {
         //TODO:存在其他非請求入口
-        $traceId = ContextHandler::pullTraceId();
-        if(!(self::$trace[$traceId] ?? [])) {
-            self::$trace[$traceId] = [//template
-                'traceId' => $traceId,
-                'request' => ContextHandler::pullRequestAbstract(),
-                'trace' => [],
-                'service' => [],
-                //'response' => [],
-                'activeTime' => time(),
-            ];
+        if(matchEnvi('local')){
+            $traceId = ContextHandler::pullTraceId();
+            if(!(self::$trace[$traceId] ?? [])) {
+                self::$trace[$traceId] = [//template
+                    'traceId' => $traceId,
+                    'request' => ContextHandler::pullRequestAbstract(),
+                    'trace' => [],
+                    'service' => [],
+                    //'response' => [],
+                    'activeTime' => time(),
+                ];
+            }
         }
         return true;
     }
