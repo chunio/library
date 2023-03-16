@@ -22,7 +22,7 @@ class TraceHandler
 //
 //    public static $output = true;//是否輸出至控制台
 
-    public static $ttl = 30;//unit:second//TODO：監控：時間/數量
+    public static $ttl = 15;//unit:second//TODO：監控：時間/數量
 
     public static $lastestReleaseTime = 0;
 
