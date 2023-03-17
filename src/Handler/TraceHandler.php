@@ -28,6 +28,10 @@ class TraceHandler
 
     public static $trace = [];
 
+    public static $status = true;
+
+    public static $mongodb = true;
+
     /**
      * @return bool
      * author : zengweitao@gmail.com
@@ -37,7 +41,7 @@ class TraceHandler
     public static function init(): bool
     {
         //TODO:存在其他非請求入口
-        if(UtilityHandler::matchEnvi('local')){
+        if(self::$status){
             $traceId = ContextHandler::pullTraceId();
             if(!(self::$trace[$traceId] ?? [])) {
                 self::$trace[$traceId] = [//template
@@ -70,7 +74,7 @@ class TraceHandler
 
     public static function push($variable, string $label = 'default', string $event = self::EVENT['TRACE'], int $debugBacktraceLimit = 2): bool
     {
-        if(UtilityHandler::matchEnvi('local')){
+        if(self::$status){
             switch ($event){
                 case self::EVENT['TRACE']:
                     $index = microtime(true) . '(' . Str::random(10) . ')';//TODO:並發時，需防止覆蓋同一指針下標
@@ -99,6 +103,11 @@ class TraceHandler
     {
 //        try {
         $traceArray = self::pull();
+        if(self::$mongodb) {
+            CoroutineHandler::co(function()use(&$traceArray){
+                mongoDBHandler('trace' . date('Ymd'))->commonInsert($traceArray);
+            });
+        }
         //if($traceArray['trace'] || $traceArray['service']){
             //$responseArray = json_decode($responseJson, true);
             //$responseArray['data'] = 'hide';
