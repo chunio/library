@@ -28,9 +28,9 @@ class TraceHandler
 
     public static $trace = [];
 
-    public static $status = true;
+    public static $status = false;
 
-    public static $mongodb = true;
+    public static $mongodb = false;
 
     /**
      * @return bool
