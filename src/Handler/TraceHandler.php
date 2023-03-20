@@ -28,7 +28,7 @@ class TraceHandler
 
     public static $trace = [];
 
-    public static $status = false;
+    public static $status = true;
 
     public static $mongodb = false;
 
