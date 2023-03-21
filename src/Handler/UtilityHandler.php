@@ -53,7 +53,7 @@ class UtilityHandler
         foreach ($valueArray as $key => $value) {
             $newArray[$key] = $array[$key];
         }
-        return $newArray;
+        return array_values($newArray);
     }
 
     public static function commonHttpPost(string $uri, array $body = [], $header = ['Content-Type' => 'application/json'], array $cookieDetail = [], string $cookieDomain = '')
