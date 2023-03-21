@@ -66,7 +66,7 @@ class UtilityHandler
             $config['cookies'] = CookieJar::fromArray($cookieDetail, $cookieDomain);
         }
         $client = new \GuzzleHttp\Client($config);
-        $result = json_decode((string)$client->request('get', $uri, $config)->getBody(), true);
+        $result = json_decode((string)$client->request('post', $uri, $config)->getBody(), true);
         return $result;
     }
 
