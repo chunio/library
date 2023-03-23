@@ -64,7 +64,7 @@ class UtilityHandler
         array $body = [],
         array $header = ['Content-Type' => 'application/json'],
         array $cookie = [],
-        int $timeout = 5
+        int $timeout = 10
     )
     {
         $option = ['timeout' => $timeout, 'headers' => $header];
