@@ -59,6 +59,7 @@ class UtilityHandler
     public static function commonHttpPost(string $uri, array $body = [], $header = ['Content-Type' => 'application/json'], array $cookieDetail = [], string $cookieDomain = '')
     {
         $config = [
+            'timeout' => 5,
             'headers' => $header,
             'json' => $body,
         ];
@@ -66,7 +67,8 @@ class UtilityHandler
             $config['cookies'] = CookieJar::fromArray($cookieDetail, $cookieDomain);
         }
         $client = new \GuzzleHttp\Client($config);
-        $result = json_decode((string)$client->request('POST', $uri, $config)->getBody()->getContents(), true);
+        $response = $client->post($uri, $config);
+        $result = json_decode($response->getBody(), true);
         return $result;
     }
 
