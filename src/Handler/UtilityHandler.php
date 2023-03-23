@@ -6,6 +6,7 @@ namespace Baichuan\Library\Handler;
 
 use Baichuan\Library\Constant\AsciiEnum;
 use Closure;
+use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
 use Hyperf\Utils\ApplicationContext;
 
@@ -54,6 +55,26 @@ class UtilityHandler
             $newArray[$key] = $array[$key];
         }
         return array_values($newArray);
+    }
+
+    public static function commonHttp(
+        $method,
+        $uri,
+        $query,
+        array $body = [],
+        array $header = ['Content-Type' => 'application/json'],
+        array $cookie = [],
+        int $timeout = 5
+    )
+    {
+        $option = ['timeout' => $timeout, 'headers' => $header];
+        if($query) $option['query'] = $query;
+        if($body && $header['Content-Type'] === 'application/json') $option['json'] = $body;
+        if($cookie) $option['cookies'] = CookieJar::fromArray($cookie['detail'], $cookie['domain']);
+        $response = (new Client())->request($method, $uri, $option);
+        $body = $response->getBody()->getContents();
+        $result = json_decode($body, true);
+        return $result;
     }
 
     public static function commonHttpPost(string $uri, array $body = [], $header = ['Content-Type' => 'application/json'], array $cookieDetail = [], string $cookieDomain = '')
