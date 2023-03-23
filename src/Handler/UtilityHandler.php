@@ -58,23 +58,24 @@ class UtilityHandler
     }
 
     public static function commonHttp(
-        string $method,
-        string $uri,
-        array $query,
+        $method,
+        $uri,
+        $query,
         array $body = [],
         array $header = ['Content-Type' => 'application/json'],
         array $cookie = [],
         int $timeout = 10
-    )
+    ): array
     {
-        $option = ['timeout' => $timeout, 'headers' => $header];
+        $option = [
+            'timeout' => $timeout,
+            'headers' => $header
+        ];
         if($query) $option['query'] = $query;
-        if($body && $header['Content-Type'] === 'application/json') $option['json'] = $body;
+        if($header['Content-Type'] === 'application/json' && $body) $option['json'] = $body;
         if($cookie) $option['cookies'] = CookieJar::fromArray($cookie['detail'], $cookie['domain']);
-        $response = (new Client())->request(strtoupper($method), $uri, $option);
-        $body = $response->getBody()->getContents();
-        $result = json_decode($body, true);
-        return $result;
+        $response = (new Client())->request(strtoupper($method), $uri, $option)->getBody();
+        return json_decode($response,true);
     }
 
     public static function commonHttpPost(string $uri, array $body = [], $header = ['Content-Type' => 'application/json'], array $cookieDetail = [], string $cookieDomain = '')
