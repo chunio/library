@@ -58,9 +58,9 @@ class UtilityHandler
     }
 
     public static function commonHttp(
-        $method,
-        $uri,
-        $query,
+        string $method,
+        string $uri,
+        array $query,
         array $body = [],
         array $header = ['Content-Type' => 'application/json'],
         array $cookie = [],
