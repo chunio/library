@@ -74,8 +74,8 @@ class UtilityHandler
         if($query) $option['query'] = $query;
         if($header['Content-Type'] === 'application/json' && $body) $option['json'] = $body;
         if($cookie) $option['cookies'] = CookieJar::fromArray($cookie['detail'], $cookie['domain']);
-        $response = (new Client())->request(strtoupper($method), $uri, $option)->getBody()->getContents();
-        return json_decode($response,true);
+        $stream = (new Client())->request(strtoupper($method), $uri, $option)->getBody();
+        return \GuzzleHttp\json_decode($stream,true);
     }
 
     public static function commonHttpPost(string $uri, array $body = [], $header = ['Content-Type' => 'application/json'], array $cookieDetail = [], string $cookieDomain = '')
