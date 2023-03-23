@@ -74,7 +74,7 @@ class UtilityHandler
         if($query) $option['query'] = $query;
         if($header['Content-Type'] === 'application/json' && $body) $option['json'] = $body;
         if($cookie) $option['cookies'] = CookieJar::fromArray($cookie['detail'], $cookie['domain']);
-        $response = (new Client())->request(strtoupper($method), $uri, $option)->getBody();
+        $response = (new Client())->request(strtoupper($method), $uri, $option)->getBody()->getContents();
         return json_decode($response,true);
     }
 
