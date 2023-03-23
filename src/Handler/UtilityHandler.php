@@ -57,7 +57,7 @@ class UtilityHandler
         return array_values($newArray);
     }
 
-    public static function commonHttp(
+    public static function commonHttpRequest(
         $method,
         $uri,
         $query,
