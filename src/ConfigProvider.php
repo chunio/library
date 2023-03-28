@@ -90,6 +90,12 @@ class ConfigProvider
                     'source' => __DIR__ . '/../publish/envi.php',
                     'destination' => BASE_PATH . '/config/autoload/envi.php',
                 ],
+                [
+                    'id' => 'config',
+                    'description' => 'gotask',
+                    'source' => __DIR__ . '/../publish/gotask.php',
+                    'destination' => BASE_PATH . '/config/autoload/gotask.php',
+                ],
             ],
             'cross' => [
                 'button' => true,
