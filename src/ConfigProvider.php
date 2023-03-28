@@ -78,15 +78,15 @@ class ConfigProvider
             ],
             //複製文件（受限於框架啟動順序，部分基礎配置不適用於publish，如：logger.php）
             'publish' => [
+//                [
+//                    'id' => 'config',
+//                    'description' => '備註信息1',
+//                    'source' => __DIR__ . '/../publish/example1.php',
+//                    'destination' => BASE_PATH . '/config/autoload/example1.php',
+//                ],
                 [
                     'id' => 'config',
-                    'description' => '備註信息1',
-                    'source' => __DIR__ . '/../publish/example1.php',
-                    'destination' => BASE_PATH . '/config/autoload/example1.php',
-                ],
-                [
-                    'id' => 'config',
-                    'description' => '備註信息2',
+                    'description' => '框架配置',
                     'source' => __DIR__ . '/../publish/envi.php',
                     'destination' => BASE_PATH . '/config/autoload/envi.php',
                 ],
