@@ -41,7 +41,7 @@ class TraceHandler
     public static function init(): bool
     {
         //TODO:存在其他非請求入口
-        if(config('traceHandlerStatus')){
+        if(config('envi.traceHandlerStatus')){
             $traceId = ContextHandler::pullTraceId();
             if(!(self::$trace[$traceId] ?? [])) {
                 self::$trace[$traceId] = [//template
@@ -74,7 +74,7 @@ class TraceHandler
 
     public static function push($variable, string $label = 'default', string $event = self::EVENT['TRACE'], int $debugBacktraceLimit = 2): bool
     {
-        if(config('env.library.handler.traceHandler.status')){
+        if(config('envi.traceHandlerStatus')){
             switch ($event){
                 case self::EVENT['TRACE']:
                     $index = microtime(true) . '(' . Str::random(10) . ')';//TODO:並發時，需防止覆蓋同一指針下標
@@ -103,7 +103,7 @@ class TraceHandler
     {
 //        try {
         $traceArray = self::pull();
-        if(config('env.library.handler.traceHandler.sync2mongodb')) {
+        if(config('envi.traceHandlerSync2mongodb')) {
             CoroutineHandler::co(function()use(&$traceArray){
                 mongoDBHandler('trace' . date('Ymd'))->commonInsert($traceArray);
             });
@@ -112,12 +112,12 @@ class TraceHandler
             //$responseArray = json_decode($responseJson, true);
             //$responseArray['data'] = 'hide';
             //$traceArray['response'] = $responseJson;
-            if(config('library.handler.monologHandler.jsonEncodeStatus')) {
+            if(config('envi.monologHandlerJsonEncodeStatus')) {
                 $trace = UtilityHandler::prettyJsonEncode($traceArray) . "\n";
             }else{
                 $trace = "\n:<<UNIT[START]\n" . print_r($traceArray, true) . "\nUNIT[END]\n";//print_r()的換行會將大變量瞬間膨脹導致內存滿載
             }
-            if(config('library.handler.monologHandler.output')) echo $trace;
+            if(config('envi.monologHandlerOutput')) echo $trace;
             MonologHandler::info($trace,'', [], MonologHandler::$formatter['NONE']);
         //}
 //        } catch (Throwable $e) {
