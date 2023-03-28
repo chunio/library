@@ -87,8 +87,8 @@ class ConfigProvider
                 [
                     'id' => 'config',
                     'description' => '備註信息2',
-                    'source' => __DIR__ . '/../publish/example2.php',
-                    'destination' => BASE_PATH . '/config/autoload/example2.php',
+                    'source' => __DIR__ . '/../publish/env.php',
+                    'destination' => BASE_PATH . '/config/autoload/env.php',
                 ],
             ],
             'cross' => [
