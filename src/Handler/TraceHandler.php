@@ -276,7 +276,6 @@ class TraceHandler
                     $trace = "\n:<<UNIT[START]\n" . print_r($traceArray, true) . "\nUNIT[END]\n";//print_r()的換行會將大變量瞬間膨脹導致內存滿載
                 }
                 if(MonologHandler::$output ?? true) echo $trace;
-
             }
             return $trace ?? $traceArray;
         } catch (Throwable $e) {

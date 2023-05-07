@@ -34,7 +34,7 @@ class MonologHandler
     //註冊#樣式方式#
     public static $formatter = [
         'NONE' => null,
-        'COMMON' => 'traceFormatter',//function name
+        'COMMON' => 'commonFormatVariable',//function name
     ];
 
     public static function __callStatic($function, $argument)
