@@ -90,7 +90,7 @@ class UtilityHandler
         }
         $client = new \GuzzleHttp\Client($config);
         $response = $client->post($uri, $config);
-        $result = json_decode($response->getBody(), true);
+        $result = json_decode((string)$response->getBody(), true);
         return $result;
     }
 
