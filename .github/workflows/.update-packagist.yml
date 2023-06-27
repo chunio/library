@@ -1,0 +1,37 @@
+name: "Update Packagist"
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update-packagist:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+          extensions: mbstring, zip
+          coverage: none
+          ini-values: |
+            memory_limit=-1
+
+      - name: Install Composer
+        run: |
+          php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+          php composer-setup.php
+          php -r "unlink('composer-setup.php');"
+
+      - name: Update Packagist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PACKAGIST_USERNAME: your-packagist-username
+          PACKAGIST_API_TOKEN: your-packagist-api-token
+        run: |
+          composer config --global github-oauth.github.com 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
+          composer install --no-dev
+          vendor/bin/publish-package.sh chunio 2db923c0e6cf2cfebe4f
