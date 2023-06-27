@@ -3,6 +3,7 @@
   "type": "library",
   "description": "a common library for [php]hyperf",
   "keywords": ["php", "hyperf", "common", "library"],
+  "license": "MIT",
   "archive": {
     "exclude": [
       "/bin",
