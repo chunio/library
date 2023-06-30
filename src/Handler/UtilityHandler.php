@@ -180,4 +180,51 @@ class UtilityHandler
         return $container;
     }
 
+    /**
+     * @param string $type enum: day, week, month, latest7
+     * @param string $status 返回樣式，值：date/日期（示例：2023-01-01），timestamp/時間戳（示例：1687536000）
+     * author : zengweitao@gmail.com
+     * datetime: 2023/06/30 15:02
+     * memo : null
+     */
+    public static function pullDatePeriod(string $type = 'day', string $status = 'date'): array
+    {
+        $currentTimestamp = time();
+        switch ($type){
+            case 'day':
+                $latestPeriodStart = $latestPeriodEnd = date("Y-m-d", strtotime("yesterday"));
+                $currentPeriodStart = $currentPeriodEnd = date("Y-m-d", $currentTimestamp);
+                break;
+            case 'week':
+                $latestPeriodStart = date("Y-m-d", strtotime("last week monday"));;
+                $latestPeriodEnd =date("Y-m-d", strtotime("last week sunday"));;
+                $currentPeriodStart = date("Y-m-d", strtotime("this week monday"));
+                $currentPeriodEnd = date('Y-m-d', $currentTimestamp);
+                break;
+            case 'month':
+                $latestPeriodStart = date("Y-m-01", strtotime("last month"));
+                $latestPeriodEnd = date("Y-m-t", strtotime("last month"));
+                $currentPeriodStart = date("Y-m-01", $currentTimestamp);
+                $currentPeriodEnd = date('Y-m-d', $currentTimestamp);
+                break;
+            case 'latest7'://含：今天
+            default:
+                $latestPeriodStart = date("Y-m-d", strtotime("-13 days"));
+                $latestPeriodEnd = date("Y-m-d", strtotime("-7 days"));
+                $currentPeriodStart = date("Y-m-d", strtotime("-6 days"));
+                $currentPeriodEnd = date('Y-m-d', $currentTimestamp);
+                break;
+        }
+        return [
+            'current' => [
+                $status == 'timestamp' ? strtotime("$currentPeriodStart 00:00:00") : $currentPeriodStart,
+                $status == 'timestamp' ? strtotime("$currentPeriodEnd 23:59:59") : $currentPeriodEnd,
+            ],
+            'latest' => [
+                $status == 'timestamp' ? strtotime("$latestPeriodStart 00:00:00") : $latestPeriodStart,
+                $status == 'timestamp' ? strtotime("$latestPeriodEnd 23:59:59") : $latestPeriodEnd,
+            ]
+        ];
+    }
+
 }
