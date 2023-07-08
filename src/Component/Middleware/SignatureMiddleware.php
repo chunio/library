@@ -45,7 +45,7 @@ class SignatureMiddleware implements MiddlewareInterface
             }catch (\Throwable $e){
                 throw new Exception("hacker attack ({$auth} is incorrect)");
             }
-            //DEBUG_LABEL[START]
+            //DEBUG_LABEL[START]//
             if(in_array(env('APP_ENV'), ['local', 'sandbox', 'test', 'official'/*TODO:待優化*/])){
                 if($signatureBase64 === 'd5fe18479296485de713003a28f54154d0105392d8407e6291bb4449faf79bdf'){
                     if(substr($tokenBase64,0,8) === 'payload='){//
